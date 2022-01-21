@@ -1,0 +1,145 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>X509_PUBKEY_new</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>X509_PUBKEY_new, X509_PUBKEY_free, X509_PUBKEY_set, X509_PUBKEY_get0,
+X509_PUBKEY_get, d2i_PUBKEY, i2d_PUBKEY, d2i_PUBKEY_bio, d2i_PUBKEY_fp,
+i2d_PUBKEY_fp, i2d_PUBKEY_bio, X509_PUBKEY_set0_param,
+X509_PUBKEY_get0_param - SubjectPublicKeyInfo public key functions</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/x509.h&gt;</pre>
+<pre>
+ X509_PUBKEY *X509_PUBKEY_new(void);
+ void X509_PUBKEY_free(X509_PUBKEY *a);</pre>
+<pre>
+ int X509_PUBKEY_set(X509_PUBKEY **x, EVP_PKEY *pkey);
+ EVP_PKEY *X509_PUBKEY_get0(X509_PUBKEY *key);
+ EVP_PKEY *X509_PUBKEY_get(X509_PUBKEY *key);</pre>
+<pre>
+ EVP_PKEY *d2i_PUBKEY(EVP_PKEY **a, const unsigned char **pp, long length);
+ int i2d_PUBKEY(EVP_PKEY *a, unsigned char **pp);</pre>
+<pre>
+ EVP_PKEY *d2i_PUBKEY_bio(BIO *bp, EVP_PKEY **a);
+ EVP_PKEY *d2i_PUBKEY_fp(FILE *fp, EVP_PKEY **a);</pre>
+<pre>
+ int i2d_PUBKEY_fp(FILE *fp, EVP_PKEY *pkey);
+ int i2d_PUBKEY_bio(BIO *bp, EVP_PKEY *pkey);</pre>
+<pre>
+ int X509_PUBKEY_set0_param(X509_PUBKEY *pub, ASN1_OBJECT *aobj,
+                            int ptype, void *pval,
+                            unsigned char *penc, int penclen);
+ int X509_PUBKEY_get0_param(ASN1_OBJECT **ppkalg,
+                            const unsigned char **pk, int *ppklen,
+                            X509_ALGOR **pa, X509_PUBKEY *pub);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The <strong>X509_PUBKEY</strong> structure represents the ASN.1 <strong>SubjectPublicKeyInfo</strong>
+structure defined in <a href="http://www.ietf.org/rfc/rfc5280.txt" class="rfc">RFC5280</a> and used in certificates and certificate requests.</p>
+<p>X509_PUBKEY_new() allocates and initializes an <strong>X509_PUBKEY</strong> structure.</p>
+<p>X509_PUBKEY_free() frees up <strong>X509_PUBKEY</strong> structure <strong>a</strong>. If <strong>a</strong> is NULL
+nothing is done.</p>
+<p>X509_PUBKEY_set() sets the public key in <strong>*x</strong> to the public key contained
+in the <strong>EVP_PKEY</strong> structure <strong>pkey</strong>. If <strong>*x</strong> is not NULL any existing
+public key structure will be freed.</p>
+<p>X509_PUBKEY_get0() returns the public key contained in <strong>key</strong>. The returned
+value is an internal pointer which <strong>MUST NOT</strong> be freed after use.</p>
+<p>X509_PUBKEY_get() is similar to X509_PUBKEY_get0() except the reference
+count on the returned key is incremented so it <strong>MUST</strong> be freed using
+<code>EVP_PKEY_free()</code> after use.</p>
+<p>d2i_PUBKEY() and i2d_PUBKEY() decode and encode an <strong>EVP_PKEY</strong> structure
+using <strong>SubjectPublicKeyInfo</strong> format. They otherwise follow the conventions of
+other ASN.1 functions such as d2i_X509().</p>
+<p>d2i_PUBKEY_bio(), d2i_PUBKEY_fp(), i2d_PUBKEY_bio() and i2d_PUBKEY_fp() are
+similar to d2i_PUBKEY() and i2d_PUBKEY() except they decode or encode using a
+<strong>BIO</strong> or <strong>FILE</strong> pointer.</p>
+<p>X509_PUBKEY_set0_param() sets the public key parameters of <strong>pub</strong>. The
+OID associated with the algorithm is set to <strong>aobj</strong>. The type of the
+algorithm parameters is set to <strong>type</strong> using the structure <strong>pval</strong>.
+The encoding of the public key itself is set to the <strong>penclen</strong>
+bytes contained in buffer <strong>penc</strong>. On success ownership of all the supplied
+parameters is passed to <strong>pub</strong> so they must not be freed after the
+call.</p>
+<p>X509_PUBKEY_get0_param() retrieves the public key parameters from <strong>pub</strong>,
+<strong>*ppkalg</strong> is set to the associated OID and the encoding consists of
+<strong>*ppklen</strong> bytes at <strong>*pk</strong>, <strong>*pa</strong> is set to the associated
+AlgorithmIdentifier for the public key. If the value of any of these
+parameters is not required it can be set to <strong>NULL</strong>. All of the
+retrieved pointers are internal and must not be freed after the
+call.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The <strong>X509_PUBKEY</strong> functions can be used to encode and decode public keys
+in a standard format.</p>
+<p>In many cases applications will not call the <strong>X509_PUBKEY</strong> functions
+directly: they will instead call wrapper functions such as X509_get0_pubkey().</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>If the allocation fails, X509_PUBKEY_new() returns <strong>NULL</strong> and sets an error
+code that can be obtained by <em>ERR_get_error(3)</em>.</p>
+<p>Otherwise it returns a pointer to the newly allocated structure.</p>
+<p>X509_PUBKEY_free() does not return a value.</p>
+<p>X509_PUBKEY_get0() and X509_PUBKEY_get() return a pointer to an <strong>EVP_PKEY</strong>
+structure or <strong>NULL</strong> if an error occurs.</p>
+<p>X509_PUBKEY_set(), X509_PUBKEY_set0_param() and X509_PUBKEY_get0_param()
+return 1 for success and 0 if an error occurred.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>d2i_X509(3)</em>,
+<em>ERR_get_error(3)</em>,
+<em>X509_get_pubkey(3)</em>,</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,122 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>RAND_load_file</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>RAND_load_file, RAND_write_file, RAND_file_name - PRNG seed file</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/rand.h&gt;</pre>
+<pre>
+ int RAND_load_file(const char *filename, long max_bytes);</pre>
+<pre>
+ int RAND_write_file(const char *filename);</pre>
+<pre>
+ const char *RAND_file_name(char *buf, size_t num);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>RAND_load_file()</code> reads a number of bytes from file <strong>filename</strong> and
+adds them to the PRNG. If <strong>max_bytes</strong> is non-negative,
+up to <strong>max_bytes</strong> are read;
+if <strong>max_bytes</strong> is -1, the complete file is read.
+Do not load the same file multiple times unless its contents have
+been updated by <code>RAND_write_file()</code> between reads.
+Also, note that <strong>filename</strong> should be adequately protected so that an
+attacker cannot replace or examine the contents.
+If <strong>filename</strong> is not a regular file, then user is considered to be
+responsible for any side effects, e.g. non-anticipated blocking or
+capture of controlling terminal.</p>
+<p><code>RAND_write_file()</code> writes a number of random bytes (currently 128) to
+file <strong>filename</strong> which can be used to initialize the PRNG by calling
+<code>RAND_load_file()</code> in a later session.</p>
+<p><code>RAND_file_name()</code> generates a default path for the random seed
+file. <strong>buf</strong> points to a buffer of size <strong>num</strong> in which to store the
+filename.</p>
+<p>On all systems, if the environment variable <strong>RANDFILE</strong> is set, its
+value will be used as the seed file name.
+Otherwise, the file is called <code>.rnd</code>, found in platform dependent locations:</p>
+<dl>
+<dt><strong><a name="windows" class="item">On Windows (in order of preference)</a></strong></dt>
+
+<dd>
+<pre>
+ %HOME%, %USERPROFILE%, %SYSTEMROOT%, C:\</pre>
+</dd>
+<dt><strong><a name="on_vms" class="item">On VMS</a></strong></dt>
+
+<dd>
+<pre>
+ SYS$LOGIN:</pre>
+</dd>
+<dt><strong><a name="on_all_other_systems" class="item">On all other systems</a></strong></dt>
+
+<dd>
+<pre>
+ $HOME</pre>
+</dd>
+</dl>
+<p>If <code>$HOME</code> (on non-Windows and non-VMS system) is not set either, or
+<strong>num</strong> is too small for the path name, an error occurs.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>RAND_load_file()</code> returns the number of bytes read or -1 on error.</p>
+<p><code>RAND_write_file()</code> returns the number of bytes written, or -1 if the
+bytes written were generated without appropriate seeding.</p>
+<p><code>RAND_file_name()</code> returns a pointer to <strong>buf</strong> on success, and NULL on
+error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>RAND_add(3)</em>,
+<em>RAND_bytes(3)</em>,
+<em>RAND(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

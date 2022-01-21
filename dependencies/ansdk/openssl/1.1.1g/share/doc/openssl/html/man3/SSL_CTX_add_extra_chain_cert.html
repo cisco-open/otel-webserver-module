@@ -1,0 +1,117 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_add_extra_chain_cert</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#restrictions">RESTRICTIONS</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_add_extra_chain_cert, SSL_CTX_clear_extra_chain_certs - add or clear
+extra chain certificates</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ long SSL_CTX_add_extra_chain_cert(SSL_CTX *ctx, X509 *x509);
+ long SSL_CTX_clear_extra_chain_certs(SSL_CTX *ctx);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_add_extra_chain_cert()</code> adds the certificate <strong>x509</strong> to the extra chain
+certificates associated with <strong>ctx</strong>. Several certificates can be added one
+after another.</p>
+<p><code>SSL_CTX_clear_extra_chain_certs()</code> clears all extra chain certificates
+associated with <strong>ctx</strong>.</p>
+<p>These functions are implemented as macros.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>When sending a certificate chain, extra chain certificates are sent in order
+following the end entity certificate.</p>
+<p>If no chain is specified, the library will try to complete the chain from the
+available CA certificates in the trusted CA storage, see
+<em>SSL_CTX_load_verify_locations(3)</em>.</p>
+<p>The <strong>x509</strong> certificate provided to <code>SSL_CTX_add_extra_chain_cert()</code> will be
+freed by the library when the <strong>SSL_CTX</strong> is destroyed. An application
+<strong>should not</strong> free the <strong>x509</strong> object.</p>
+<p>
+</p>
+<hr />
+<h1><a name="restrictions">RESTRICTIONS</a></h1>
+<p>Only one set of extra chain certificates can be specified per SSL_CTX
+structure. Different chains for different certificates (for example if both
+RSA and DSA certificates are specified by the same server) or different SSL
+structures with the same parent SSL_CTX cannot be specified using this
+function. For more flexibility functions such as SSL_add1_chain_cert() should
+be used instead.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_CTX_add_extra_chain_cert()</code> and <code>SSL_CTX_clear_extra_chain_certs()</code> return
+1 on success and 0 for failure. Check out the error stack to find out the
+reason for failure.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>,
+<em>SSL_CTX_use_certificate(3)</em>,
+<em>SSL_CTX_set_client_cert_cb(3)</em>,
+<em>SSL_CTX_load_verify_locations(3)</em>
+<em>SSL_CTX_set0_chain(3)</em>
+<em>SSL_CTX_set1_chain(3)</em>
+<em>SSL_CTX_add0_chain_cert(3)</em>
+<em>SSL_CTX_add1_chain_cert(3)</em>
+<em>SSL_set0_chain(3)</em>
+<em>SSL_set1_chain(3)</em>
+<em>SSL_add0_chain_cert(3)</em>
+<em>SSL_add1_chain_cert(3)</em>
+<em>SSL_CTX_build_cert_chain(3)</em>
+<em>SSL_build_cert_chain(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,167 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>pkcs7</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#options">OPTIONS</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#restrictions">RESTRICTIONS</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>openssl-pkcs7,
+pkcs7 - PKCS#7 utility</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p><strong>openssl</strong> <strong>pkcs7</strong>
+[<strong>-help</strong>]
+[<strong>-inform PEM|DER</strong>]
+[<strong>-outform PEM|DER</strong>]
+[<strong>-in filename</strong>]
+[<strong>-out filename</strong>]
+[<strong>-print_certs</strong>]
+[<strong>-text</strong>]
+[<strong>-noout</strong>]
+[<strong>-engine id</strong>]</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The <strong>pkcs7</strong> command processes PKCS#7 files in DER or PEM format.</p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<dl>
+<dt><strong><a name="help" class="item"><strong>-help</strong></a></strong></dt>
+
+<dd>
+<p>Print out a usage message.</p>
+</dd>
+<dt><strong><a name="inform_der_pem" class="item"><strong>-inform DER|PEM</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the input format. <strong>DER</strong> format is DER encoded PKCS#7
+v1.5 structure.<strong>PEM</strong> (the default) is a base64 encoded version of
+the DER form with header and footer lines.</p>
+</dd>
+<dt><strong><a name="outform_der_pem" class="item"><strong>-outform DER|PEM</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the output format, the options have the same meaning and default
+as the <strong>-inform</strong> option.</p>
+</dd>
+<dt><strong><a name="in_filename" class="item"><strong>-in filename</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the input filename to read from or standard input if this
+option is not specified.</p>
+</dd>
+<dt><strong><a name="out_filename" class="item"><strong>-out filename</strong></a></strong></dt>
+
+<dd>
+<p>Specifies the output filename to write to or standard output by
+default.</p>
+</dd>
+<dt><strong><a name="print_certs" class="item"><strong>-print_certs</strong></a></strong></dt>
+
+<dd>
+<p>Prints out any certificates or CRLs contained in the file. They are
+preceded by their subject and issuer names in one line format.</p>
+</dd>
+<dt><strong><a name="text" class="item"><strong>-text</strong></a></strong></dt>
+
+<dd>
+<p>Prints out certificates details in full rather than just subject and
+issuer names.</p>
+</dd>
+<dt><strong><a name="noout" class="item"><strong>-noout</strong></a></strong></dt>
+
+<dd>
+<p>Don't output the encoded version of the PKCS#7 structure (or certificates
+is <strong>-print_certs</strong> is set).</p>
+</dd>
+<dt><strong><a name="engine_id" class="item"><strong>-engine id</strong></a></strong></dt>
+
+<dd>
+<p>Specifying an engine (by its unique <strong>id</strong> string) will cause <strong>pkcs7</strong>
+to attempt to obtain a functional reference to the specified engine,
+thus initialising it if needed. The engine will then be set as the default
+for all available algorithms.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>Convert a PKCS#7 file from PEM to DER:</p>
+<pre>
+ openssl pkcs7 -in file.pem -outform DER -out file.der</pre>
+<p>Output all certificates in a file:</p>
+<pre>
+ openssl pkcs7 -in file.pem -print_certs -out certs.pem</pre>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The PEM PKCS#7 format uses the header and footer lines:</p>
+<pre>
+ -----BEGIN PKCS7-----
+ -----END PKCS7-----</pre>
+<p>For compatibility with some CAs it will also accept:</p>
+<pre>
+ -----BEGIN CERTIFICATE-----
+ -----END CERTIFICATE-----</pre>
+<p>
+</p>
+<hr />
+<h1><a name="restrictions">RESTRICTIONS</a></h1>
+<p>There is no option to print out all the fields of a PKCS#7 file.</p>
+<p>This PKCS#7 routines only understand PKCS#7 v 1.5 as specified in <a href="http://www.ietf.org/rfc/rfc2315.txt" class="rfc">RFC2315</a> they
+cannot currently parse, for example, the new CMS as described in <a href="http://www.ietf.org/rfc/rfc2630.txt" class="rfc">RFC2630</a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>crl2pkcs7(1)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2017 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

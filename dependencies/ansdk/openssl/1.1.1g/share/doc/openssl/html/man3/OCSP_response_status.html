@@ -1,0 +1,144 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>OCSP_response_status</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>OCSP_response_status, OCSP_response_get1_basic, OCSP_response_create,
+OCSP_RESPONSE_free, OCSP_RESPID_set_by_name,
+OCSP_RESPID_set_by_key, OCSP_RESPID_match,
+OCSP_basic_sign, OCSP_basic_sign_ctx - OCSP response functions</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ocsp.h&gt;</pre>
+<pre>
+ int OCSP_response_status(OCSP_RESPONSE *resp);
+ OCSP_BASICRESP *OCSP_response_get1_basic(OCSP_RESPONSE *resp);
+ OCSP_RESPONSE *OCSP_response_create(int status, OCSP_BASICRESP *bs);
+ void OCSP_RESPONSE_free(OCSP_RESPONSE *resp);</pre>
+<pre>
+ int OCSP_RESPID_set_by_name(OCSP_RESPID *respid, X509 *cert);
+ int OCSP_RESPID_set_by_key(OCSP_RESPID *respid, X509 *cert);
+ int OCSP_RESPID_match(OCSP_RESPID *respid, X509 *cert);</pre>
+<pre>
+ int OCSP_basic_sign(OCSP_BASICRESP *brsp, X509 *signer, EVP_PKEY *key,
+                     const EVP_MD *dgst, STACK_OF(X509) *certs,
+                     unsigned long flags);
+ int OCSP_basic_sign_ctx(OCSP_BASICRESP *brsp, X509 *signer, EVP_MD_CTX *ctx,
+                         STACK_OF(X509) *certs, unsigned long flags);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>OCSP_response_status()</code> returns the OCSP response status of <strong>resp</strong>. It returns
+one of the values: <strong>OCSP_RESPONSE_STATUS_SUCCESSFUL</strong>,
+<strong>OCSP_RESPONSE_STATUS_MALFORMEDREQUEST</strong>,
+<strong>OCSP_RESPONSE_STATUS_INTERNALERROR</strong>, <strong>OCSP_RESPONSE_STATUS_TRYLATER</strong>
+<strong>OCSP_RESPONSE_STATUS_SIGREQUIRED</strong>, or <strong>OCSP_RESPONSE_STATUS_UNAUTHORIZED</strong>.</p>
+<p>OCSP_response_get1_basic() decodes and returns the <strong>OCSP_BASICRESP</strong> structure
+contained in <strong>resp</strong>.</p>
+<p><code>OCSP_response_create()</code> creates and returns an <strong>OCSP_RESPONSE</strong> structure for
+<strong>status</strong> and optionally including basic response <strong>bs</strong>.</p>
+<p><code>OCSP_RESPONSE_free()</code> frees up OCSP response <strong>resp</strong>.</p>
+<p><code>OCSP_RESPID_set_by_name()</code> sets the name of the OCSP_RESPID to be the same as the
+subject name in the supplied X509 certificate <strong>cert</strong> for the OCSP responder.</p>
+<p><code>OCSP_RESPID_set_by_key()</code> sets the key of the OCSP_RESPID to be the same as the
+key in the supplied X509 certificate <strong>cert</strong> for the OCSP responder. The key is
+stored as a SHA1 hash.</p>
+<p>Note that an OCSP_RESPID can only have one of the name, or the key set. Calling
+<code>OCSP_RESPID_set_by_name()</code> or <code>OCSP_RESPID_set_by_key()</code> will clear any existing
+setting.</p>
+<p><code>OCSP_RESPID_match()</code> tests whether the OCSP_RESPID given in <strong>respid</strong> matches
+with the X509 certificate <strong>cert</strong>.</p>
+<p><code>OCSP_basic_sign()</code> signs OCSP response <strong>brsp</strong> using certificate <strong>signer</strong>, private key
+<strong>key</strong>, digest <strong>dgst</strong> and additional certificates <strong>certs</strong>. If the <strong>flags</strong> option
+<strong>OCSP_NOCERTS</strong> is set then no certificates will be included in the response. If the
+<strong>flags</strong> option <strong>OCSP_RESPID_KEY</strong> is set then the responder is identified by key ID
+rather than by name. <code>OCSP_basic_sign_ctx()</code> also signs OCSP response <strong>brsp</strong> but
+uses the parameters contained in digest context <strong>ctx</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>OCSP_RESPONSE_status()</code> returns a status value.</p>
+<p>OCSP_response_get1_basic() returns an <strong>OCSP_BASICRESP</strong> structure pointer or
+<strong>NULL</strong> if an error occurred.</p>
+<p><code>OCSP_response_create()</code> returns an <strong>OCSP_RESPONSE</strong> structure pointer or <strong>NULL</strong>
+if an error occurred.</p>
+<p><code>OCSP_RESPONSE_free()</code> does not return a value.</p>
+<p><code>OCSP_RESPID_set_by_name()</code>, <code>OCSP_RESPID_set_by_key()</code>, <code>OCSP_basic_sign()</code>, and
+<code>OCSP_basic_sign_ctx()</code> return 1 on success or 0
+on failure.</p>
+<p><code>OCSP_RESPID_match()</code> returns 1 if the OCSP_RESPID and the X509 certificate match
+or 0 otherwise.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>OCSP_response_get1_basic() is only called if the status of a response is
+<strong>OCSP_RESPONSE_STATUS_SUCCESSFUL</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>crypto(7)</em>
+<em>OCSP_cert_to_id(3)</em>
+<em>OCSP_request_add1_nonce(3)</em>
+<em>OCSP_REQUEST_new(3)</em>
+<em>OCSP_resp_find_status(3)</em>
+<em>OCSP_sendreq_new(3)</em>
+<em>OCSP_RESPID_new(3)</em>
+<em>OCSP_RESPID_free(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The <code>OCSP_RESPID_set_by_name()</code>, <code>OCSP_RESPID_set_by_key()</code> and <code>OCSP_RESPID_match()</code>
+functions were added in OpenSSL 1.1.0a.</p>
+<p>The <code>OCSP_basic_sign_ctx()</code> function was added in OpenSSL 1.1.1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2020 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

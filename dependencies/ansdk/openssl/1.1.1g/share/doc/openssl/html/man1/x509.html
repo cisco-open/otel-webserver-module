@@ -1,0 +1,1052 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>x509</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#options">OPTIONS</a></li>
+	<ul>
+
+		<li><a href="#input__output__and_general_purpose_options">Input, Output, and General Purpose Options</a></li>
+		<li><a href="#display_options">Display Options</a></li>
+		<li><a href="#trust_settings">Trust Settings</a></li>
+		<li><a href="#signing_options">Signing Options</a></li>
+		<li><a href="#name_options">Name Options</a></li>
+		<li><a href="#text_options">Text Options</a></li>
+	</ul>
+
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#certificate_extensions">CERTIFICATE EXTENSIONS</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>openssl-x509,
+x509 - Certificate display and signing utility</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p><strong>openssl</strong> <strong>x509</strong>
+[<strong>-help</strong>]
+[<strong>-inform DER|PEM</strong>]
+[<strong>-outform DER|PEM</strong>]
+[<strong>-keyform DER|PEM|ENGINE</strong>]
+[<strong>-CAform DER|PEM</strong>]
+[<strong>-CAkeyform DER|PEM</strong>]
+[<strong>-in filename</strong>]
+[<strong>-out filename</strong>]
+[<strong>-serial</strong>]
+[<strong>-hash</strong>]
+[<strong>-subject_hash</strong>]
+[<strong>-issuer_hash</strong>]
+[<strong>-ocspid</strong>]
+[<strong>-subject</strong>]
+[<strong>-issuer</strong>]
+[<strong>-nameopt option</strong>]
+[<strong>-email</strong>]
+[<strong>-ocsp_uri</strong>]
+[<strong>-startdate</strong>]
+[<strong>-enddate</strong>]
+[<strong>-purpose</strong>]
+[<strong>-dates</strong>]
+[<strong>-checkend num</strong>]
+[<strong>-modulus</strong>]
+[<strong>-pubkey</strong>]
+[<strong>-fingerprint</strong>]
+[<strong>-alias</strong>]
+[<strong>-noout</strong>]
+[<strong>-trustout</strong>]
+[<strong>-clrtrust</strong>]
+[<strong>-clrreject</strong>]
+[<strong>-addtrust arg</strong>]
+[<strong>-addreject arg</strong>]
+[<strong>-setalias arg</strong>]
+[<strong>-days arg</strong>]
+[<strong>-set_serial n</strong>]
+[<strong>-signkey arg</strong>]
+[<strong>-passin arg</strong>]
+[<strong>-x509toreq</strong>]
+[<strong>-req</strong>]
+[<strong>-CA filename</strong>]
+[<strong>-CAkey filename</strong>]
+[<strong>-CAcreateserial</strong>]
+[<strong>-CAserial filename</strong>]
+[<strong>-force_pubkey key</strong>]
+[<strong>-text</strong>]
+[<strong>-ext extensions</strong>]
+[<strong>-certopt option</strong>]
+[<strong>-C</strong>]
+[<strong>-<em>digest</em></strong>]
+[<strong>-clrext</strong>]
+[<strong>-extfile filename</strong>]
+[<strong>-extensions section</strong>]
+[<strong>-sigopt nm:v</strong>]
+[<strong>-rand file...</strong>]
+[<strong>-writerand file</strong>]
+[<strong>-engine id</strong>]
+[<strong>-preserve_dates</strong>]</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The <strong>x509</strong> command is a multi purpose certificate utility. It can be
+used to display certificate information, convert certificates to
+various forms, sign certificate requests like a &quot;mini CA&quot; or edit
+certificate trust settings.</p>
+<p>Since there are a large number of options they will split up into
+various sections.</p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<p>
+</p>
+<h2><a name="input__output__and_general_purpose_options">Input, Output, and General Purpose Options</a></h2>
+<dl>
+<dt><strong><a name="help" class="item"><strong>-help</strong></a></strong></dt>
+
+<dd>
+<p>Print out a usage message.</p>
+</dd>
+<dt><strong><a name="inform_der_pem" class="item"><strong>-inform DER|PEM</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the input format normally the command will expect an X509
+certificate but this can change if other options such as <strong>-req</strong> are
+present. The DER format is the DER encoding of the certificate and PEM
+is the base64 encoding of the DER encoding with header and footer lines
+added. The default format is PEM.</p>
+</dd>
+<dt><strong><a name="outform_der_pem" class="item"><strong>-outform DER|PEM</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the output format, the options have the same meaning and default
+as the <strong>-inform</strong> option.</p>
+</dd>
+<dt><strong><a name="in_filename" class="item"><strong>-in filename</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the input filename to read a certificate from or standard input
+if this option is not specified.</p>
+</dd>
+<dt><strong><a name="out_filename" class="item"><strong>-out filename</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the output filename to write to or standard output by
+default.</p>
+</dd>
+<dt><strong><a name="digest" class="item"><strong>-<em>digest</em></strong></a></strong></dt>
+
+<dd>
+<p>The digest to use.
+This affects any signing or display option that uses a message
+digest, such as the <strong>-fingerprint</strong>, <strong>-signkey</strong> and <strong>-CA</strong> options.
+Any digest supported by the OpenSSL <strong>dgst</strong> command can be used.
+If not specified then SHA1 is used with <strong>-fingerprint</strong> or
+the default digest for the signing algorithm is used, typically SHA256.</p>
+</dd>
+<dt><strong><a name="rand_file" class="item"><strong>-rand file...</strong></a></strong></dt>
+
+<dd>
+<p>A file or files containing random data used to seed the random number
+generator.
+Multiple files can be specified separated by an OS-dependent character.
+The separator is <strong>;</strong> for MS-Windows, <strong>,</strong> for OpenVMS, and <strong>:</strong> for
+all others.</p>
+</dd>
+<dt><strong><a name="writerand_file" class="item">[<strong>-writerand file</strong>]</a></strong></dt>
+
+<dd>
+<p>Writes random data to the specified <em>file</em> upon exit.
+This can be used with a subsequent <strong>-rand</strong> flag.</p>
+</dd>
+<dt><strong><a name="engine_id" class="item"><strong>-engine id</strong></a></strong></dt>
+
+<dd>
+<p>Specifying an engine (by its unique <strong>id</strong> string) will cause <strong>x509</strong>
+to attempt to obtain a functional reference to the specified engine,
+thus initialising it if needed. The engine will then be set as the default
+for all available algorithms.</p>
+</dd>
+<dt><strong><a name="preserve_dates" class="item"><strong>-preserve_dates</strong></a></strong></dt>
+
+<dd>
+<p>When signing a certificate, preserve the &quot;notBefore&quot; and &quot;notAfter&quot; dates instead
+of adjusting them to current time and duration. Cannot be used with the <strong>-days</strong> option.</p>
+</dd>
+</dl>
+<p>
+</p>
+<h2><a name="display_options">Display Options</a></h2>
+<p>Note: the <strong>-alias</strong> and <strong>-purpose</strong> options are also display options
+but are described in the <strong>TRUST SETTINGS</strong> section.</p>
+<dl>
+<dt><strong><a name="text" class="item"><strong>-text</strong></a></strong></dt>
+
+<dd>
+<p>Prints out the certificate in text form. Full details are output including the
+public key, signature algorithms, issuer and subject names, serial number
+any extensions present and any trust settings.</p>
+</dd>
+<dt><strong><a name="ext_extensions" class="item"><strong>-ext extensions</strong></a></strong></dt>
+
+<dd>
+<p>Prints out the certificate extensions in text form. Extensions are specified
+with a comma separated string, e.g., &quot;subjectAltName,subjectKeyIdentifier&quot;.
+See the <em>x509v3_config(5)</em> manual page for the extension names.</p>
+</dd>
+<dt><strong><a name="certopt_option" class="item"><strong>-certopt option</strong></a></strong></dt>
+
+<dd>
+<p>Customise the output format used with <strong>-text</strong>. The <strong>option</strong> argument
+can be a single option or multiple options separated by commas. The
+<strong>-certopt</strong> switch may be also be used more than once to set multiple
+options. See the <strong>TEXT OPTIONS</strong> section for more information.</p>
+</dd>
+<dt><strong><a name="noout" class="item"><strong>-noout</strong></a></strong></dt>
+
+<dd>
+<p>This option prevents output of the encoded version of the certificate.</p>
+</dd>
+<dt><strong><a name="pubkey" class="item"><strong>-pubkey</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the certificate's SubjectPublicKeyInfo block in PEM format.</p>
+</dd>
+<dt><strong><a name="modulus" class="item"><strong>-modulus</strong></a></strong></dt>
+
+<dd>
+<p>This option prints out the value of the modulus of the public key
+contained in the certificate.</p>
+</dd>
+<dt><strong><a name="serial" class="item"><strong>-serial</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the certificate serial number.</p>
+</dd>
+<dt><strong><a name="subject_hash" class="item"><strong>-subject_hash</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the &quot;hash&quot; of the certificate subject name. This is used in OpenSSL to
+form an index to allow certificates in a directory to be looked up by subject
+name.</p>
+</dd>
+<dt><strong><a name="issuer_hash" class="item"><strong>-issuer_hash</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the &quot;hash&quot; of the certificate issuer name.</p>
+</dd>
+<dt><strong><a name="ocspid" class="item"><strong>-ocspid</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the OCSP hash values for the subject name and public key.</p>
+</dd>
+<dt><strong><a name="hash" class="item"><strong>-hash</strong></a></strong></dt>
+
+<dd>
+<p>Synonym for &quot;-subject_hash&quot; for backward compatibility reasons.</p>
+</dd>
+<dt><strong><a name="subject_hash_old" class="item"><strong>-subject_hash_old</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the &quot;hash&quot; of the certificate subject name using the older algorithm
+as used by OpenSSL before version 1.0.0.</p>
+</dd>
+<dt><strong><a name="issuer_hash_old" class="item"><strong>-issuer_hash_old</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the &quot;hash&quot; of the certificate issuer name using the older algorithm
+as used by OpenSSL before version 1.0.0.</p>
+</dd>
+<dt><strong><a name="subject" class="item"><strong>-subject</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the subject name.</p>
+</dd>
+<dt><strong><a name="issuer" class="item"><strong>-issuer</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the issuer name.</p>
+</dd>
+<dt><strong><a name="nameopt_option" class="item"><strong>-nameopt option</strong></a></strong></dt>
+
+<dd>
+<p>Option which determines how the subject or issuer names are displayed. The
+<strong>option</strong> argument can be a single option or multiple options separated by
+commas.  Alternatively the <strong>-nameopt</strong> switch may be used more than once to
+set multiple options. See the <strong>NAME OPTIONS</strong> section for more information.</p>
+</dd>
+<dt><strong><a name="email" class="item"><strong>-email</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the email address(es) if any.</p>
+</dd>
+<dt><strong><a name="ocsp_uri" class="item"><strong>-ocsp_uri</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the OCSP responder address(es) if any.</p>
+</dd>
+<dt><strong><a name="startdate" class="item"><strong>-startdate</strong></a></strong></dt>
+
+<dd>
+<p>Prints out the start date of the certificate, that is the notBefore date.</p>
+</dd>
+<dt><strong><a name="enddate" class="item"><strong>-enddate</strong></a></strong></dt>
+
+<dd>
+<p>Prints out the expiry date of the certificate, that is the notAfter date.</p>
+</dd>
+<dt><strong><a name="dates" class="item"><strong>-dates</strong></a></strong></dt>
+
+<dd>
+<p>Prints out the start and expiry dates of a certificate.</p>
+</dd>
+<dt><strong><a name="checkend_arg" class="item"><strong>-checkend arg</strong></a></strong></dt>
+
+<dd>
+<p>Checks if the certificate expires within the next <strong>arg</strong> seconds and exits
+non-zero if yes it will expire or zero if not.</p>
+</dd>
+<dt><strong><a name="fingerprint" class="item"><strong>-fingerprint</strong></a></strong></dt>
+
+<dd>
+<p>Calculates and outputs the digest of the DER encoded version of the entire
+certificate (see digest options).
+This is commonly called a &quot;fingerprint&quot;. Because of the nature of message
+digests, the fingerprint of a certificate is unique to that certificate and
+two certificates with the same fingerprint can be considered to be the same.</p>
+</dd>
+<dt><strong><a name="c" class="item"><strong>-C</strong></a></strong></dt>
+
+<dd>
+<p>This outputs the certificate in the form of a C source file.</p>
+</dd>
+</dl>
+<p>
+</p>
+<h2><a name="trust_settings">Trust Settings</a></h2>
+<p>A <strong>trusted certificate</strong> is an ordinary certificate which has several
+additional pieces of information attached to it such as the permitted
+and prohibited uses of the certificate and an &quot;alias&quot;.</p>
+<p>Normally when a certificate is being verified at least one certificate
+must be &quot;trusted&quot;. By default a trusted certificate must be stored
+locally and must be a root CA: any certificate chain ending in this CA
+is then usable for any purpose.</p>
+<p>Trust settings currently are only used with a root CA. They allow a finer
+control over the purposes the root CA can be used for. For example a CA
+may be trusted for SSL client but not SSL server use.</p>
+<p>See the description of the <strong>verify</strong> utility for more information on the
+meaning of trust settings.</p>
+<p>Future versions of OpenSSL will recognize trust settings on any
+certificate: not just root CAs.</p>
+<dl>
+<dt><strong><a name="trustout" class="item"><strong>-trustout</strong></a></strong></dt>
+
+<dd>
+<p>This causes <strong>x509</strong> to output a <strong>trusted</strong> certificate. An ordinary
+or trusted certificate can be input but by default an ordinary
+certificate is output and any trust settings are discarded. With the
+<strong>-trustout</strong> option a trusted certificate is output. A trusted
+certificate is automatically output if any trust settings are modified.</p>
+</dd>
+<dt><strong><a name="setalias_arg" class="item"><strong>-setalias arg</strong></a></strong></dt>
+
+<dd>
+<p>Sets the alias of the certificate. This will allow the certificate
+to be referred to using a nickname for example &quot;Steve's Certificate&quot;.</p>
+</dd>
+<dt><strong><a name="alias" class="item"><strong>-alias</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the certificate alias, if any.</p>
+</dd>
+<dt><strong><a name="clrtrust" class="item"><strong>-clrtrust</strong></a></strong></dt>
+
+<dd>
+<p>Clears all the permitted or trusted uses of the certificate.</p>
+</dd>
+<dt><strong><a name="clrreject" class="item"><strong>-clrreject</strong></a></strong></dt>
+
+<dd>
+<p>Clears all the prohibited or rejected uses of the certificate.</p>
+</dd>
+<dt><strong><a name="addtrust_arg" class="item"><strong>-addtrust arg</strong></a></strong></dt>
+
+<dd>
+<p>Adds a trusted certificate use.
+Any object name can be used here but currently only <strong>clientAuth</strong> (SSL client
+use), <strong>serverAuth</strong> (SSL server use), <strong>emailProtection</strong> (S/MIME email) and
+<strong>anyExtendedKeyUsage</strong> are used.
+As of OpenSSL 1.1.0, the last of these blocks all purposes when rejected or
+enables all purposes when trusted.
+Other OpenSSL applications may define additional uses.</p>
+</dd>
+<dt><strong><a name="addreject_arg" class="item"><strong>-addreject arg</strong></a></strong></dt>
+
+<dd>
+<p>Adds a prohibited use. It accepts the same values as the <strong>-addtrust</strong>
+option.</p>
+</dd>
+<dt><strong><a name="purpose" class="item"><strong>-purpose</strong></a></strong></dt>
+
+<dd>
+<p>This option performs tests on the certificate extensions and outputs
+the results. For a more complete description see the <strong>CERTIFICATE
+EXTENSIONS</strong> section.</p>
+</dd>
+</dl>
+<p>
+</p>
+<h2><a name="signing_options">Signing Options</a></h2>
+<p>The <strong>x509</strong> utility can be used to sign certificates and requests: it
+can thus behave like a &quot;mini CA&quot;.</p>
+<dl>
+<dt><strong><a name="signkey_arg" class="item"><strong>-signkey arg</strong></a></strong></dt>
+
+<dd>
+<p>This option causes the input file to be self signed using the supplied
+private key or engine. The private key's format is specified with the
+<strong>-keyform</strong> option.</p>
+<p>If the input file is a certificate it sets the issuer name to the
+subject name (i.e.  makes it self signed) changes the public key to the
+supplied value and changes the start and end dates. The start date is
+set to the current time and the end date is set to a value determined
+by the <strong>-days</strong> option. Any certificate extensions are retained unless
+the <strong>-clrext</strong> option is supplied; this includes, for example, any existing
+key identifier extensions.</p>
+<p>If the input is a certificate request then a self signed certificate
+is created using the supplied private key using the subject name in
+the request.</p>
+</dd>
+<dt><strong><a name="sigopt_nm_v" class="item"><strong>-sigopt nm:v</strong></a></strong></dt>
+
+<dd>
+<p>Pass options to the signature algorithm during sign or verify operations.
+Names and values of these options are algorithm-specific.</p>
+</dd>
+<dt><strong><a name="passin_arg" class="item"><strong>-passin arg</strong></a></strong></dt>
+
+<dd>
+<p>The key password source. For more information about the format of <strong>arg</strong>
+see the <strong>PASS PHRASE ARGUMENTS</strong> section in <em>openssl(1)</em>.</p>
+</dd>
+<dt><strong><a name="clrext" class="item"><strong>-clrext</strong></a></strong></dt>
+
+<dd>
+<p>Delete any extensions from a certificate. This option is used when a
+certificate is being created from another certificate (for example with
+the <strong>-signkey</strong> or the <strong>-CA</strong> options). Normally all extensions are
+retained.</p>
+</dd>
+<dt><strong><a name="keyform_pem_der_engine" class="item"><strong>-keyform PEM|DER|ENGINE</strong></a></strong></dt>
+
+<dd>
+<p>Specifies the format (DER or PEM) of the private key file used in the
+<strong>-signkey</strong> option.</p>
+</dd>
+<dt><strong><a name="days_arg" class="item"><strong>-days arg</strong></a></strong></dt>
+
+<dd>
+<p>Specifies the number of days to make a certificate valid for. The default
+is 30 days. Cannot be used with the <strong>-preserve_dates</strong> option.</p>
+</dd>
+<dt><strong><a name="x509toreq" class="item"><strong>-x509toreq</strong></a></strong></dt>
+
+<dd>
+<p>Converts a certificate into a certificate request. The <strong>-signkey</strong> option
+is used to pass the required private key.</p>
+</dd>
+<dt><strong><a name="req" class="item"><strong>-req</strong></a></strong></dt>
+
+<dd>
+<p>By default a certificate is expected on input. With this option a
+certificate request is expected instead.</p>
+</dd>
+<dt><strong><a name="set_serial_n" class="item"><strong>-set_serial n</strong></a></strong></dt>
+
+<dd>
+<p>Specifies the serial number to use. This option can be used with either
+the <strong>-signkey</strong> or <strong>-CA</strong> options. If used in conjunction with the <strong>-CA</strong>
+option the serial number file (as specified by the <strong>-CAserial</strong> or
+<strong>-CAcreateserial</strong> options) is not used.</p>
+<p>The serial number can be decimal or hex (if preceded by <strong>0x</strong>).</p>
+</dd>
+<dt><strong><a name="ca_filename" class="item"><strong>-CA filename</strong></a></strong></dt>
+
+<dd>
+<p>Specifies the CA certificate to be used for signing. When this option is
+present <strong>x509</strong> behaves like a &quot;mini CA&quot;. The input file is signed by this
+CA using this option: that is its issuer name is set to the subject name
+of the CA and it is digitally signed using the CAs private key.</p>
+<p>This option is normally combined with the <strong>-req</strong> option. Without the
+<strong>-req</strong> option the input is a certificate which must be self signed.</p>
+</dd>
+<dt><strong><a name="cakey_filename" class="item"><strong>-CAkey filename</strong></a></strong></dt>
+
+<dd>
+<p>Sets the CA private key to sign a certificate with. If this option is
+not specified then it is assumed that the CA private key is present in
+the CA certificate file.</p>
+</dd>
+<dt><strong><a name="caserial_filename" class="item"><strong>-CAserial filename</strong></a></strong></dt>
+
+<dd>
+<p>Sets the CA serial number file to use.</p>
+<p>When the <strong>-CA</strong> option is used to sign a certificate it uses a serial
+number specified in a file. This file consists of one line containing
+an even number of hex digits with the serial number to use. After each
+use the serial number is incremented and written out to the file again.</p>
+<p>The default filename consists of the CA certificate file base name with
+&quot;.srl&quot; appended. For example if the CA certificate file is called
+&quot;mycacert.pem&quot; it expects to find a serial number file called &quot;mycacert.srl&quot;.</p>
+</dd>
+<dt><strong><a name="cacreateserial" class="item"><strong>-CAcreateserial</strong></a></strong></dt>
+
+<dd>
+<p>With this option the CA serial number file is created if it does not exist:
+it will contain the serial number &quot;02&quot; and the certificate being signed will
+have the 1 as its serial number. If the <strong>-CA</strong> option is specified
+and the serial number file does not exist a random number is generated;
+this is the recommended practice.</p>
+</dd>
+<dt><strong><a name="extfile_filename" class="item"><strong>-extfile filename</strong></a></strong></dt>
+
+<dd>
+<p>File containing certificate extensions to use. If not specified then
+no extensions are added to the certificate.</p>
+</dd>
+<dt><strong><a name="extensions_section" class="item"><strong>-extensions section</strong></a></strong></dt>
+
+<dd>
+<p>The section to add certificate extensions from. If this option is not
+specified then the extensions should either be contained in the unnamed
+(default) section or the default section should contain a variable called
+&quot;extensions&quot; which contains the section to use. See the
+<em>x509v3_config(5)</em> manual page for details of the
+extension section format.</p>
+</dd>
+<dt><strong><a name="force_pubkey_key" class="item"><strong>-force_pubkey key</strong></a></strong></dt>
+
+<dd>
+<p>When a certificate is created set its public key to <strong>key</strong> instead of the
+key in the certificate or certificate request. This option is useful for
+creating certificates where the algorithm can't normally sign requests, for
+example DH.</p>
+<p>The format or <strong>key</strong> can be specified using the <strong>-keyform</strong> option.</p>
+</dd>
+</dl>
+<p>
+</p>
+<h2><a name="name_options">Name Options</a></h2>
+<p>The <strong>nameopt</strong> command line switch determines how the subject and issuer
+names are displayed. If no <strong>nameopt</strong> switch is present the default &quot;oneline&quot;
+format is used which is compatible with previous versions of OpenSSL.
+Each option is described in detail below, all options can be preceded by
+a <strong>-</strong> to turn the option off. Only the first four will normally be used.</p>
+<dl>
+<dt><strong><a name="compat" class="item"><strong>compat</strong></a></strong></dt>
+
+<dd>
+<p>Use the old format.</p>
+</dd>
+<dt><strong><a name="rfc2253" class="item"><strong>RFC2253</strong></a></strong></dt>
+
+<dd>
+<p>Displays names compatible with <a href="http://www.ietf.org/rfc/rfc2253.txt" class="rfc">RFC2253</a> equivalent to <strong>esc_2253</strong>, <strong>esc_ctrl</strong>,
+<strong>esc_msb</strong>, <strong>utf8</strong>, <strong>dump_nostr</strong>, <strong>dump_unknown</strong>, <strong>dump_der</strong>,
+<strong>sep_comma_plus</strong>, <strong>dn_rev</strong> and <strong>sname</strong>.</p>
+</dd>
+<dt><strong><a name="oneline" class="item"><strong>oneline</strong></a></strong></dt>
+
+<dd>
+<p>A oneline format which is more readable than <a href="http://www.ietf.org/rfc/rfc2253.txt" class="rfc">RFC2253</a>. It is equivalent to
+specifying the  <strong>esc_2253</strong>, <strong>esc_ctrl</strong>, <strong>esc_msb</strong>, <strong>utf8</strong>, <strong>dump_nostr</strong>,
+<strong>dump_der</strong>, <strong>use_quote</strong>, <strong>sep_comma_plus_space</strong>, <strong>space_eq</strong> and <strong>sname</strong>
+options.  This is the <em>default</em> of no name options are given explicitly.</p>
+</dd>
+<dt><strong><a name="multiline" class="item"><strong>multiline</strong></a></strong></dt>
+
+<dd>
+<p>A multiline format. It is equivalent <strong>esc_ctrl</strong>, <strong>esc_msb</strong>, <strong>sep_multiline</strong>,
+<strong>space_eq</strong>, <strong>lname</strong> and <strong>align</strong>.</p>
+</dd>
+<dt><strong><a name="esc_2253" class="item"><strong>esc_2253</strong></a></strong></dt>
+
+<dd>
+<p>Escape the &quot;special&quot; characters required by <a href="http://www.ietf.org/rfc/rfc2253.txt" class="rfc">RFC2253</a> in a field. That is
+<strong>,+&quot;&lt;&gt;;</strong>. Additionally <strong>#</strong> is escaped at the beginning of a string
+and a space character at the beginning or end of a string.</p>
+</dd>
+<dt><strong><a name="esc_2254" class="item"><strong>esc_2254</strong></a></strong></dt>
+
+<dd>
+<p>Escape the &quot;special&quot; characters required by <a href="http://www.ietf.org/rfc/rfc2254.txt" class="rfc">RFC2254</a> in a field. That is
+the <strong>NUL</strong> character as well as and <strong>()*</strong>.</p>
+</dd>
+<dt><strong><a name="esc_ctrl" class="item"><strong>esc_ctrl</strong></a></strong></dt>
+
+<dd>
+<p>Escape control characters. That is those with ASCII values less than
+0x20 (space) and the delete (0x7f) character. They are escaped using the
+<a href="http://www.ietf.org/rfc/rfc2253.txt" class="rfc">RFC2253</a> \XX notation (where XX are two hex digits representing the
+character value).</p>
+</dd>
+<dt><strong><a name="esc_msb" class="item"><strong>esc_msb</strong></a></strong></dt>
+
+<dd>
+<p>Escape characters with the MSB set, that is with ASCII values larger than
+127.</p>
+</dd>
+<dt><strong><a name="use_quote" class="item"><strong>use_quote</strong></a></strong></dt>
+
+<dd>
+<p>Escapes some characters by surrounding the whole string with <strong>&quot;</strong> characters,
+without the option all escaping is done with the <strong>\</strong> character.</p>
+</dd>
+<dt><strong><a name="utf8" class="item"><strong>utf8</strong></a></strong></dt>
+
+<dd>
+<p>Convert all strings to UTF8 format first. This is required by <a href="http://www.ietf.org/rfc/rfc2253.txt" class="rfc">RFC2253</a>. If
+you are lucky enough to have a UTF8 compatible terminal then the use
+of this option (and <strong>not</strong> setting <strong>esc_msb</strong>) may result in the correct
+display of multibyte (international) characters. Is this option is not
+present then multibyte characters larger than 0xff will be represented
+using the format \UXXXX for 16 bits and \WXXXXXXXX for 32 bits.
+Also if this option is off any UTF8Strings will be converted to their
+character form first.</p>
+</dd>
+<dt><strong><a name="ignore_type" class="item"><strong>ignore_type</strong></a></strong></dt>
+
+<dd>
+<p>This option does not attempt to interpret multibyte characters in any
+way. That is their content octets are merely dumped as though one octet
+represents each character. This is useful for diagnostic purposes but
+will result in rather odd looking output.</p>
+</dd>
+<dt><strong><a name="show_type" class="item"><strong>show_type</strong></a></strong></dt>
+
+<dd>
+<p>Show the type of the ASN1 character string. The type precedes the
+field contents. For example &quot;BMPSTRING: Hello World&quot;.</p>
+</dd>
+<dt><strong><a name="dump_der" class="item"><strong>dump_der</strong></a></strong></dt>
+
+<dd>
+<p>When this option is set any fields that need to be hexdumped will
+be dumped using the DER encoding of the field. Otherwise just the
+content octets will be displayed. Both options use the <a href="http://www.ietf.org/rfc/rfc2253.txt" class="rfc">RFC2253</a>
+<strong>#XXXX...</strong> format.</p>
+</dd>
+<dt><strong><a name="dump_nostr" class="item"><strong>dump_nostr</strong></a></strong></dt>
+
+<dd>
+<p>Dump non character string types (for example OCTET STRING) if this
+option is not set then non character string types will be displayed
+as though each content octet represents a single character.</p>
+</dd>
+<dt><strong><a name="dump_all" class="item"><strong>dump_all</strong></a></strong></dt>
+
+<dd>
+<p>Dump all fields. This option when used with <strong>dump_der</strong> allows the
+DER encoding of the structure to be unambiguously determined.</p>
+</dd>
+<dt><strong><a name="dump_unknown" class="item"><strong>dump_unknown</strong></a></strong></dt>
+
+<dd>
+<p>Dump any field whose OID is not recognised by OpenSSL.</p>
+</dd>
+<dt><strong><a name="sep_comma_plus_sep_comma_plus_space_sep_semi_plus_space_sep_multiline" class="item"><strong>sep_comma_plus</strong>, <strong>sep_comma_plus_space</strong>, <strong>sep_semi_plus_space</strong>,
+<strong>sep_multiline</strong></a></strong></dt>
+
+<dd>
+<p>These options determine the field separators. The first character is
+between RDNs and the second between multiple AVAs (multiple AVAs are
+very rare and their use is discouraged). The options ending in
+&quot;space&quot; additionally place a space after the separator to make it
+more readable. The <strong>sep_multiline</strong> uses a linefeed character for
+the RDN separator and a spaced <strong>+</strong> for the AVA separator. It also
+indents the fields by four characters. If no field separator is specified
+then <strong>sep_comma_plus_space</strong> is used by default.</p>
+</dd>
+<dt><strong><a name="dn_rev" class="item"><strong>dn_rev</strong></a></strong></dt>
+
+<dd>
+<p>Reverse the fields of the DN. This is required by <a href="http://www.ietf.org/rfc/rfc2253.txt" class="rfc">RFC2253</a>. As a side
+effect this also reverses the order of multiple AVAs but this is
+permissible.</p>
+</dd>
+<dt><strong><a name="nofname_sname_lname_oid" class="item"><strong>nofname</strong>, <strong>sname</strong>, <strong>lname</strong>, <strong>oid</strong></a></strong></dt>
+
+<dd>
+<p>These options alter how the field name is displayed. <strong>nofname</strong> does
+not display the field at all. <strong>sname</strong> uses the &quot;short name&quot; form
+(CN for commonName for example). <strong>lname</strong> uses the long form.
+<strong>oid</strong> represents the OID in numerical form and is useful for
+diagnostic purpose.</p>
+</dd>
+<dt><strong><a name="align" class="item"><strong>align</strong></a></strong></dt>
+
+<dd>
+<p>Align field values for a more readable output. Only usable with
+<strong>sep_multiline</strong>.</p>
+</dd>
+<dt><strong><a name="space_eq" class="item"><strong>space_eq</strong></a></strong></dt>
+
+<dd>
+<p>Places spaces round the <strong>=</strong> character which follows the field
+name.</p>
+</dd>
+</dl>
+<p>
+</p>
+<h2><a name="text_options">Text Options</a></h2>
+<p>As well as customising the name output format, it is also possible to
+customise the actual fields printed using the <strong>certopt</strong> options when
+the <strong>text</strong> option is present. The default behaviour is to print all fields.</p>
+<dl>
+<dt><strong><a name="compatible" class="item"><strong>compatible</strong></a></strong></dt>
+
+<dd>
+<p>Use the old format. This is equivalent to specifying no output options at all.</p>
+</dd>
+<dt><strong><a name="no_header" class="item"><strong>no_header</strong></a></strong></dt>
+
+<dd>
+<p>Don't print header information: that is the lines saying &quot;Certificate&quot;
+and &quot;Data&quot;.</p>
+</dd>
+<dt><strong><a name="no_version" class="item"><strong>no_version</strong></a></strong></dt>
+
+<dd>
+<p>Don't print out the version number.</p>
+</dd>
+<dt><strong><a name="no_serial" class="item"><strong>no_serial</strong></a></strong></dt>
+
+<dd>
+<p>Don't print out the serial number.</p>
+</dd>
+<dt><strong><a name="no_signame" class="item"><strong>no_signame</strong></a></strong></dt>
+
+<dd>
+<p>Don't print out the signature algorithm used.</p>
+</dd>
+<dt><strong><a name="no_validity" class="item"><strong>no_validity</strong></a></strong></dt>
+
+<dd>
+<p>Don't print the validity, that is the <strong>notBefore</strong> and <strong>notAfter</strong> fields.</p>
+</dd>
+<dt><strong><a name="no_subject" class="item"><strong>no_subject</strong></a></strong></dt>
+
+<dd>
+<p>Don't print out the subject name.</p>
+</dd>
+<dt><strong><a name="no_issuer" class="item"><strong>no_issuer</strong></a></strong></dt>
+
+<dd>
+<p>Don't print out the issuer name.</p>
+</dd>
+<dt><strong><a name="no_pubkey" class="item"><strong>no_pubkey</strong></a></strong></dt>
+
+<dd>
+<p>Don't print out the public key.</p>
+</dd>
+<dt><strong><a name="no_sigdump" class="item"><strong>no_sigdump</strong></a></strong></dt>
+
+<dd>
+<p>Don't give a hexadecimal dump of the certificate signature.</p>
+</dd>
+<dt><strong><a name="no_aux" class="item"><strong>no_aux</strong></a></strong></dt>
+
+<dd>
+<p>Don't print out certificate trust information.</p>
+</dd>
+<dt><strong><a name="no_extensions" class="item"><strong>no_extensions</strong></a></strong></dt>
+
+<dd>
+<p>Don't print out any X509V3 extensions.</p>
+</dd>
+<dt><strong><a name="ext_default" class="item"><strong>ext_default</strong></a></strong></dt>
+
+<dd>
+<p>Retain default extension behaviour: attempt to print out unsupported
+certificate extensions.</p>
+</dd>
+<dt><strong><a name="ext_error" class="item"><strong>ext_error</strong></a></strong></dt>
+
+<dd>
+<p>Print an error message for unsupported certificate extensions.</p>
+</dd>
+<dt><strong><a name="ext_parse" class="item"><strong>ext_parse</strong></a></strong></dt>
+
+<dd>
+<p>ASN1 parse unsupported extensions.</p>
+</dd>
+<dt><strong><a name="ext_dump" class="item"><strong>ext_dump</strong></a></strong></dt>
+
+<dd>
+<p>Hex dump unsupported extensions.</p>
+</dd>
+<dt><strong><a name="ca_default" class="item"><strong>ca_default</strong></a></strong></dt>
+
+<dd>
+<p>The value used by the <strong>ca</strong> utility, equivalent to <strong>no_issuer</strong>, <strong>no_pubkey</strong>,
+<strong>no_header</strong>, and <strong>no_version</strong>.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>Note: in these examples the '\' means the example should be all on one
+line.</p>
+<p>Display the contents of a certificate:</p>
+<pre>
+ openssl x509 -in cert.pem -noout -text</pre>
+<p>Display the &quot;Subject Alternative Name&quot; extension of a certificate:</p>
+<pre>
+ openssl x509 -in cert.pem -noout -ext subjectAltName</pre>
+<p>Display more extensions of a certificate:</p>
+<pre>
+ openssl x509 -in cert.pem -noout -ext subjectAltName,nsCertType</pre>
+<p>Display the certificate serial number:</p>
+<pre>
+ openssl x509 -in cert.pem -noout -serial</pre>
+<p>Display the certificate subject name:</p>
+<pre>
+ openssl x509 -in cert.pem -noout -subject</pre>
+<p>Display the certificate subject name in <a href="http://www.ietf.org/rfc/rfc2253.txt" class="rfc">RFC2253</a> form:</p>
+<pre>
+ openssl x509 -in cert.pem -noout -subject -nameopt RFC2253</pre>
+<p>Display the certificate subject name in oneline form on a terminal
+supporting UTF8:</p>
+<pre>
+ openssl x509 -in cert.pem -noout -subject -nameopt oneline,-esc_msb</pre>
+<p>Display the certificate SHA1 fingerprint:</p>
+<pre>
+ openssl x509 -sha1 -in cert.pem -noout -fingerprint</pre>
+<p>Convert a certificate from PEM to DER format:</p>
+<pre>
+ openssl x509 -in cert.pem -inform PEM -out cert.der -outform DER</pre>
+<p>Convert a certificate to a certificate request:</p>
+<pre>
+ openssl x509 -x509toreq -in cert.pem -out req.pem -signkey key.pem</pre>
+<p>Convert a certificate request into a self signed certificate using
+extensions for a CA:</p>
+<pre>
+ openssl x509 -req -in careq.pem -extfile openssl.cnf -extensions v3_ca \
+        -signkey key.pem -out cacert.pem</pre>
+<p>Sign a certificate request using the CA certificate above and add user
+certificate extensions:</p>
+<pre>
+ openssl x509 -req -in req.pem -extfile openssl.cnf -extensions v3_usr \
+        -CA cacert.pem -CAkey key.pem -CAcreateserial</pre>
+<p>Set a certificate to be trusted for SSL client use and change set its alias to
+&quot;Steve's Class 1 CA&quot;</p>
+<pre>
+ openssl x509 -in cert.pem -addtrust clientAuth \
+        -setalias &quot;Steve's Class 1 CA&quot; -out trust.pem</pre>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The PEM format uses the header and footer lines:</p>
+<pre>
+ -----BEGIN CERTIFICATE-----
+ -----END CERTIFICATE-----</pre>
+<p>it will also handle files containing:</p>
+<pre>
+ -----BEGIN X509 CERTIFICATE-----
+ -----END X509 CERTIFICATE-----</pre>
+<p>Trusted certificates have the lines</p>
+<pre>
+ -----BEGIN TRUSTED CERTIFICATE-----
+ -----END TRUSTED CERTIFICATE-----</pre>
+<p>The conversion to UTF8 format used with the name options assumes that
+T61Strings use the ISO8859-1 character set. This is wrong but Netscape
+and MSIE do this as do many certificates. So although this is incorrect
+it is more likely to display the majority of certificates correctly.</p>
+<p>The <strong>-email</strong> option searches the subject name and the subject alternative
+name extension. Only unique email addresses will be printed out: it will
+not print the same address more than once.</p>
+<p>
+</p>
+<hr />
+<h1><a name="certificate_extensions">CERTIFICATE EXTENSIONS</a></h1>
+<p>The <strong>-purpose</strong> option checks the certificate extensions and determines
+what the certificate can be used for. The actual checks done are rather
+complex and include various hacks and workarounds to handle broken
+certificates and software.</p>
+<p>The same code is used when verifying untrusted certificates in chains
+so this section is useful if a chain is rejected by the verify code.</p>
+<p>The basicConstraints extension CA flag is used to determine whether the
+certificate can be used as a CA. If the CA flag is true then it is a CA,
+if the CA flag is false then it is not a CA. <strong>All</strong> CAs should have the
+CA flag set to true.</p>
+<p>If the basicConstraints extension is absent then the certificate is
+considered to be a &quot;possible CA&quot; other extensions are checked according
+to the intended use of the certificate. A warning is given in this case
+because the certificate should really not be regarded as a CA: however
+it is allowed to be a CA to work around some broken software.</p>
+<p>If the certificate is a V1 certificate (and thus has no extensions) and
+it is self signed it is also assumed to be a CA but a warning is again
+given: this is to work around the problem of Verisign roots which are V1
+self signed certificates.</p>
+<p>If the keyUsage extension is present then additional restraints are
+made on the uses of the certificate. A CA certificate <strong>must</strong> have the
+keyCertSign bit set if the keyUsage extension is present.</p>
+<p>The extended key usage extension places additional restrictions on the
+certificate uses. If this extension is present (whether critical or not)
+the key can only be used for the purposes specified.</p>
+<p>A complete description of each test is given below. The comments about
+basicConstraints and keyUsage and V1 certificates above apply to <strong>all</strong>
+CA certificates.</p>
+<dl>
+<dt><strong><a name="ssl_client" class="item"><strong>SSL Client</strong></a></strong></dt>
+
+<dd>
+<p>The extended key usage extension must be absent or include the &quot;web client
+authentication&quot; OID.  keyUsage must be absent or it must have the
+digitalSignature bit set. Netscape certificate type must be absent or it must
+have the SSL client bit set.</p>
+</dd>
+<dt><strong><a name="ssl_client_ca" class="item"><strong>SSL Client CA</strong></a></strong></dt>
+
+<dd>
+<p>The extended key usage extension must be absent or include the &quot;web client
+authentication&quot; OID. Netscape certificate type must be absent or it must have
+the SSL CA bit set: this is used as a work around if the basicConstraints
+extension is absent.</p>
+</dd>
+<dt><strong><a name="ssl_server" class="item"><strong>SSL Server</strong></a></strong></dt>
+
+<dd>
+<p>The extended key usage extension must be absent or include the &quot;web server
+authentication&quot; and/or one of the SGC OIDs.  keyUsage must be absent or it
+must have the digitalSignature, the keyEncipherment set or both bits set.
+Netscape certificate type must be absent or have the SSL server bit set.</p>
+</dd>
+<dt><strong><a name="ssl_server_ca" class="item"><strong>SSL Server CA</strong></a></strong></dt>
+
+<dd>
+<p>The extended key usage extension must be absent or include the &quot;web server
+authentication&quot; and/or one of the SGC OIDs.  Netscape certificate type must
+be absent or the SSL CA bit must be set: this is used as a work around if the
+basicConstraints extension is absent.</p>
+</dd>
+<dt><strong><a name="netscape_ssl_server" class="item"><strong>Netscape SSL Server</strong></a></strong></dt>
+
+<dd>
+<p>For Netscape SSL clients to connect to an SSL server it must have the
+keyEncipherment bit set if the keyUsage extension is present. This isn't
+always valid because some cipher suites use the key for digital signing.
+Otherwise it is the same as a normal SSL server.</p>
+</dd>
+<dt><strong><a name="common_s_mime_client_tests" class="item"><strong>Common S/MIME Client Tests</strong></a></strong></dt>
+
+<dd>
+<p>The extended key usage extension must be absent or include the &quot;email
+protection&quot; OID. Netscape certificate type must be absent or should have the
+S/MIME bit set. If the S/MIME bit is not set in Netscape certificate type
+then the SSL client bit is tolerated as an alternative but a warning is shown:
+this is because some Verisign certificates don't set the S/MIME bit.</p>
+</dd>
+<dt><strong><a name="s_mime_signing" class="item"><strong>S/MIME Signing</strong></a></strong></dt>
+
+<dd>
+<p>In addition to the common S/MIME client tests the digitalSignature bit or
+the nonRepudiation bit must be set if the keyUsage extension is present.</p>
+</dd>
+<dt><strong><a name="s_mime_encryption" class="item"><strong>S/MIME Encryption</strong></a></strong></dt>
+
+<dd>
+<p>In addition to the common S/MIME tests the keyEncipherment bit must be set
+if the keyUsage extension is present.</p>
+</dd>
+<dt><strong><a name="s_mime_ca" class="item"><strong>S/MIME CA</strong></a></strong></dt>
+
+<dd>
+<p>The extended key usage extension must be absent or include the &quot;email
+protection&quot; OID. Netscape certificate type must be absent or must have the
+S/MIME CA bit set: this is used as a work around if the basicConstraints
+extension is absent.</p>
+</dd>
+<dt><strong><a name="crl_signing" class="item"><strong>CRL Signing</strong></a></strong></dt>
+
+<dd>
+<p>The keyUsage extension must be absent or it must have the CRL signing bit
+set.</p>
+</dd>
+<dt><strong><a name="crl_signing_ca" class="item"><strong>CRL Signing CA</strong></a></strong></dt>
+
+<dd>
+<p>The normal CA tests apply. Except in this case the basicConstraints extension
+must be present.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>Extensions in certificates are not transferred to certificate requests and
+vice versa.</p>
+<p>It is possible to produce invalid certificates or requests by specifying the
+wrong private key or using inconsistent options in some cases: these should
+be checked.</p>
+<p>There should be options to explicitly set such things as start and end
+dates rather than an offset from the current time.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><a href="#req">req(1)</a>, <em>ca(1)</em>, <em>genrsa(1)</em>,
+<em>gendsa(1)</em>, <em>verify(1)</em>,
+<em>x509v3_config(5)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The hash algorithm used in the <strong>-subject_hash</strong> and <strong>-issuer_hash</strong> options
+before OpenSSL 1.0.0 was based on the deprecated MD5 algorithm and the encoding
+of the distinguished name. In OpenSSL 1.0.0 and later it is based on a
+canonical version of the DN using SHA1. This means that any directories using
+the old form must have their links rebuilt using <strong>c_rehash</strong> or similar.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2020 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

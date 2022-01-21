@@ -1,0 +1,280 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>RSA_meth_new</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>RSA_meth_get0_app_data, RSA_meth_set0_app_data,
+RSA_meth_new, RSA_meth_free, RSA_meth_dup, RSA_meth_get0_name,
+RSA_meth_set1_name, RSA_meth_get_flags, RSA_meth_set_flags,
+RSA_meth_get_pub_enc,
+RSA_meth_set_pub_enc, RSA_meth_get_pub_dec, RSA_meth_set_pub_dec,
+RSA_meth_get_priv_enc, RSA_meth_set_priv_enc, RSA_meth_get_priv_dec,
+RSA_meth_set_priv_dec, RSA_meth_get_mod_exp, RSA_meth_set_mod_exp,
+RSA_meth_get_bn_mod_exp, RSA_meth_set_bn_mod_exp, RSA_meth_get_init,
+RSA_meth_set_init, RSA_meth_get_finish, RSA_meth_set_finish,
+RSA_meth_get_sign, RSA_meth_set_sign, RSA_meth_get_verify,
+RSA_meth_set_verify, RSA_meth_get_keygen, RSA_meth_set_keygen,
+RSA_meth_get_multi_prime_keygen, RSA_meth_set_multi_prime_keygen
+- Routines to build up RSA methods</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/rsa.h&gt;</pre>
+<pre>
+ RSA_METHOD *RSA_meth_new(const char *name, int flags);
+ void RSA_meth_free(RSA_METHOD *meth);</pre>
+<pre>
+ RSA_METHOD *RSA_meth_dup(const RSA_METHOD *meth);</pre>
+<pre>
+ const char *RSA_meth_get0_name(const RSA_METHOD *meth);
+ int RSA_meth_set1_name(RSA_METHOD *meth, const char *name);</pre>
+<pre>
+ int RSA_meth_get_flags(const RSA_METHOD *meth);
+ int RSA_meth_set_flags(RSA_METHOD *meth, int flags);</pre>
+<pre>
+ void *RSA_meth_get0_app_data(const RSA_METHOD *meth);
+ int RSA_meth_set0_app_data(RSA_METHOD *meth, void *app_data);</pre>
+<pre>
+ int (*RSA_meth_get_pub_enc(const RSA_METHOD *meth))(int flen, const unsigned char *from,
+                                                     unsigned char *to, RSA *rsa, int padding);
+ int RSA_meth_set_pub_enc(RSA_METHOD *rsa,
+                          int (*pub_enc)(int flen, const unsigned char *from,
+                                         unsigned char *to, RSA *rsa,
+                                         int padding));</pre>
+<pre>
+ int (*RSA_meth_get_pub_dec(const RSA_METHOD *meth))
+     (int flen, const unsigned char *from,
+      unsigned char *to, RSA *rsa, int padding);
+ int RSA_meth_set_pub_dec(RSA_METHOD *rsa,
+                          int (*pub_dec)(int flen, const unsigned char *from,
+                                         unsigned char *to, RSA *rsa,
+                                         int padding));</pre>
+<pre>
+ int (*RSA_meth_get_priv_enc(const RSA_METHOD *meth))(int flen, const unsigned char *from,
+                                                      unsigned char *to, RSA *rsa,
+                                                      int padding);
+ int RSA_meth_set_priv_enc(RSA_METHOD *rsa,
+                           int (*priv_enc)(int flen, const unsigned char *from,
+                                           unsigned char *to, RSA *rsa, int padding));</pre>
+<pre>
+ int (*RSA_meth_get_priv_dec(const RSA_METHOD *meth))(int flen, const unsigned char *from,
+                                                      unsigned char *to, RSA *rsa,
+                                                      int padding);
+ int RSA_meth_set_priv_dec(RSA_METHOD *rsa,
+                           int (*priv_dec)(int flen, const unsigned char *from,
+                                           unsigned char *to, RSA *rsa, int padding));</pre>
+<pre>
+ /* Can be null */
+ int (*RSA_meth_get_mod_exp(const RSA_METHOD *meth))(BIGNUM *r0, const BIGNUM *i,
+                                                     RSA *rsa, BN_CTX *ctx);
+ int RSA_meth_set_mod_exp(RSA_METHOD *rsa,
+                          int (*mod_exp)(BIGNUM *r0, const BIGNUM *i, RSA *rsa,
+                                         BN_CTX *ctx));</pre>
+<pre>
+ /* Can be null */
+ int (*RSA_meth_get_bn_mod_exp(const RSA_METHOD *meth))(BIGNUM *r, const BIGNUM *a,
+                                                        const BIGNUM *p, const BIGNUM *m,
+                                                        BN_CTX *ctx, BN_MONT_CTX *m_ctx);
+ int RSA_meth_set_bn_mod_exp(RSA_METHOD *rsa,
+                             int (*bn_mod_exp)(BIGNUM *r, const BIGNUM *a,
+                                               const BIGNUM *p, const BIGNUM *m,
+                                               BN_CTX *ctx, BN_MONT_CTX *m_ctx));</pre>
+<pre>
+ /* called at new */
+ int (*RSA_meth_get_init(const RSA_METHOD *meth) (RSA *rsa);
+ int RSA_meth_set_init(RSA_METHOD *rsa, int (*init (RSA *rsa));</pre>
+<pre>
+ /* called at free */
+ int (*RSA_meth_get_finish(const RSA_METHOD *meth))(RSA *rsa);
+ int RSA_meth_set_finish(RSA_METHOD *rsa, int (*finish)(RSA *rsa));</pre>
+<pre>
+ int (*RSA_meth_get_sign(const RSA_METHOD *meth))(int type, const unsigned char *m,
+                                                  unsigned int m_length,
+                                                  unsigned char *sigret,
+                                                  unsigned int *siglen, const RSA *rsa);
+ int RSA_meth_set_sign(RSA_METHOD *rsa,
+                       int (*sign)(int type, const unsigned char *m,
+                                   unsigned int m_length, unsigned char *sigret,
+                                   unsigned int *siglen, const RSA *rsa));</pre>
+<pre>
+ int (*RSA_meth_get_verify(const RSA_METHOD *meth))(int dtype, const unsigned char *m,
+                                                    unsigned int m_length,
+                                                    const unsigned char *sigbuf,
+                                                    unsigned int siglen, const RSA *rsa);
+ int RSA_meth_set_verify(RSA_METHOD *rsa,
+                         int (*verify)(int dtype, const unsigned char *m,
+                                       unsigned int m_length,
+                                       const unsigned char *sigbuf,
+                                       unsigned int siglen, const RSA *rsa));</pre>
+<pre>
+ int (*RSA_meth_get_keygen(const RSA_METHOD *meth))(RSA *rsa, int bits, BIGNUM *e,
+                                                    BN_GENCB *cb);
+ int RSA_meth_set_keygen(RSA_METHOD *rsa,
+                         int (*keygen)(RSA *rsa, int bits, BIGNUM *e,
+                                       BN_GENCB *cb));</pre>
+<pre>
+ int (*RSA_meth_get_multi_prime_keygen(const RSA_METHOD *meth))(RSA *rsa, int bits,
+                                                                int primes, BIGNUM *e,
+                                                                BN_GENCB *cb);</pre>
+<pre>
+ int RSA_meth_set_multi_prime_keygen(RSA_METHOD *meth,
+                                     int (*keygen) (RSA *rsa, int bits,
+                                                    int primes, BIGNUM *e,
+                                                    BN_GENCB *cb));</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The <strong>RSA_METHOD</strong> type is a structure used for the provision of custom
+RSA implementations. It provides a set of functions used by OpenSSL
+for the implementation of the various RSA capabilities. See the <a href="/man1/rsa.html">the rsa manpage</a>
+page for more information.</p>
+<p><code>RSA_meth_new()</code> creates a new <strong>RSA_METHOD</strong> structure. It should be
+given a unique <strong>name</strong> and a set of <strong>flags</strong>. The <strong>name</strong> should be a
+NULL terminated string, which will be duplicated and stored in the
+<strong>RSA_METHOD</strong> object. It is the callers responsibility to free the
+original string. The flags will be used during the construction of a
+new <strong>RSA</strong> object based on this <strong>RSA_METHOD</strong>. Any new <strong>RSA</strong> object
+will have those flags set by default.</p>
+<p><code>RSA_meth_dup()</code> creates a duplicate copy of the <strong>RSA_METHOD</strong> object
+passed as a parameter. This might be useful for creating a new
+<strong>RSA_METHOD</strong> based on an existing one, but with some differences.</p>
+<p><code>RSA_meth_free()</code> destroys an <strong>RSA_METHOD</strong> structure and frees up any
+memory associated with it.</p>
+<p>RSA_meth_get0_name() will return a pointer to the name of this
+RSA_METHOD. This is a pointer to the internal name string and so
+should not be freed by the caller. RSA_meth_set1_name() sets the name
+of the RSA_METHOD to <strong>name</strong>. The string is duplicated and the copy is
+stored in the RSA_METHOD structure, so the caller remains responsible
+for freeing the memory associated with the name.</p>
+<p><code>RSA_meth_get_flags()</code> returns the current value of the flags associated
+with this RSA_METHOD. <code>RSA_meth_set_flags()</code> provides the ability to set
+these flags.</p>
+<p>The functions RSA_meth_get0_app_data() and RSA_meth_set0_app_data()
+provide the ability to associate implementation specific data with the
+RSA_METHOD. It is the application's responsibility to free this data
+before the RSA_METHOD is freed via a call to <code>RSA_meth_free()</code>.</p>
+<p><code>RSA_meth_get_sign()</code> and <code>RSA_meth_set_sign()</code> get and set the function
+used for creating an RSA signature respectively. This function will be
+called in response to the application calling <code>RSA_sign()</code>. The
+parameters for the function have the same meaning as for <code>RSA_sign()</code>.</p>
+<p><code>RSA_meth_get_verify()</code> and <code>RSA_meth_set_verify()</code> get and set the
+function used for verifying an RSA signature respectively. This
+function will be called in response to the application calling
+<code>RSA_verify()</code>. The parameters for the function have the same meaning as
+for <code>RSA_verify()</code>.</p>
+<p><code>RSA_meth_get_mod_exp()</code> and <code>RSA_meth_set_mod_exp()</code> get and set the
+function used for CRT computations.</p>
+<p><code>RSA_meth_get_bn_mod_exp()</code> and <code>RSA_meth_set_bn_mod_exp()</code> get and set
+the function used for CRT computations, specifically the following
+value:</p>
+<pre>
+ r = a ^ p mod m</pre>
+<p>Both the <code>mod_exp()</code> and <code>bn_mod_exp()</code> functions are called by the
+default OpenSSL method during encryption, decryption, signing and
+verification.</p>
+<p><code>RSA_meth_get_init()</code> and <code>RSA_meth_set_init()</code> get and set the function
+used for creating a new RSA instance respectively. This function will
+be called in response to the application calling <code>RSA_new()</code> (if the
+current default RSA_METHOD is this one) or <code>RSA_new_method()</code>. The
+<code>RSA_new()</code> and <code>RSA_new_method()</code> functions will allocate the memory for
+the new RSA object, and a pointer to this newly allocated structure
+will be passed as a parameter to the function. This function may be
+NULL.</p>
+<p><code>RSA_meth_get_finish()</code> and <code>RSA_meth_set_finish()</code> get and set the
+function used for destroying an instance of an RSA object respectively.
+This function will be called in response to the application calling
+<code>RSA_free()</code>. A pointer to the RSA to be destroyed is passed as a
+parameter. The destroy function should be used for RSA implementation
+specific clean up. The memory for the RSA itself should not be freed
+by this function. This function may be NULL.</p>
+<p><code>RSA_meth_get_keygen()</code> and <code>RSA_meth_set_keygen()</code> get and set the
+function used for generating a new RSA key pair respectively. This
+function will be called in response to the application calling
+<code>RSA_generate_key_ex()</code>. The parameter for the function has the same
+meaning as for <code>RSA_generate_key_ex()</code>.</p>
+<p><code>RSA_meth_get_multi_prime_keygen()</code> and <code>RSA_meth_set_multi_prime_keygen()</code> get
+and set the function used for generating a new multi-prime RSA key pair
+respectively. This function will be called in response to the application calling
+<code>RSA_generate_multi_prime_key()</code>. The parameter for the function has the same
+meaning as for <code>RSA_generate_multi_prime_key()</code>.</p>
+<p><code>RSA_meth_get_pub_enc()</code>, <code>RSA_meth_set_pub_enc()</code>,
+<code>RSA_meth_get_pub_dec()</code>, <code>RSA_meth_set_pub_dec()</code>,
+<code>RSA_meth_get_priv_enc()</code>, <code>RSA_meth_set_priv_enc()</code>,
+<code>RSA_meth_get_priv_dec()</code>, <code>RSA_meth_set_priv_dec()</code> get and set the
+functions used for public and private key encryption and decryption.
+These functions will be called in response to the application calling
+<code>RSA_public_encrypt()</code>, <code>RSA_private_decrypt()</code>, <code>RSA_private_encrypt()</code> and
+<code>RSA_public_decrypt()</code> and take the same parameters as those.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>RSA_meth_new()</code> and <code>RSA_meth_dup()</code> return the newly allocated
+RSA_METHOD object or NULL on failure.</p>
+<p>RSA_meth_get0_name() and <code>RSA_meth_get_flags()</code> return the name and
+flags associated with the RSA_METHOD respectively.</p>
+<p>All other RSA_meth_get_*() functions return the appropriate function
+pointer that has been set in the RSA_METHOD, or NULL if no such
+pointer has yet been set.</p>
+<p>RSA_meth_set1_name and all RSA_meth_set_*() functions return 1 on
+success or 0 on failure.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>RSA_new(3)</em>, <em>RSA_generate_key_ex(3)</em>, <em>RSA_sign(3)</em>,
+<em>RSA_set_method(3)</em>, <em>RSA_size(3)</em>, <em>RSA_get0_key(3)</em>,
+<em>RSA_generate_multi_prime_key(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p><code>RSA_meth_get_multi_prime_keygen()</code> and <code>RSA_meth_set_multi_prime_keygen()</code> were
+added in OpenSSL 1.1.1.</p>
+<p>Other functions described here were added in OpenSSL 1.1.0.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2016-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

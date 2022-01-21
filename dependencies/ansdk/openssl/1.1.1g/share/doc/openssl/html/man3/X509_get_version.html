@@ -1,0 +1,121 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>X509_get_version</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>X509_get_version, X509_set_version, X509_REQ_get_version, X509_REQ_set_version,
+X509_CRL_get_version, X509_CRL_set_version - get or set certificate,
+certificate request or CRL version</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/x509.h&gt;</pre>
+<pre>
+ long X509_get_version(const X509 *x);
+ int X509_set_version(X509 *x, long version);</pre>
+<pre>
+ long X509_REQ_get_version(const X509_REQ *req);
+ int X509_REQ_set_version(X509_REQ *x, long version);</pre>
+<pre>
+ long X509_CRL_get_version(const X509_CRL *crl);
+ int X509_CRL_set_version(X509_CRL *x, long version);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>X509_get_version() returns the numerical value of the version field of
+certificate <strong>x</strong>. Note: this is defined by standards (X.509 et al) to be one
+less than the certificate version. So a version 3 certificate will return 2 and
+a version 1 certificate will return 0.</p>
+<p>X509_set_version() sets the numerical value of the version field of certificate
+<strong>x</strong> to <strong>version</strong>.</p>
+<p>Similarly X509_REQ_get_version(), X509_REQ_set_version(),
+X509_CRL_get_version() and X509_CRL_set_version() get and set the version
+number of certificate requests and CRLs.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The version field of certificates, certificate requests and CRLs has a
+DEFAULT value of <strong>v1(0)</strong> meaning the field should be omitted for version
+1. This is handled transparently by these functions.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>X509_get_version(), X509_REQ_get_version() and X509_CRL_get_version()
+return the numerical value of the version field.</p>
+<p>X509_set_version(), X509_REQ_set_version() and X509_CRL_set_version()
+return 1 for success and 0 for failure.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>d2i_X509(3)</em>,
+<em>ERR_get_error(3)</em>,
+<em>X509_CRL_get0_by_serial(3)</em>,
+<em>X509_get0_signature(3)</em>,
+<em>X509_get_ext_d2i(3)</em>,
+<em>X509_get_extension_flags(3)</em>,
+<em>X509_get_pubkey(3)</em>,
+<em>X509_get_subject_name(3)</em>,
+<em>X509_NAME_add_entry_by_txt(3)</em>,
+<em>X509_NAME_ENTRY_get_object(3)</em>,
+<em>X509_NAME_get_index_by_NID(3)</em>,
+<em>X509_NAME_print_ex(3)</em>,
+<em>X509_new(3)</em>,
+<em>X509_sign(3)</em>,
+<em>X509V3_get_d2i(3)</em>,
+<em>X509_verify_cert(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>X509_get_version(), X509_REQ_get_version() and X509_CRL_get_version() are
+functions in OpenSSL 1.1.0, in previous versions they were macros.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

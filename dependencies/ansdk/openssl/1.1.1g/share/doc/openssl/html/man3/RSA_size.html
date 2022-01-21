@@ -1,0 +1,89 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>RSA_size</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>RSA_size, RSA_bits, RSA_security_bits - get RSA modulus size or security bits</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/rsa.h&gt;</pre>
+<pre>
+ int RSA_size(const RSA *rsa);</pre>
+<pre>
+ int RSA_bits(const RSA *rsa);</pre>
+<pre>
+ int RSA_security_bits(const RSA *rsa)</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>RSA_size()</code> returns the RSA modulus size in bytes. It can be used to
+determine how much memory must be allocated for an RSA encrypted
+value.</p>
+<p><code>RSA_bits()</code> returns the number of significant bits.</p>
+<p><strong>rsa</strong> and <strong>rsa-&gt;n</strong> must not be <strong>NULL</strong>.</p>
+<p><code>RSA_security_bits()</code> returns the number of security bits of the given <strong>rsa</strong>
+key. See <em>BN_security_bits(3)</em>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>RSA_size()</code> returns the size of modulus in bytes.</p>
+<p><code>DSA_bits()</code> returns the number of bits in the key.</p>
+<p><code>RSA_security_bits()</code> returns the number of security bits.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>BN_num_bits(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The <code>RSA_bits()</code> function was added in OpenSSL 1.1.0.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

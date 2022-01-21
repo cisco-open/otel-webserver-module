@@ -1,0 +1,197 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_shutdown</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<ul>
+
+		<li><a href="#first_to_close_the_connection">First to close the connection</a></li>
+		<li><a href="#peer_closes_the_connection">Peer closes the connection</a></li>
+	</ul>
+
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_shutdown - shut down a TLS/SSL connection</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_shutdown(SSL *ssl);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_shutdown()</code> shuts down an active TLS/SSL connection. It sends the
+close_notify shutdown alert to the peer.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p><code>SSL_shutdown()</code> tries to send the close_notify shutdown alert to the peer.
+Whether the operation succeeds or not, the SSL_SENT_SHUTDOWN flag is set and
+a currently open session is considered closed and good and will be kept in the
+session cache for further reuse.</p>
+<p>Note that <code>SSL_shutdown()</code> must not be called if a previous fatal error has
+occurred on a connection i.e. if <code>SSL_get_error()</code> has returned SSL_ERROR_SYSCALL
+or SSL_ERROR_SSL.</p>
+<p>The shutdown procedure consists of two steps: sending of the close_notify
+shutdown alert, and reception of the peer's close_notify shutdown alert.
+The order of those two steps depends on the application.</p>
+<p>It is acceptable for an application to only send its shutdown alert and
+then close the underlying connection without waiting for the peer's response.
+This way resources can be saved, as the process can already terminate or
+serve another connection.
+This should only be done when it is known that the other side will not send more
+data, otherwise there is a risk of a truncation attack.</p>
+<p>When a client only writes and never reads from the connection, and the server
+has sent a session ticket to establish a session, the client might not be able
+to resume the session because it did not received and process the session ticket
+from the server.
+In case the application wants to be able to resume the session, it is recommended to
+do a complete shutdown procedure (bidirectional close_notify alerts).</p>
+<p>When the underlying connection shall be used for more communications, the
+complete shutdown procedure must be performed, so that the peers stay
+synchronized.</p>
+<p><code>SSL_shutdown()</code> only closes the write direction.
+It is not possible to call <code>SSL_write()</code> after calling <code>SSL_shutdown()</code>.
+The read direction is closed by the peer.</p>
+<p>
+</p>
+<h2><a name="first_to_close_the_connection">First to close the connection</a></h2>
+<p>When the application is the first party to send the close_notify
+alert, <code>SSL_shutdown()</code> will only send the alert and then set the
+SSL_SENT_SHUTDOWN flag (so that the session is considered good and will
+be kept in the cache).
+If successful, <code>SSL_shutdown()</code> will return 0.</p>
+<p>If a unidirectional shutdown is enough (the underlying connection shall be
+closed anyway), this first successful call to <code>SSL_shutdown()</code> is sufficient.</p>
+<p>In order to complete the bidirectional shutdown handshake, the peer needs
+to send back a close_notify alert.
+The SSL_RECEIVED_SHUTDOWN flag will be set after receiving and processing
+it.</p>
+<p>The peer is still allowed to send data after receiving the close_notify
+event.
+When it is done sending data, it will send the close_notify alert.
+<code>SSL_read()</code> should be called until all data is received.
+<code>SSL_read()</code> will indicate the end of the peer data by returning &lt;= 0
+and <code>SSL_get_error()</code> returning SSL_ERROR_ZERO_RETURN.</p>
+<p>
+</p>
+<h2><a name="peer_closes_the_connection">Peer closes the connection</a></h2>
+<p>If the peer already sent the close_notify alert <strong>and</strong> it was
+already processed implicitly inside another function
+(<em>SSL_read(3)</em>), the SSL_RECEIVED_SHUTDOWN flag is set.
+<code>SSL_read()</code> will return &lt;= 0 in that case, and <code>SSL_get_error()</code> will return
+SSL_ERROR_ZERO_RETURN.
+<code>SSL_shutdown()</code> will send the close_notify alert, set the SSL_SENT_SHUTDOWN
+flag.
+If successful, <code>SSL_shutdown()</code> will return 1.</p>
+<p>Whether SSL_RECEIVED_SHUTDOWN is already set can be checked using the
+<code>SSL_get_shutdown()</code> (see also <em>SSL_set_shutdown(3)</em> call.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The behaviour of <code>SSL_shutdown()</code> additionally depends on the underlying BIO.
+If the underlying BIO is <strong>blocking</strong>, <code>SSL_shutdown()</code> will only return once the
+handshake step has been finished or an error occurred.</p>
+<p>If the underlying BIO is <strong>non-blocking</strong>, <code>SSL_shutdown()</code> will also return
+when the underlying BIO could not satisfy the needs of <code>SSL_shutdown()</code>
+to continue the handshake. In this case a call to <code>SSL_get_error()</code> with the
+return value of <code>SSL_shutdown()</code> will yield <strong>SSL_ERROR_WANT_READ</strong> or
+<strong>SSL_ERROR_WANT_WRITE</strong>. The calling process then must repeat the call after
+taking appropriate action to satisfy the needs of <code>SSL_shutdown()</code>.
+The action depends on the underlying BIO. When using a non-blocking socket,
+nothing is to be done, but <code>select()</code> can be used to check for the required
+condition. When using a buffering BIO, like a BIO pair, data must be written
+into or retrieved out of the BIO before being able to continue.</p>
+<p>After <code>SSL_shutdown()</code> returned 0, it is possible to call <code>SSL_shutdown()</code> again
+to wait for the peer's close_notify alert.
+<code>SSL_shutdown()</code> will return 1 in that case.
+However, it is recommended to wait for it using <code>SSL_read()</code> instead.</p>
+<p><code>SSL_shutdown()</code> can be modified to only set the connection to &quot;shutdown&quot;
+state but not actually send the close_notify alert messages,
+see <em>SSL_CTX_set_quiet_shutdown(3)</em>.
+When &quot;quiet shutdown&quot; is enabled, <code>SSL_shutdown()</code> will always succeed
+and return 1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>The following return values can occur:</p>
+<ol>
+<li>
+<p>The shutdown is not yet finished: the close_notify was sent but the peer
+did not send it back yet.
+Call <code>SSL_read()</code> to do a bidirectional shutdown.
+The output of <em>SSL_get_error(3)</em> may be misleading, as an
+erroneous SSL_ERROR_SYSCALL may be flagged even though no error occurred.</p>
+</li>
+<li>
+<p>The shutdown was successfully completed. The close_notify alert was sent
+and the peer's close_notify alert was received.</p>
+</dd>
+<dt><strong><a name="_0" class="item">&lt;0</a></strong></dt>
+
+<dd>
+<p>The shutdown was not successful.
+Call <em>SSL_get_error(3)</em> with the return value <strong>ret</strong> to find out the reason.
+It can occur if an action is needed to continue the operation for non-blocking
+BIOs.</p>
+<p>It can also occur when not all data was read using <code>SSL_read()</code>.</p>
+</li>
+</ol>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>SSL_get_error(3)</em>, <em>SSL_connect(3)</em>,
+<em>SSL_accept(3)</em>, <em>SSL_set_shutdown(3)</em>,
+<em>SSL_CTX_set_quiet_shutdown(3)</em>,
+<em>SSL_clear(3)</em>, <em>SSL_free(3)</em>,
+<em>ssl(7)</em>, <em>bio(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

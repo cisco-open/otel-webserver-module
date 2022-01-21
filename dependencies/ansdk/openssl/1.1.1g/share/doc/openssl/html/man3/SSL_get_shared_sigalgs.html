@@ -1,0 +1,119 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_get_shared_sigalgs</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_get_shared_sigalgs, SSL_get_sigalgs - get supported signature algorithms</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_get_shared_sigalgs(SSL *s, int idx,
+                            int *psign, int *phash, int *psignhash,
+                            unsigned char *rsig, unsigned char *rhash);</pre>
+<pre>
+ int SSL_get_sigalgs(SSL *s, int idx,
+                     int *psign, int *phash, int *psignhash,
+                     unsigned char *rsig, unsigned char *rhash);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_get_shared_sigalgs()</code> returns information about the shared signature
+algorithms supported by peer <strong>s</strong>. The parameter <strong>idx</strong> indicates the index
+of the shared signature algorithm to return starting from zero. The signature
+algorithm NID is written to <strong>*psign</strong>, the hash NID to <strong>*phash</strong> and the
+sign and hash NID to <strong>*psignhash</strong>. The raw signature and hash values
+are written to <strong>*rsig</strong> and <strong>*rhash</strong>.</p>
+<p><code>SSL_get_sigalgs()</code> is similar to <code>SSL_get_shared_sigalgs()</code> except it returns
+information about all signature algorithms supported by <strong>s</strong> in the order
+they were sent by the peer.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_get_shared_sigalgs()</code> and <code>SSL_get_sigalgs()</code> return the number of
+signature algorithms or <strong>0</strong> if the <strong>idx</strong> parameter is out of range.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>These functions are typically called for debugging purposes (to report
+the peer's preferences) or where an application wants finer control over
+certificate selection. Most applications will rely on internal handling
+and will not need to call them.</p>
+<p>If an application is only interested in the highest preference shared
+signature algorithm it can just set <strong>idx</strong> to zero.</p>
+<p>Any or all of the parameters <strong>psign</strong>, <strong>phash</strong>, <strong>psignhash</strong>, <strong>rsig</strong> or
+<strong>rhash</strong> can be set to <strong>NULL</strong> if the value is not required. By setting
+them all to <strong>NULL</strong> and setting <strong>idx</strong> to zero the total number of
+signature algorithms can be determined: which can be zero.</p>
+<p>These functions must be called after the peer has sent a list of supported
+signature algorithms: after a client hello (for servers) or a certificate
+request (for clients). They can (for example) be called in the certificate
+callback.</p>
+<p>Only TLS 1.2, TLS 1.3 and DTLS 1.2 currently support signature algorithms.
+If these
+functions are called on an earlier version of TLS or DTLS zero is returned.</p>
+<p>The shared signature algorithms returned by <code>SSL_get_shared_sigalgs()</code> are
+ordered according to configuration and peer preferences.</p>
+<p>The raw values correspond to the on the wire form as defined by <a href="http://www.ietf.org/rfc/rfc5246.txt" class="rfc">RFC5246</a> et al.
+The NIDs are OpenSSL equivalents. For example if the peer sent sha256(4) and
+<code>rsa(1)</code> then <strong>*rhash</strong> would be 4, <strong>*rsign</strong> 1, <strong>*phash</strong> NID_sha256, <strong>*psig</strong>
+NID_rsaEncryption and <strong>*psighash</strong> NID_sha256WithRSAEncryption.</p>
+<p>If a signature algorithm is not recognised the corresponding NIDs
+will be set to <strong>NID_undef</strong>. This may be because the value is not supported,
+is not an appropriate combination (for example MD5 and DSA) or the
+signature algorithm does not use a hash (for example Ed25519).</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>SSL_CTX_set_cert_cb(3)</em>,
+<em>ssl(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

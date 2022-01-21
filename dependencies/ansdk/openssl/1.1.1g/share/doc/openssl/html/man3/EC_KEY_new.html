@@ -1,0 +1,198 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>EC_KEY_new</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>EC_KEY_get_method, EC_KEY_set_method,
+EC_KEY_new, EC_KEY_get_flags, EC_KEY_set_flags, EC_KEY_clear_flags,
+EC_KEY_new_by_curve_name, EC_KEY_free, EC_KEY_copy, EC_KEY_dup, EC_KEY_up_ref,
+EC_KEY_get0_engine,
+EC_KEY_get0_group, EC_KEY_set_group, EC_KEY_get0_private_key,
+EC_KEY_set_private_key, EC_KEY_get0_public_key, EC_KEY_set_public_key,
+EC_KEY_get_conv_form,
+EC_KEY_set_conv_form, EC_KEY_set_asn1_flag, EC_KEY_precompute_mult,
+EC_KEY_generate_key, EC_KEY_check_key, EC_KEY_set_public_key_affine_coordinates,
+EC_KEY_oct2key, EC_KEY_key2buf, EC_KEY_oct2priv, EC_KEY_priv2oct,
+EC_KEY_priv2buf - Functions for creating, destroying and manipulating
+EC_KEY objects</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ec.h&gt;</pre>
+<pre>
+ EC_KEY *EC_KEY_new(void);
+ int EC_KEY_get_flags(const EC_KEY *key);
+ void EC_KEY_set_flags(EC_KEY *key, int flags);
+ void EC_KEY_clear_flags(EC_KEY *key, int flags);
+ EC_KEY *EC_KEY_new_by_curve_name(int nid);
+ void EC_KEY_free(EC_KEY *key);
+ EC_KEY *EC_KEY_copy(EC_KEY *dst, const EC_KEY *src);
+ EC_KEY *EC_KEY_dup(const EC_KEY *src);
+ int EC_KEY_up_ref(EC_KEY *key);
+ ENGINE *EC_KEY_get0_engine(const EC_KEY *eckey);
+ const EC_GROUP *EC_KEY_get0_group(const EC_KEY *key);
+ int EC_KEY_set_group(EC_KEY *key, const EC_GROUP *group);
+ const BIGNUM *EC_KEY_get0_private_key(const EC_KEY *key);
+ int EC_KEY_set_private_key(EC_KEY *key, const BIGNUM *prv);
+ const EC_POINT *EC_KEY_get0_public_key(const EC_KEY *key);
+ int EC_KEY_set_public_key(EC_KEY *key, const EC_POINT *pub);
+ point_conversion_form_t EC_KEY_get_conv_form(const EC_KEY *key);
+ void EC_KEY_set_conv_form(EC_KEY *eckey, point_conversion_form_t cform);
+ void EC_KEY_set_asn1_flag(EC_KEY *eckey, int asn1_flag);
+ int EC_KEY_precompute_mult(EC_KEY *key, BN_CTX *ctx);
+ int EC_KEY_generate_key(EC_KEY *key);
+ int EC_KEY_check_key(const EC_KEY *key);
+ int EC_KEY_set_public_key_affine_coordinates(EC_KEY *key, BIGNUM *x, BIGNUM *y);
+ const EC_KEY_METHOD *EC_KEY_get_method(const EC_KEY *key);
+ int EC_KEY_set_method(EC_KEY *key, const EC_KEY_METHOD *meth);</pre>
+<pre>
+ int EC_KEY_oct2key(EC_KEY *eckey, const unsigned char *buf, size_t len, BN_CTX *ctx);
+ size_t EC_KEY_key2buf(const EC_KEY *eckey, point_conversion_form_t form,
+                       unsigned char **pbuf, BN_CTX *ctx);</pre>
+<pre>
+ int EC_KEY_oct2priv(EC_KEY *eckey, const unsigned char *buf, size_t len);
+ size_t EC_KEY_priv2oct(const EC_KEY *eckey, unsigned char *buf, size_t len);</pre>
+<pre>
+ size_t EC_KEY_priv2buf(const EC_KEY *eckey, unsigned char **pbuf);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>An EC_KEY represents a public key and, optionally, the associated private
+key. A new EC_KEY with no associated curve can be constructed by calling
+<code>EC_KEY_new()</code>. The reference count for the newly created EC_KEY is initially
+set to 1. A curve can be associated with the EC_KEY by calling
+<code>EC_KEY_set_group()</code>.</p>
+<p>Alternatively a new EC_KEY can be constructed by calling
+<code>EC_KEY_new_by_curve_name()</code> and supplying the nid of the associated curve. See
+<em>EC_GROUP_new(3)</em> for a description of curve names. This function simply
+wraps calls to <code>EC_KEY_new()</code> and <code>EC_GROUP_new_by_curve_name()</code>.</p>
+<p>Calling <code>EC_KEY_free()</code> decrements the reference count for the EC_KEY object,
+and if it has dropped to zero then frees the memory associated with it.  If
+<strong>key</strong> is NULL nothing is done.</p>
+<p><code>EC_KEY_copy()</code> copies the contents of the EC_KEY in <strong>src</strong> into <strong>dest</strong>.</p>
+<p><code>EC_KEY_dup()</code> creates a new EC_KEY object and copies <strong>ec_key</strong> into it.</p>
+<p><code>EC_KEY_up_ref()</code> increments the reference count associated with the EC_KEY
+object.</p>
+<p>EC_KEY_get0_engine() returns a handle to the ENGINE that has been set for
+this EC_KEY object.</p>
+<p><code>EC_KEY_generate_key()</code> generates a new public and private key for the supplied
+<strong>eckey</strong> object. <strong>eckey</strong> must have an EC_GROUP object associated with it
+before calling this function. The private key is a random integer (0 &lt; priv_key
+&lt; order, where <em>order</em> is the order of the EC_GROUP object). The public key is
+an EC_POINT on the curve calculated by multiplying the generator for the
+curve by the private key.</p>
+<p><code>EC_KEY_check_key()</code> performs various sanity checks on the EC_KEY object to
+confirm that it is valid.</p>
+<p><code>EC_KEY_set_public_key_affine_coordinates()</code> sets the public key for <strong>key</strong> based
+on its affine co-ordinates; i.e., it constructs an EC_POINT object based on
+the supplied <strong>x</strong> and <strong>y</strong> values and sets the public key to be this
+EC_POINT. It also performs certain sanity checks on the key to confirm
+that it is valid.</p>
+<p>The functions EC_KEY_get0_group(), <code>EC_KEY_set_group()</code>,
+EC_KEY_get0_private_key(), <code>EC_KEY_set_private_key()</code>, EC_KEY_get0_public_key(),
+and <code>EC_KEY_set_public_key()</code> get and set the EC_GROUP object, the private key,
+and the EC_POINT public key for the <strong>key</strong> respectively.</p>
+<p>The functions <code>EC_KEY_get_conv_form()</code> and <code>EC_KEY_set_conv_form()</code> get and set the
+point_conversion_form for the <strong>key</strong>. For a description of
+point_conversion_forms please see <em>EC_POINT_new(3)</em>.</p>
+<p><code>EC_KEY_set_flags()</code> sets the flags in the <strong>flags</strong> parameter on the EC_KEY
+object. Any flags that are already set are left set. The flags currently
+defined are EC_FLAG_NON_FIPS_ALLOW and EC_FLAG_FIPS_CHECKED. In
+addition there is the flag EC_FLAG_COFACTOR_ECDH which is specific to ECDH.
+<code>EC_KEY_get_flags()</code> returns the current flags that are set for this EC_KEY.
+<code>EC_KEY_clear_flags()</code> clears the flags indicated by the <strong>flags</strong> parameter; all
+other flags are left in their existing state.</p>
+<p>EC_KEY_set_asn1_flag() sets the asn1_flag on the underlying EC_GROUP object
+(if set). Refer to <em>EC_GROUP_copy(3)</em> for further information on the
+asn1_flag.</p>
+<p><code>EC_KEY_precompute_mult()</code> stores multiples of the underlying EC_GROUP generator
+for faster point multiplication. See also <em>EC_POINT_add(3)</em>.</p>
+<p>EC_KEY_oct2key() and EC_KEY_key2buf() are identical to the functions
+EC_POINT_oct2point() and EC_KEY_point2buf() except they use the public key
+EC_POINT in <strong>eckey</strong>.</p>
+<p>EC_KEY_oct2priv() and EC_KEY_priv2oct() convert between the private key
+component of <strong>eckey</strong> and octet form. The octet form consists of the content
+octets of the <strong>privateKey</strong> OCTET STRING in an <strong>ECPrivateKey</strong> ASN.1 structure.</p>
+<p>The function EC_KEY_priv2oct() must be supplied with a buffer long enough to
+store the octet form. The return value provides the number of octets stored.
+Calling the function with a NULL buffer will not perform the conversion but
+will just return the required buffer length.</p>
+<p>The function EC_KEY_priv2buf() allocates a buffer of suitable length and writes
+an EC_KEY to it in octet format. The allocated buffer is written to <strong>*pbuf</strong>
+and its length is returned. The caller must free up the allocated buffer with a
+call to <code>OPENSSL_free()</code>. Since the allocated buffer value is written to <strong>*pbuf</strong>
+the <strong>pbuf</strong> parameter <strong>MUST NOT</strong> be <strong>NULL</strong>.</p>
+<p>EC_KEY_priv2buf() converts an EC_KEY private key into an allocated buffer.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>EC_KEY_new()</code>, <code>EC_KEY_new_by_curve_name()</code> and <code>EC_KEY_dup()</code> return a pointer to
+the newly created EC_KEY object, or NULL on error.</p>
+<p><code>EC_KEY_get_flags()</code> returns the flags associated with the EC_KEY object as an
+integer.</p>
+<p><code>EC_KEY_copy()</code> returns a pointer to the destination key, or NULL on error.</p>
+<p>EC_KEY_get0_engine() returns a pointer to an ENGINE, or NULL if it wasn't set.</p>
+<p><code>EC_KEY_up_ref()</code>, <code>EC_KEY_set_group()</code>, <code>EC_KEY_set_private_key()</code>,
+<code>EC_KEY_set_public_key()</code>, <code>EC_KEY_precompute_mult()</code>, <code>EC_KEY_generate_key()</code>,
+<code>EC_KEY_check_key()</code>, <code>EC_KEY_set_public_key_affine_coordinates()</code>,
+EC_KEY_oct2key() and EC_KEY_oct2priv() return 1 on success or 0 on error.</p>
+<p>EC_KEY_get0_group() returns the EC_GROUP associated with the EC_KEY.</p>
+<p>EC_KEY_get0_private_key() returns the private key associated with the EC_KEY.</p>
+<p><code>EC_KEY_get_conv_form()</code> return the point_conversion_form for the EC_KEY.</p>
+<p>EC_KEY_key2buf(), EC_KEY_priv2oct() and EC_KEY_priv2buf() return the length
+of the buffer or 0 on error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>crypto(7)</em>, <em>EC_GROUP_new(3)</em>,
+<em>EC_GROUP_copy(3)</em>, <em>EC_POINT_new(3)</em>,
+<em>EC_POINT_add(3)</em>,
+<em>EC_GFp_simple_method(3)</em>,
+<em>d2i_ECPKParameters(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2013-2017 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

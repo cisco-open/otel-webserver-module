@@ -1,0 +1,264 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_new</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>TLSv1_2_method, TLSv1_2_server_method, TLSv1_2_client_method,
+SSL_CTX_new, SSL_CTX_up_ref, SSLv3_method, SSLv3_server_method,
+SSLv3_client_method, TLSv1_method, TLSv1_server_method, TLSv1_client_method,
+TLSv1_1_method, TLSv1_1_server_method, TLSv1_1_client_method, TLS_method,
+TLS_server_method, TLS_client_method, SSLv23_method, SSLv23_server_method,
+SSLv23_client_method, DTLS_method, DTLS_server_method, DTLS_client_method,
+DTLSv1_method, DTLSv1_server_method, DTLSv1_client_method,
+DTLSv1_2_method, DTLSv1_2_server_method, DTLSv1_2_client_method
+- create a new SSL_CTX object as framework for TLS/SSL or DTLS enabled
+functions</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ SSL_CTX *SSL_CTX_new(const SSL_METHOD *method);
+ int SSL_CTX_up_ref(SSL_CTX *ctx);</pre>
+<pre>
+ const SSL_METHOD *TLS_method(void);
+ const SSL_METHOD *TLS_server_method(void);
+ const SSL_METHOD *TLS_client_method(void);</pre>
+<pre>
+ const SSL_METHOD *SSLv23_method(void);
+ const SSL_METHOD *SSLv23_server_method(void);
+ const SSL_METHOD *SSLv23_client_method(void);</pre>
+<pre>
+ #ifndef OPENSSL_NO_SSL3_METHOD
+ const SSL_METHOD *SSLv3_method(void);
+ const SSL_METHOD *SSLv3_server_method(void);
+ const SSL_METHOD *SSLv3_client_method(void);
+ #endif</pre>
+<pre>
+ #ifndef OPENSSL_NO_TLS1_METHOD
+ const SSL_METHOD *TLSv1_method(void);
+ const SSL_METHOD *TLSv1_server_method(void);
+ const SSL_METHOD *TLSv1_client_method(void);
+ #endif</pre>
+<pre>
+ #ifndef OPENSSL_NO_TLS1_1_METHOD
+ const SSL_METHOD *TLSv1_1_method(void);
+ const SSL_METHOD *TLSv1_1_server_method(void);
+ const SSL_METHOD *TLSv1_1_client_method(void);
+ #endif</pre>
+<pre>
+ #ifndef OPENSSL_NO_TLS1_2_METHOD
+ const SSL_METHOD *TLSv1_2_method(void);
+ const SSL_METHOD *TLSv1_2_server_method(void);
+ const SSL_METHOD *TLSv1_2_client_method(void);
+ #endif</pre>
+<pre>
+ const SSL_METHOD *DTLS_method(void);
+ const SSL_METHOD *DTLS_server_method(void);
+ const SSL_METHOD *DTLS_client_method(void);</pre>
+<pre>
+ #ifndef OPENSSL_NO_DTLS1_METHOD
+ const SSL_METHOD *DTLSv1_method(void);
+ const SSL_METHOD *DTLSv1_server_method(void);
+ const SSL_METHOD *DTLSv1_client_method(void);
+ #endif</pre>
+<pre>
+ #ifndef OPENSSL_NO_DTLS1_2_METHOD
+ const SSL_METHOD *DTLSv1_2_method(void);
+ const SSL_METHOD *DTLSv1_2_server_method(void);
+ const SSL_METHOD *DTLSv1_2_client_method(void);
+ #endif</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_new()</code> creates a new <strong>SSL_CTX</strong> object as framework to
+establish TLS/SSL or DTLS enabled connections. An <strong>SSL_CTX</strong> object is
+reference counted. Creating an <strong>SSL_CTX</strong> object for the first time increments
+the reference count. Freeing it (using SSL_CTX_free) decrements it. When the
+reference count drops to zero, any memory or resources allocated to the
+<strong>SSL_CTX</strong> object are freed. <code>SSL_CTX_up_ref()</code> increments the reference count for
+an existing <strong>SSL_CTX</strong> structure.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The SSL_CTX object uses <strong>method</strong> as connection method.
+The methods exist in a generic type (for client and server use), a server only
+type, and a client only type.
+<strong>method</strong> can be of the following types:</p>
+<dl>
+<dt><strong><a name="tls_method" class="item"><code>TLS_method()</code>, <code>TLS_server_method()</code>, <code>TLS_client_method()</code></a></strong></dt>
+
+<dd>
+<p>These are the general-purpose <em>version-flexible</em> SSL/TLS methods.
+The actual protocol version used will be negotiated to the highest version
+mutually supported by the client and the server.
+The supported protocols are SSLv3, TLSv1, TLSv1.1, TLSv1.2 and TLSv1.3.
+Applications should use these methods, and avoid the version-specific
+methods described below, which are deprecated.</p>
+</dd>
+<dt><strong><a name="sslv23_method" class="item">SSLv23_method(), SSLv23_server_method(), SSLv23_client_method()</a></strong></dt>
+
+<dd>
+<p>These functions do not exist anymore, they have been renamed to
+<a href="#tls_method"><code>TLS_method()</code></a>, <code>TLS_server_method()</code> and <code>TLS_client_method()</code> respectively.
+Currently, the old function calls are renamed to the corresponding new
+ones by preprocessor macros, to ensure that existing code which uses the
+old function names still compiles. However, using the old function names
+is deprecated and new code should call the new functions instead.</p>
+</dd>
+<dt><strong><a name="tlsv1_2_method" class="item">TLSv1_2_method(), TLSv1_2_server_method(), TLSv1_2_client_method()</a></strong></dt>
+
+<dd>
+<p>A TLS/SSL connection established with these methods will only understand the
+TLSv1.2 protocol. These methods are deprecated.</p>
+</dd>
+<dt><strong><a name="tlsv1_1_method" class="item">TLSv1_1_method(), TLSv1_1_server_method(), TLSv1_1_client_method()</a></strong></dt>
+
+<dd>
+<p>A TLS/SSL connection established with these methods will only understand the
+TLSv1.1 protocol.  These methods are deprecated.</p>
+</dd>
+<dt><strong><a name="tlsv1_method" class="item">TLSv1_method(), TLSv1_server_method(), TLSv1_client_method()</a></strong></dt>
+
+<dd>
+<p>A TLS/SSL connection established with these methods will only understand the
+TLSv1 protocol. These methods are deprecated.</p>
+</dd>
+<dt><strong><a name="sslv3_method" class="item">SSLv3_method(), SSLv3_server_method(), SSLv3_client_method()</a></strong></dt>
+
+<dd>
+<p>A TLS/SSL connection established with these methods will only understand the
+SSLv3 protocol.
+The SSLv3 protocol is deprecated and should not be used.</p>
+</dd>
+<dt><strong><a name="dtls_method" class="item"><code>DTLS_method()</code>, <code>DTLS_server_method()</code>, <code>DTLS_client_method()</code></a></strong></dt>
+
+<dd>
+<p>These are the version-flexible DTLS methods.
+Currently supported protocols are DTLS 1.0 and DTLS 1.2.</p>
+</dd>
+<dt><strong><a name="dtlsv1_2_method" class="item">DTLSv1_2_method(), DTLSv1_2_server_method(), DTLSv1_2_client_method()</a></strong></dt>
+
+<dd>
+<p>These are the version-specific methods for DTLSv1.2.
+These methods are deprecated.</p>
+</dd>
+<dt><strong><a name="dtlsv1_method" class="item">DTLSv1_method(), DTLSv1_server_method(), DTLSv1_client_method()</a></strong></dt>
+
+<dd>
+<p>These are the version-specific methods for DTLSv1.
+These methods are deprecated.</p>
+</dd>
+</dl>
+<p><code>SSL_CTX_new()</code> initializes the list of ciphers, the session cache setting, the
+callbacks, the keys and certificates and the options to their default values.</p>
+<p><a href="#tls_method"><code>TLS_method()</code></a>, <code>TLS_server_method()</code>, <code>TLS_client_method()</code>, <a href="#dtls_method"><code>DTLS_method()</code></a>,
+<code>DTLS_server_method()</code> and <code>DTLS_client_method()</code> are the <em>version-flexible</em>
+methods.
+All other methods only support one specific protocol version.
+Use the <em>version-flexible</em> methods instead of the version specific methods.</p>
+<p>If you want to limit the supported protocols for the version flexible
+methods you can use <em>SSL_CTX_set_min_proto_version(3)</em>,
+<em>SSL_set_min_proto_version(3)</em>, <em>SSL_CTX_set_max_proto_version(3)</em> and
+<em>SSL_set_max_proto_version(3)</em> functions.
+Using these functions it is possible to choose e.g. <code>TLS_server_method()</code>
+and be able to negotiate with all possible clients, but to only
+allow newer protocols like TLS 1.0, TLS 1.1, TLS 1.2 or TLS 1.3.</p>
+<p>The list of protocols available can also be limited using the
+<strong>SSL_OP_NO_SSLv3</strong>, <strong>SSL_OP_NO_TLSv1</strong>, <strong>SSL_OP_NO_TLSv1_1</strong>,
+<strong>SSL_OP_NO_TLSv1_3</strong>, <strong>SSL_OP_NO_TLSv1_2</strong> and <strong>SSL_OP_NO_TLSv1_3</strong>
+options of the
+<em>SSL_CTX_set_options(3)</em> or <em>SSL_set_options(3)</em> functions, but this approach
+is not recommended. Clients should avoid creating &quot;holes&quot; in the set of
+protocols they support. When disabling a protocol, make sure that you also
+disable either all previous or all subsequent protocol versions.
+In clients, when a protocol version is disabled without disabling <em>all</em>
+previous protocol versions, the effect is to also disable all subsequent
+protocol versions.</p>
+<p>The SSLv3 protocol is deprecated and should generally not be used.
+Applications should typically use <em>SSL_CTX_set_min_proto_version(3)</em> to set
+the minimum protocol to at least <strong>TLS1_VERSION</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>The following return values can occur:</p>
+<dl>
+<dt><strong><a name="null" class="item">NULL</a></strong></dt>
+
+<dd>
+<p>The creation of a new SSL_CTX object failed. Check the error stack to find out
+the reason.</p>
+</dd>
+<dt><strong><a name="pointer_to_an_ssl_ctx_object" class="item">Pointer to an SSL_CTX object</a></strong></dt>
+
+<dd>
+<p>The return value points to an allocated SSL_CTX object.</p>
+<p><code>SSL_CTX_up_ref()</code> returns 1 for success and 0 for failure.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>SSL_CTX_set_options(3)</em>, <em>SSL_CTX_free(3)</em>, <em>SSL_accept(3)</em>,
+<em>SSL_CTX_set_min_proto_version(3)</em>, <em>ssl(7)</em>, <em>SSL_set_connect_state(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>Support for SSLv2 and the corresponding SSLv2_method(),
+SSLv2_server_method() and SSLv2_client_method() functions where
+removed in OpenSSL 1.1.0.</p>
+<p>SSLv23_method(), SSLv23_server_method() and SSLv23_client_method()
+were deprecated and the preferred <a href="#tls_method"><code>TLS_method()</code></a>, <code>TLS_server_method()</code>
+and <code>TLS_client_method()</code> functions were added in OpenSSL 1.1.0.</p>
+<p>All version-specific methods were deprecated in OpenSSL 1.1.0.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,115 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>EVP_PKEY_size</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>EVP_PKEY_size, EVP_PKEY_bits, EVP_PKEY_security_bits
+- EVP_PKEY information functions</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/evp.h&gt;</pre>
+<pre>
+ int EVP_PKEY_size(const EVP_PKEY *pkey);
+ int EVP_PKEY_bits(const EVP_PKEY *pkey);
+ int EVP_PKEY_security_bits(const EVP_PKEY *pkey);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>EVP_PKEY_size()</code> returns the maximum suitable size for the output
+buffers for almost all operations that can be done with <em>pkey</em>.
+The primary documented use is with <em>EVP_SignFinal(3)</em> and
+<em>EVP_SealInit(3)</em>, but it isn't limited there.  The returned size is
+also large enough for the output buffer of <em>EVP_PKEY_sign(3)</em>,
+<em>EVP_PKEY_encrypt(3)</em>, <em>EVP_PKEY_decrypt(3)</em>, <em>EVP_PKEY_derive(3)</em>.</p>
+<p>It must be stressed that, unless the documentation for the operation
+that's being performed says otherwise, the size returned by
+<code>EVP_PKEY_size()</code> is only preliminary and not exact, so the final
+contents of the target buffer may be smaller.  It is therefore crucial
+to take note of the size given back by the function that performs the
+operation, such as <em>EVP_PKEY_sign(3)</em> (the <em>siglen</em> argument will
+receive that length), to avoid bugs.</p>
+<p><code>EVP_PKEY_bits()</code> returns the cryptographic length of the cryptosystem
+to which the key in <em>pkey</em> belongs, in bits.  Note that the definition
+of cryptographic length is specific to the key cryptosystem.</p>
+<p><code>EVP_PKEY_security_bits()</code> returns the number of security bits of the given
+<em>pkey</em>, bits of security is defined in NIST SP800-57.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>EVP_PKEY_size()</code>, <code>EVP_PKEY_bits()</code> and <code>EVP_PKEY_security_bits()</code> return a
+positive number, or 0 if this size isn't available.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>Most functions that have an output buffer and are mentioned with
+<code>EVP_PKEY_size()</code> have a functionality where you can pass NULL for the
+buffer and still pass a pointer to an integer and get the exact size
+that this function call delivers in the context that it's called in.
+This allows those functions to be called twice, once to find out the
+exact buffer size, then allocate the buffer in between, and call that
+function again actually output the data.  For those functions, it
+isn't strictly necessary to call <code>EVP_PKEY_size()</code> to find out the
+buffer size, but may be useful in cases where it's desirable to know
+the upper limit in advance.</p>
+<p>It should also be especially noted that <code>EVP_PKEY_size()</code> shouldn't be
+used to get the output size for <code>EVP_DigestSignFinal()</code>, according to
+<em>EVP_DigestSignFinal(3)/NOTES</em>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>EVP_SignFinal(3)</em>,
+<em>EVP_SealInit(3)</em>,
+<em>EVP_PKEY_sign(3)</em>,
+<em>EVP_PKEY_encrypt(3)</em>,
+<em>EVP_PKEY_decrypt(3)</em>,
+<em>EVP_PKEY_derive(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2020 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the Apache License 2.0 (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

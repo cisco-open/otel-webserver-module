@@ -1,0 +1,801 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>cms</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#options">OPTIONS</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#exit_codes">EXIT CODES</a></li>
+	<li><a href="#compatibility_with_pkcs_7_format_">COMPATIBILITY WITH PKCS#7 format.</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>openssl-cms,
+cms - CMS utility</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p><strong>openssl</strong> <strong>cms</strong>
+[<strong>-help</strong>]
+[<strong>-encrypt</strong>]
+[<strong>-decrypt</strong>]
+[<strong>-sign</strong>]
+[<strong>-verify</strong>]
+[<strong>-cmsout</strong>]
+[<strong>-resign</strong>]
+[<strong>-data_create</strong>]
+[<strong>-data_out</strong>]
+[<strong>-digest_create</strong>]
+[<strong>-digest_verify</strong>]
+[<strong>-compress</strong>]
+[<strong>-uncompress</strong>]
+[<strong>-EncryptedData_encrypt</strong>]
+[<strong>-sign_receipt</strong>]
+[<strong>-verify_receipt receipt</strong>]
+[<strong>-in filename</strong>]
+[<strong>-inform SMIME|PEM|DER</strong>]
+[<strong>-rctform SMIME|PEM|DER</strong>]
+[<strong>-out filename</strong>]
+[<strong>-outform SMIME|PEM|DER</strong>]
+[<strong>-stream -indef -noindef</strong>]
+[<strong>-noindef</strong>]
+[<strong>-content filename</strong>]
+[<strong>-text</strong>]
+[<strong>-noout</strong>]
+[<strong>-print</strong>]
+[<strong>-CAfile file</strong>]
+[<strong>-CApath dir</strong>]
+[<strong>-no-CAfile</strong>]
+[<strong>-no-CApath</strong>]
+[<strong>-attime timestamp</strong>]
+[<strong>-check_ss_sig</strong>]
+[<strong>-crl_check</strong>]
+[<strong>-crl_check_all</strong>]
+[<strong>-explicit_policy</strong>]
+[<strong>-extended_crl</strong>]
+[<strong>-ignore_critical</strong>]
+[<strong>-inhibit_any</strong>]
+[<strong>-inhibit_map</strong>]
+[<strong>-no_check_time</strong>]
+[<strong>-partial_chain</strong>]
+[<strong>-policy arg</strong>]
+[<strong>-policy_check</strong>]
+[<strong>-policy_print</strong>]
+[<strong>-purpose purpose</strong>]
+[<strong>-suiteB_128</strong>]
+[<strong>-suiteB_128_only</strong>]
+[<strong>-suiteB_192</strong>]
+[<strong>-trusted_first</strong>]
+[<strong>-no_alt_chains</strong>]
+[<strong>-use_deltas</strong>]
+[<strong>-auth_level num</strong>]
+[<strong>-verify_depth num</strong>]
+[<strong>-verify_email email</strong>]
+[<strong>-verify_hostname hostname</strong>]
+[<strong>-verify_ip ip</strong>]
+[<strong>-verify_name name</strong>]
+[<strong>-x509_strict</strong>]
+[<strong>-md digest</strong>]
+[<strong>-<em>cipher</em></strong>]
+[<strong>-nointern</strong>]
+[<strong>-noverify</strong>]
+[<strong>-nocerts</strong>]
+[<strong>-noattr</strong>]
+[<strong>-nosmimecap</strong>]
+[<strong>-binary</strong>]
+[<strong>-crlfeol</strong>]
+[<strong>-asciicrlf</strong>]
+[<strong>-nodetach</strong>]
+[<strong>-certfile file</strong>]
+[<strong>-certsout file</strong>]
+[<strong>-signer file</strong>]
+[<strong>-recip file</strong>]
+[<strong>-keyid</strong>]
+[<strong>-receipt_request_all</strong>]
+[<strong>-receipt_request_first</strong>]
+[<strong>-receipt_request_from emailaddress</strong>]
+[<strong>-receipt_request_to emailaddress</strong>]
+[<strong>-receipt_request_print</strong>]
+[<strong>-secretkey key</strong>]
+[<strong>-secretkeyid id</strong>]
+[<strong>-econtent_type type</strong>]
+[<strong>-inkey file</strong>]
+[<strong>-keyopt name:parameter</strong>]
+[<strong>-passin arg</strong>]
+[<strong>-rand file...</strong>]
+[<strong>-writerand file</strong>]
+[<strong>cert.pem...</strong>]
+[<strong>-to addr</strong>]
+[<strong>-from addr</strong>]
+[<strong>-subject subj</strong>]
+[cert.pem]...</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The <strong>cms</strong> command handles S/MIME v3.1 mail. It can encrypt, decrypt, sign and
+verify, compress and uncompress S/MIME messages.</p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<p>There are fourteen operation options that set the type of operation to be
+performed. The meaning of the other options varies according to the operation
+type.</p>
+<dl>
+<dt><strong><a name="help" class="item"><strong>-help</strong></a></strong></dt>
+
+<dd>
+<p>Print out a usage message.</p>
+</dd>
+<dt><strong><a name="encrypt" class="item"><strong>-encrypt</strong></a></strong></dt>
+
+<dd>
+<p>Encrypt mail for the given recipient certificates. Input file is the message
+to be encrypted. The output file is the encrypted mail in MIME format. The
+actual CMS type is &lt;B&gt;EnvelopedData&lt;B&gt;.</p>
+<p>Note that no revocation check is done for the recipient cert, so if that
+key has been compromised, others may be able to decrypt the text.</p>
+</dd>
+<dt><strong><a name="decrypt" class="item"><strong>-decrypt</strong></a></strong></dt>
+
+<dd>
+<p>Decrypt mail using the supplied certificate and private key. Expects an
+encrypted mail message in MIME format for the input file. The decrypted mail
+is written to the output file.</p>
+</dd>
+<dt><strong><a name="debug_decrypt" class="item"><strong>-debug_decrypt</strong></a></strong></dt>
+
+<dd>
+<p>This option sets the <strong>CMS_DEBUG_DECRYPT</strong> flag. This option should be used
+with caution: see the notes section below.</p>
+</dd>
+<dt><strong><a name="sign" class="item"><strong>-sign</strong></a></strong></dt>
+
+<dd>
+<p>Sign mail using the supplied certificate and private key. Input file is
+the message to be signed. The signed message in MIME format is written
+to the output file.</p>
+</dd>
+<dt><strong><a name="verify" class="item"><strong>-verify</strong></a></strong></dt>
+
+<dd>
+<p>Verify signed mail. Expects a signed mail message on input and outputs
+the signed data. Both clear text and opaque signing is supported.</p>
+</dd>
+<dt><strong><a name="cmsout" class="item"><strong>-cmsout</strong></a></strong></dt>
+
+<dd>
+<p>Takes an input message and writes out a PEM encoded CMS structure.</p>
+</dd>
+<dt><strong><a name="resign" class="item"><strong>-resign</strong></a></strong></dt>
+
+<dd>
+<p>Resign a message: take an existing message and one or more new signers.</p>
+</dd>
+<dt><strong><a name="data_create" class="item"><strong>-data_create</strong></a></strong></dt>
+
+<dd>
+<p>Create a CMS <strong>Data</strong> type.</p>
+</dd>
+<dt><strong><a name="data_out" class="item"><strong>-data_out</strong></a></strong></dt>
+
+<dd>
+<p><strong>Data</strong> type and output the content.</p>
+</dd>
+<dt><strong><a name="digest_create" class="item"><strong>-digest_create</strong></a></strong></dt>
+
+<dd>
+<p>Create a CMS <strong>DigestedData</strong> type.</p>
+</dd>
+<dt><strong><a name="digest_verify" class="item"><strong>-digest_verify</strong></a></strong></dt>
+
+<dd>
+<p>Verify a CMS <strong>DigestedData</strong> type and output the content.</p>
+</dd>
+<dt><strong><a name="compress" class="item"><strong>-compress</strong></a></strong></dt>
+
+<dd>
+<p>Create a CMS <strong>CompressedData</strong> type. OpenSSL must be compiled with <strong>zlib</strong>
+support for this option to work, otherwise it will output an error.</p>
+</dd>
+<dt><strong><a name="uncompress" class="item"><strong>-uncompress</strong></a></strong></dt>
+
+<dd>
+<p>Uncompress a CMS <strong>CompressedData</strong> type and output the content. OpenSSL must be
+compiled with <strong>zlib</strong> support for this option to work, otherwise it will
+output an error.</p>
+</dd>
+<dt><strong><a name="encrypteddata_encrypt" class="item"><strong>-EncryptedData_encrypt</strong></a></strong></dt>
+
+<dd>
+<p>Encrypt content using supplied symmetric key and algorithm using a CMS
+<strong>EncryptedData</strong> type and output the content.</p>
+</dd>
+<dt><strong><a name="sign_receipt" class="item"><strong>-sign_receipt</strong></a></strong></dt>
+
+<dd>
+<p>Generate and output a signed receipt for the supplied message. The input
+message <strong>must</strong> contain a signed receipt request. Functionality is otherwise
+similar to the <strong>-sign</strong> operation.</p>
+</dd>
+<dt><strong><a name="verify_receipt_receipt" class="item"><strong>-verify_receipt receipt</strong></a></strong></dt>
+
+<dd>
+<p>Verify a signed receipt in filename <strong>receipt</strong>. The input message <strong>must</strong>
+contain the original receipt request. Functionality is otherwise similar
+to the <strong>-verify</strong> operation.</p>
+</dd>
+<dt><strong><a name="in_filename" class="item"><strong>-in filename</strong></a></strong></dt>
+
+<dd>
+<p>The input message to be encrypted or signed or the message to be decrypted
+or verified.</p>
+</dd>
+<dt><strong><a name="inform_smime_pem_der" class="item"><strong>-inform SMIME|PEM|DER</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the input format for the CMS structure. The default
+is <strong>SMIME</strong> which reads an S/MIME format message. <strong>PEM</strong> and <strong>DER</strong>
+format change this to expect PEM and DER format CMS structures
+instead. This currently only affects the input format of the CMS
+structure, if no CMS structure is being input (for example with
+<strong>-encrypt</strong> or <strong>-sign</strong>) this option has no effect.</p>
+</dd>
+<dt><strong><a name="rctform_smime_pem_der" class="item"><strong>-rctform SMIME|PEM|DER</strong></a></strong></dt>
+
+<dd>
+<p>Specify the format for a signed receipt for use with the <strong>-receipt_verify</strong>
+operation.</p>
+</dd>
+<dt><strong><a name="out_filename" class="item"><strong>-out filename</strong></a></strong></dt>
+
+<dd>
+<p>The message text that has been decrypted or verified or the output MIME
+format message that has been signed or verified.</p>
+</dd>
+<dt><strong><a name="outform_smime_pem_der" class="item"><strong>-outform SMIME|PEM|DER</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the output format for the CMS structure. The default
+is <strong>SMIME</strong> which writes an S/MIME format message. <strong>PEM</strong> and <strong>DER</strong>
+format change this to write PEM and DER format CMS structures
+instead. This currently only affects the output format of the CMS
+structure, if no CMS structure is being output (for example with
+<strong>-verify</strong> or <strong>-decrypt</strong>) this option has no effect.</p>
+</dd>
+<dt><strong><a name="stream_indef_noindef" class="item"><strong>-stream -indef -noindef</strong></a></strong></dt>
+
+<dd>
+<p>The <strong>-stream</strong> and <strong>-indef</strong> options are equivalent and enable streaming I/O
+for encoding operations. This permits single pass processing of data without
+the need to hold the entire contents in memory, potentially supporting very
+large files. Streaming is automatically set for S/MIME signing with detached
+data if the output format is <strong>SMIME</strong> it is currently off by default for all
+other operations.</p>
+</dd>
+<dt><strong><a name="noindef" class="item"><strong>-noindef</strong></a></strong></dt>
+
+<dd>
+<p>Disable streaming I/O where it would produce and indefinite length constructed
+encoding. This option currently has no effect. In future streaming will be
+enabled by default on all relevant operations and this option will disable it.</p>
+</dd>
+<dt><strong><a name="content_filename" class="item"><strong>-content filename</strong></a></strong></dt>
+
+<dd>
+<p>This specifies a file containing the detached content, this is only
+useful with the <strong>-verify</strong> command. This is only usable if the CMS
+structure is using the detached signature form where the content is
+not included. This option will override any content if the input format
+is S/MIME and it uses the multipart/signed MIME content type.</p>
+</dd>
+<dt><strong><a name="text" class="item"><strong>-text</strong></a></strong></dt>
+
+<dd>
+<p>This option adds plain text (text/plain) MIME headers to the supplied
+message if encrypting or signing. If decrypting or verifying it strips
+off text headers: if the decrypted or verified message is not of MIME
+type text/plain then an error occurs.</p>
+</dd>
+<dt><strong><a name="noout" class="item"><strong>-noout</strong></a></strong></dt>
+
+<dd>
+<p>For the <strong>-cmsout</strong> operation do not output the parsed CMS structure. This
+is useful when combined with the <strong>-print</strong> option or if the syntax of the CMS
+structure is being checked.</p>
+</dd>
+<dt><strong><a name="print" class="item"><strong>-print</strong></a></strong></dt>
+
+<dd>
+<p>For the <strong>-cmsout</strong> operation print out all fields of the CMS structure. This
+is mainly useful for testing purposes.</p>
+</dd>
+<dt><strong><a name="cafile_file" class="item"><strong>-CAfile file</strong></a></strong></dt>
+
+<dd>
+<p>A file containing trusted CA certificates, only used with <strong>-verify</strong>.</p>
+</dd>
+<dt><strong><a name="capath_dir" class="item"><strong>-CApath dir</strong></a></strong></dt>
+
+<dd>
+<p>A directory containing trusted CA certificates, only used with
+<strong>-verify</strong>. This directory must be a standard certificate directory: that
+is a hash of each subject name (using <strong>x509 -hash</strong>) should be linked
+to each certificate.</p>
+</dd>
+<dt><strong><a name="no_cafile" class="item"><strong>-no-CAfile</strong></a></strong></dt>
+
+<dd>
+<p>Do not load the trusted CA certificates from the default file location</p>
+</dd>
+<dt><strong><a name="no_capath" class="item"><strong>-no-CApath</strong></a></strong></dt>
+
+<dd>
+<p>Do not load the trusted CA certificates from the default directory location</p>
+</dd>
+<dt><strong><a name="md_digest" class="item"><strong>-md digest</strong></a></strong></dt>
+
+<dd>
+<p>Digest algorithm to use when signing or resigning. If not present then the
+default digest algorithm for the signing key will be used (usually SHA1).</p>
+</dd>
+<dt><strong><a name="cipher" class="item"><strong>-<em>cipher</em></strong></a></strong></dt>
+
+<dd>
+<p>The encryption algorithm to use. For example triple DES (168 bits) - <strong>-des3</strong>
+or 256 bit AES - <strong>-aes256</strong>. Any standard algorithm name (as used by the
+<code>EVP_get_cipherbyname()</code> function) can also be used preceded by a dash, for
+example <strong>-aes-128-cbc</strong>. See <em>enc(1)</em> for a list of ciphers
+supported by your version of OpenSSL.</p>
+<p>If not specified triple DES is used. Only used with <strong>-encrypt</strong> and
+<strong>-EncryptedData_create</strong> commands.</p>
+</dd>
+<dt><strong><a name="nointern" class="item"><strong>-nointern</strong></a></strong></dt>
+
+<dd>
+<p>When verifying a message normally certificates (if any) included in
+the message are searched for the signing certificate. With this option
+only the certificates specified in the <strong>-certfile</strong> option are used.
+The supplied certificates can still be used as untrusted CAs however.</p>
+</dd>
+<dt><strong><a name="noverify" class="item"><strong>-noverify</strong></a></strong></dt>
+
+<dd>
+<p>Do not verify the signers certificate of a signed message.</p>
+</dd>
+<dt><strong><a name="nocerts" class="item"><strong>-nocerts</strong></a></strong></dt>
+
+<dd>
+<p>When signing a message the signer's certificate is normally included
+with this option it is excluded. This will reduce the size of the
+signed message but the verifier must have a copy of the signers certificate
+available locally (passed using the <strong>-certfile</strong> option for example).</p>
+</dd>
+<dt><strong><a name="noattr" class="item"><strong>-noattr</strong></a></strong></dt>
+
+<dd>
+<p>Normally when a message is signed a set of attributes are included which
+include the signing time and supported symmetric algorithms. With this
+option they are not included.</p>
+</dd>
+<dt><strong><a name="nosmimecap" class="item"><strong>-nosmimecap</strong></a></strong></dt>
+
+<dd>
+<p>Exclude the list of supported algorithms from signed attributes, other options
+such as signing time and content type are still included.</p>
+</dd>
+<dt><strong><a name="binary" class="item"><strong>-binary</strong></a></strong></dt>
+
+<dd>
+<p>Normally the input message is converted to &quot;canonical&quot; format which is
+effectively using CR and LF as end of line: as required by the S/MIME
+specification. When this option is present no translation occurs. This
+is useful when handling binary data which may not be in MIME format.</p>
+</dd>
+<dt><strong><a name="crlfeol" class="item"><strong>-crlfeol</strong></a></strong></dt>
+
+<dd>
+<p>Normally the output file uses a single <strong>LF</strong> as end of line. When this
+option is present <strong>CRLF</strong> is used instead.</p>
+</dd>
+<dt><strong><a name="asciicrlf" class="item"><strong>-asciicrlf</strong></a></strong></dt>
+
+<dd>
+<p>When signing use ASCII CRLF format canonicalisation. This strips trailing
+whitespace from all lines, deletes trailing blank lines at EOF and sets
+the encapsulated content type. This option is normally used with detached
+content and an output signature format of DER. This option is not normally
+needed when verifying as it is enabled automatically if the encapsulated
+content format is detected.</p>
+</dd>
+<dt><strong><a name="nodetach" class="item"><strong>-nodetach</strong></a></strong></dt>
+
+<dd>
+<p>When signing a message use opaque signing: this form is more resistant
+to translation by mail relays but it cannot be read by mail agents that
+do not support S/MIME.  Without this option cleartext signing with
+the MIME type multipart/signed is used.</p>
+</dd>
+<dt><strong><a name="certfile_file" class="item"><strong>-certfile file</strong></a></strong></dt>
+
+<dd>
+<p>Allows additional certificates to be specified. When signing these will
+be included with the message. When verifying these will be searched for
+the signers certificates. The certificates should be in PEM format.</p>
+</dd>
+<dt><strong><a name="certsout_file" class="item"><strong>-certsout file</strong></a></strong></dt>
+
+<dd>
+<p>Any certificates contained in the message are written to <strong>file</strong>.</p>
+</dd>
+<dt><strong><a name="signer_file" class="item"><strong>-signer file</strong></a></strong></dt>
+
+<dd>
+<p>A signing certificate when signing or resigning a message, this option can be
+used multiple times if more than one signer is required. If a message is being
+verified then the signers certificates will be written to this file if the
+verification was successful.</p>
+</dd>
+<dt><strong><a name="recip_file" class="item"><strong>-recip file</strong></a></strong></dt>
+
+<dd>
+<p>When decrypting a message this specifies the recipients certificate. The
+certificate must match one of the recipients of the message or an error
+occurs.</p>
+<p>When encrypting a message this option may be used multiple times to specify
+each recipient. This form <strong>must</strong> be used if customised parameters are
+required (for example to specify RSA-OAEP).</p>
+<p>Only certificates carrying RSA, Diffie-Hellman or EC keys are supported by this
+option.</p>
+</dd>
+<dt><strong><a name="keyid" class="item"><strong>-keyid</strong></a></strong></dt>
+
+<dd>
+<p>Use subject key identifier to identify certificates instead of issuer name and
+serial number. The supplied certificate <strong>must</strong> include a subject key
+identifier extension. Supported by <strong>-sign</strong> and <strong>-encrypt</strong> options.</p>
+</dd>
+<dt><strong><a name="receipt_request_all_receipt_request_first" class="item"><strong>-receipt_request_all</strong>, <strong>-receipt_request_first</strong></a></strong></dt>
+
+<dd>
+<p>For <strong>-sign</strong> option include a signed receipt request. Indicate requests should
+be provided by all recipient or first tier recipients (those mailed directly
+and not from a mailing list). Ignored it <strong>-receipt_request_from</strong> is included.</p>
+</dd>
+<dt><strong><a name="receipt_request_from_emailaddress" class="item"><strong>-receipt_request_from emailaddress</strong></a></strong></dt>
+
+<dd>
+<p>For <strong>-sign</strong> option include a signed receipt request. Add an explicit email
+address where receipts should be supplied.</p>
+</dd>
+<dt><strong><a name="receipt_request_to_emailaddress" class="item"><strong>-receipt_request_to emailaddress</strong></a></strong></dt>
+
+<dd>
+<p>Add an explicit email address where signed receipts should be sent to. This
+option <strong>must</strong> but supplied if a signed receipt it requested.</p>
+</dd>
+<dt><strong><a name="receipt_request_print" class="item"><strong>-receipt_request_print</strong></a></strong></dt>
+
+<dd>
+<p>For the <strong>-verify</strong> operation print out the contents of any signed receipt
+requests.</p>
+</dd>
+<dt><strong><a name="secretkey_key" class="item"><strong>-secretkey key</strong></a></strong></dt>
+
+<dd>
+<p>Specify symmetric key to use. The key must be supplied in hex format and be
+consistent with the algorithm used. Supported by the <strong>-EncryptedData_encrypt</strong>
+<strong>-EncryptedData_decrypt</strong>, <strong>-encrypt</strong> and <strong>-decrypt</strong> options. When used
+with <strong>-encrypt</strong> or <strong>-decrypt</strong> the supplied key is used to wrap or unwrap the
+content encryption key using an AES key in the <strong>KEKRecipientInfo</strong> type.</p>
+</dd>
+<dt><strong><a name="secretkeyid_id" class="item"><strong>-secretkeyid id</strong></a></strong></dt>
+
+<dd>
+<p>The key identifier for the supplied symmetric key for <strong>KEKRecipientInfo</strong> type.
+This option <strong>must</strong> be present if the <strong>-secretkey</strong> option is used with
+<strong>-encrypt</strong>. With <strong>-decrypt</strong> operations the <strong>id</strong> is used to locate the
+relevant key if it is not supplied then an attempt is used to decrypt any
+<strong>KEKRecipientInfo</strong> structures.</p>
+</dd>
+<dt><strong><a name="econtent_type_type" class="item"><strong>-econtent_type type</strong></a></strong></dt>
+
+<dd>
+<p>Set the encapsulated content type to <strong>type</strong> if not supplied the <strong>Data</strong> type
+is used. The <strong>type</strong> argument can be any valid OID name in either text or
+numerical format.</p>
+</dd>
+<dt><strong><a name="inkey_file" class="item"><strong>-inkey file</strong></a></strong></dt>
+
+<dd>
+<p>The private key to use when signing or decrypting. This must match the
+corresponding certificate. If this option is not specified then the
+private key must be included in the certificate file specified with
+the <strong>-recip</strong> or <strong>-signer</strong> file. When signing this option can be used
+multiple times to specify successive keys.</p>
+</dd>
+<dt><strong><a name="keyopt_name_opt" class="item"><strong>-keyopt name:opt</strong></a></strong></dt>
+
+<dd>
+<p>For signing and encryption this option can be used multiple times to
+set customised parameters for the preceding key or certificate. It can
+currently be used to set RSA-PSS for signing, RSA-OAEP for encryption
+or to modify default parameters for ECDH.</p>
+</dd>
+<dt><strong><a name="passin_arg" class="item"><strong>-passin arg</strong></a></strong></dt>
+
+<dd>
+<p>The private key password source. For more information about the format of <strong>arg</strong>
+see the <strong>PASS PHRASE ARGUMENTS</strong> section in <em>openssl(1)</em>.</p>
+</dd>
+<dt><strong><a name="rand_file" class="item"><strong>-rand file...</strong></a></strong></dt>
+
+<dd>
+<p>A file or files containing random data used to seed the random number
+generator.
+Multiple files can be specified separated by an OS-dependent character.
+The separator is <strong>;</strong> for MS-Windows, <strong>,</strong> for OpenVMS, and <strong>:</strong> for
+all others.</p>
+</dd>
+<dt><strong><a name="writerand_file" class="item">[<strong>-writerand file</strong>]</a></strong></dt>
+
+<dd>
+<p>Writes random data to the specified <em>file</em> upon exit.
+This can be used with a subsequent <strong>-rand</strong> flag.</p>
+</dd>
+<dt><strong><a name="cert_pem" class="item"><strong>cert.pem...</strong></a></strong></dt>
+
+<dd>
+<p>One or more certificates of message recipients: used when encrypting
+a message.</p>
+</dd>
+<dt><strong><a name="to_from_subject" class="item"><strong>-to, -from, -subject</strong></a></strong></dt>
+
+<dd>
+<p>The relevant mail headers. These are included outside the signed
+portion of a message so they may be included manually. If signing
+then many S/MIME mail clients check the signers certificate's email
+address matches that specified in the From: address.</p>
+</dd>
+<dt><strong><a name="attime_check_ss_sig_crl_check_crl_check_all_explicit_policy_extended_crl_ignore_critical_inhibit_any_inhibit_map_no_alt_chains_no_check_time_partial_chain_policy_policy_check_policy_print_purpose_suiteb_128_suiteb_128_only_suiteb_192_trusted_first_use_deltas_auth_level_verify_depth_verify_email_verify_hostname_verify_ip_verify_name_x509_strict" class="item"><strong>-attime</strong>, <strong>-check_ss_sig</strong>, <strong>-crl_check</strong>, <strong>-crl_check_all</strong>,
+<strong>-explicit_policy</strong>, <strong>-extended_crl</strong>, <strong>-ignore_critical</strong>, <strong>-inhibit_any</strong>,
+<strong>-inhibit_map</strong>, <strong>-no_alt_chains</strong>, <strong>-no_check_time</strong>, <strong>-partial_chain</strong>, <strong>-policy</strong>,
+<strong>-policy_check</strong>, <strong>-policy_print</strong>, <strong>-purpose</strong>, <strong>-suiteB_128</strong>,
+<strong>-suiteB_128_only</strong>, <strong>-suiteB_192</strong>, <strong>-trusted_first</strong>, <strong>-use_deltas</strong>,
+<strong>-auth_level</strong>, <strong>-verify_depth</strong>, <strong>-verify_email</strong>, <strong>-verify_hostname</strong>,
+<strong>-verify_ip</strong>, <strong>-verify_name</strong>, <strong>-x509_strict</strong></a></strong></dt>
+
+<dd>
+<p>Set various certificate chain validation options. See the
+<a href="#verify">verify(1)</a> manual page for details.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The MIME message must be sent without any blank lines between the
+headers and the output. Some mail programs will automatically add
+a blank line. Piping the mail directly to sendmail is one way to
+achieve the correct format.</p>
+<p>The supplied message to be signed or encrypted must include the
+necessary MIME headers or many S/MIME clients won't display it
+properly (if at all). You can use the <strong>-text</strong> option to automatically
+add plain text headers.</p>
+<p>A &quot;signed and encrypted&quot; message is one where a signed message is
+then encrypted. This can be produced by encrypting an already signed
+message: see the examples section.</p>
+<p>This version of the program only allows one signer per message but it
+will verify multiple signers on received messages. Some S/MIME clients
+choke if a message contains multiple signers. It is possible to sign
+messages &quot;in parallel&quot; by signing an already signed message.</p>
+<p>The options <strong>-encrypt</strong> and <strong>-decrypt</strong> reflect common usage in S/MIME
+clients. Strictly speaking these process CMS enveloped data: CMS
+encrypted data is used for other purposes.</p>
+<p>The <strong>-resign</strong> option uses an existing message digest when adding a new
+signer. This means that attributes must be present in at least one existing
+signer using the same message digest or this operation will fail.</p>
+<p>The <strong>-stream</strong> and <strong>-indef</strong> options enable streaming I/O support.
+As a result the encoding is BER using indefinite length constructed encoding
+and no longer DER. Streaming is supported for the <strong>-encrypt</strong> operation and the
+<strong>-sign</strong> operation if the content is not detached.</p>
+<p>Streaming is always used for the <strong>-sign</strong> operation with detached data but
+since the content is no longer part of the CMS structure the encoding
+remains DER.</p>
+<p>If the <strong>-decrypt</strong> option is used without a recipient certificate then an
+attempt is made to locate the recipient by trying each potential recipient
+in turn using the supplied private key. To thwart the MMA attack
+(Bleichenbacher's attack on PKCS #1 v1.5 RSA padding) all recipients are
+tried whether they succeed or not and if no recipients match the message
+is &quot;decrypted&quot; using a random key which will typically output garbage.
+The <strong>-debug_decrypt</strong> option can be used to disable the MMA attack protection
+and return an error if no recipient can be found: this option should be used
+with caution. For a fuller description see <em>CMS_decrypt(3)</em>).</p>
+<p>
+</p>
+<hr />
+<h1><a name="exit_codes">EXIT CODES</a></h1>
+<ol>
+<li>
+<p>The operation was completely successfully.</p>
+</li>
+<li>
+<p>An error occurred parsing the command options.</p>
+</li>
+<li>
+<p>One of the input files could not be read.</p>
+</li>
+<li>
+<p>An error occurred creating the CMS file or when reading the MIME
+message.</p>
+</li>
+<li>
+<p>An error occurred decrypting or verifying the message.</p>
+</li>
+<li>
+<p>The message was verified correctly but an error occurred writing out
+the signers certificates.</p>
+</li>
+</ol>
+<p>
+</p>
+<hr />
+<h1><a name="compatibility_with_pkcs_7_format_">COMPATIBILITY WITH PKCS#7 format.</a></h1>
+<p>The <strong>smime</strong> utility can only process the older <strong>PKCS#7</strong> format. The <strong>cms</strong>
+utility supports Cryptographic Message Syntax format. Use of some features
+will result in messages which cannot be processed by applications which only
+support the older format. These are detailed below.</p>
+<p>The use of the <strong>-keyid</strong> option with <strong>-sign</strong> or <strong>-encrypt</strong>.</p>
+<p>The <strong>-outform PEM</strong> option uses different headers.</p>
+<p>The <strong>-compress</strong> option.</p>
+<p>The <strong>-secretkey</strong> option when used with <strong>-encrypt</strong>.</p>
+<p>The use of PSS with <strong>-sign</strong>.</p>
+<p>The use of OAEP or non-RSA keys with <strong>-encrypt</strong>.</p>
+<p>Additionally the <strong>-EncryptedData_create</strong> and <strong>-data_create</strong> type cannot
+be processed by the older <strong>smime</strong> command.</p>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>Create a cleartext signed message:</p>
+<pre>
+ openssl cms -sign -in message.txt -text -out mail.msg \
+        -signer mycert.pem</pre>
+<p>Create an opaque signed message</p>
+<pre>
+ openssl cms -sign -in message.txt -text -out mail.msg -nodetach \
+        -signer mycert.pem</pre>
+<p>Create a signed message, include some additional certificates and
+read the private key from another file:</p>
+<pre>
+ openssl cms -sign -in in.txt -text -out mail.msg \
+        -signer mycert.pem -inkey mykey.pem -certfile mycerts.pem</pre>
+<p>Create a signed message with two signers, use key identifier:</p>
+<pre>
+ openssl cms -sign -in message.txt -text -out mail.msg \
+        -signer mycert.pem -signer othercert.pem -keyid</pre>
+<p>Send a signed message under Unix directly to sendmail, including headers:</p>
+<pre>
+ openssl cms -sign -in in.txt -text -signer mycert.pem \
+        -from steve@openssl.org -to someone@somewhere \
+        -subject &quot;Signed message&quot; | sendmail someone@somewhere</pre>
+<p>Verify a message and extract the signer's certificate if successful:</p>
+<pre>
+ openssl cms -verify -in mail.msg -signer user.pem -out signedtext.txt</pre>
+<p>Send encrypted mail using triple DES:</p>
+<pre>
+ openssl cms -encrypt -in in.txt -from steve@openssl.org \
+        -to someone@somewhere -subject &quot;Encrypted message&quot; \
+        -des3 user.pem -out mail.msg</pre>
+<p>Sign and encrypt mail:</p>
+<pre>
+ openssl cms -sign -in ml.txt -signer my.pem -text \
+        | openssl cms -encrypt -out mail.msg \
+        -from steve@openssl.org -to someone@somewhere \
+        -subject &quot;Signed and Encrypted message&quot; -des3 user.pem</pre>
+<p>Note: the encryption command does not include the <strong>-text</strong> option because the
+message being encrypted already has MIME headers.</p>
+<p>Decrypt mail:</p>
+<pre>
+ openssl cms -decrypt -in mail.msg -recip mycert.pem -inkey key.pem</pre>
+<p>The output from Netscape form signing is a PKCS#7 structure with the
+detached signature format. You can use this program to verify the
+signature by line wrapping the base64 encoded structure and surrounding
+it with:</p>
+<pre>
+ -----BEGIN PKCS7-----
+ -----END PKCS7-----</pre>
+<p>and using the command,</p>
+<pre>
+ openssl cms -verify -inform PEM -in signature.pem -content content.txt</pre>
+<p>alternatively you can base64 decode the signature and use</p>
+<pre>
+ openssl cms -verify -inform DER -in signature.der -content content.txt</pre>
+<p>Create an encrypted message using 128 bit Camellia:</p>
+<pre>
+ openssl cms -encrypt -in plain.txt -camellia128 -out mail.msg cert.pem</pre>
+<p>Add a signer to an existing message:</p>
+<pre>
+ openssl cms -resign -in mail.msg -signer newsign.pem -out mail2.msg</pre>
+<p>Sign mail using RSA-PSS:</p>
+<pre>
+ openssl cms -sign -in message.txt -text -out mail.msg \
+        -signer mycert.pem -keyopt rsa_padding_mode:pss</pre>
+<p>Create encrypted mail using RSA-OAEP:</p>
+<pre>
+ openssl cms -encrypt -in plain.txt -out mail.msg \
+        -recip cert.pem -keyopt rsa_padding_mode:oaep</pre>
+<p>Use SHA256 KDF with an ECDH certificate:</p>
+<pre>
+ openssl cms -encrypt -in plain.txt -out mail.msg \
+        -recip ecdhcert.pem -keyopt ecdh_kdf_md:sha256</pre>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>The MIME parser isn't very clever: it seems to handle most messages that I've
+thrown at it but it may choke on others.</p>
+<p>The code currently will only write out the signer's certificate to a file: if
+the signer has a separate encryption certificate this must be manually
+extracted. There should be some heuristic that determines the correct
+encryption certificate.</p>
+<p>Ideally a database should be maintained of a certificates for each email
+address.</p>
+<p>The code doesn't currently take note of the permitted symmetric encryption
+algorithms as supplied in the SMIMECapabilities signed attribute. this means the
+user has to manually include the correct encryption algorithm. It should store
+the list of permitted ciphers in a database and only use those.</p>
+<p>No revocation checking is done on the signer's certificate.</p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The use of multiple <strong>-signer</strong> options and the <strong>-resign</strong> command were first
+added in OpenSSL 1.0.0.</p>
+<p>The <strong>keyopt</strong> option was added in OpenSSL 1.0.2.</p>
+<p>Support for RSA-OAEP and RSA-PSS was added in OpenSSL 1.0.2.</p>
+<p>The use of non-RSA keys with <strong>-encrypt</strong> and <strong>-decrypt</strong>
+was added in OpenSSL 1.0.2.</p>
+<p>The -no_alt_chains option was added in OpenSSL 1.0.2b.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2008-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

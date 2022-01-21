@@ -1,0 +1,149 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>RAND_DRBG_reseed</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>RAND_DRBG_reseed,
+RAND_DRBG_set_reseed_interval,
+RAND_DRBG_set_reseed_time_interval,
+RAND_DRBG_set_reseed_defaults
+- reseed a RAND_DRBG instance</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/rand_drbg.h&gt;</pre>
+<pre>
+ int RAND_DRBG_reseed(RAND_DRBG *drbg,
+                      const unsigned char *adin, size_t adinlen,
+                      int prediction_resistance);</pre>
+<pre>
+ int RAND_DRBG_set_reseed_interval(RAND_DRBG *drbg,
+                                   unsigned int interval);</pre>
+<pre>
+ int RAND_DRBG_set_reseed_time_interval(RAND_DRBG *drbg,
+                                        time_t interval);</pre>
+<pre>
+ int RAND_DRBG_set_reseed_defaults(
+                                   unsigned int master_reseed_interval,
+                                   unsigned int slave_reseed_interval,
+                                   time_t master_reseed_time_interval,
+                                   time_t slave_reseed_time_interval
+                                   );</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>RAND_DRBG_reseed()</code>
+reseeds the given <strong>drbg</strong>, obtaining entropy input from its entropy source
+and mixing in the specified additional data provided in the buffer <strong>adin</strong>
+of length <strong>adinlen</strong>.
+The additional data can be omitted by setting <strong>adin</strong> to NULL and <strong>adinlen</strong>
+to 0.
+An immediate reseeding from a live entropy source can be requested by setting
+the <strong>prediction_resistance</strong> flag to 1.
+This feature is not implemented yet, so reseeding with prediction resistance
+requested will always fail.</p>
+<p><code>RAND_DRBG_set_reseed_interval()</code>
+sets the reseed interval of the <strong>drbg</strong>, which is the maximum allowed number
+of generate requests between consecutive reseedings.
+If <strong>interval</strong> &gt; 0, then the <strong>drbg</strong> will reseed automatically whenever the
+number of generate requests since its last seeding exceeds the given reseed
+interval.
+If <strong>interval</strong> == 0, then this feature is disabled.</p>
+<p><code>RAND_DRBG_set_reseed_time_interval()</code>
+sets the reseed time interval of the <strong>drbg</strong>, which is the maximum allowed
+number of seconds between consecutive reseedings.
+If <strong>interval</strong> &gt; 0, then the <strong>drbg</strong> will reseed automatically whenever the
+elapsed time since its last reseeding exceeds the given reseed time interval.
+If <strong>interval</strong> == 0, then this feature is disabled.</p>
+<p><code>RAND_DRBG_set_reseed_defaults()</code> sets the default values for the reseed interval
+(<strong>master_reseed_interval</strong> and <strong>slave_reseed_interval</strong>)
+and the reseed time interval
+(<strong>master_reseed_time_interval</strong> and <strong>slave_reseed_tme_interval</strong>)
+of DRBG instances.
+The default values are set independently for master DRBG instances (which don't
+have a parent) and slave DRBG instances (which are chained to a parent DRBG).</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>RAND_DRBG_reseed()</code>,
+<code>RAND_DRBG_set_reseed_interval()</code>, and
+<code>RAND_DRBG_set_reseed_time_interval()</code>,
+return 1 on success, 0 on failure.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The default OpenSSL random generator is already set up for automatic reseeding,
+so in general it is not necessary to reseed it explicitly, or to modify
+its reseeding thresholds.</p>
+<p>Normally, the entropy input for seeding a DRBG is either obtained from a
+trusted os entropy source or from a parent DRBG instance, which was seeded
+(directly or indirectly) from a trusted os entropy source.
+In exceptional cases it is possible to replace the reseeding mechanism entirely
+by providing application defined callbacks using <code>RAND_DRBG_set_callbacks()</code>.</p>
+<p>The reseeding default values are applied only during creation of a DRBG instance.
+To ensure that they are applied to the global and thread-local DRBG instances
+(&lt;master&gt;, resp. &lt;public&gt; and &lt;private&gt;), it is necessary to call
+<code>RAND_DRBG_set_reseed_defaults()</code> before creating any thread and before calling any
+ cryptographic routines that obtain random data directly or indirectly.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>RAND_DRBG_generate(3)</em>,
+<em>RAND_DRBG_bytes(3)</em>,
+<em>RAND_DRBG_set_callbacks(3)</em>.
+<em>RAND_DRBG(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The RAND_DRBG functions were added in OpenSSL 1.1.1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2017-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,110 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_set_read_ahead</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_set_read_ahead, SSL_CTX_get_read_ahead,
+SSL_set_read_ahead, SSL_get_read_ahead,
+SSL_CTX_get_default_read_ahead
+- manage whether to read as many input bytes as possible</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ void SSL_set_read_ahead(SSL *s, int yes);
+ int SSL_get_read_ahead(const SSL *s);</pre>
+<pre>
+ SSL_CTX_set_read_ahead(SSL_CTX *ctx, int yes);
+ long SSL_CTX_get_read_ahead(SSL_CTX *ctx);
+ long SSL_CTX_get_default_read_ahead(SSL_CTX *ctx);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_set_read_ahead()</code> and <code>SSL_set_read_ahead()</code> set whether we should read as
+many input bytes as possible (for non-blocking reads) or not. For example if
+<strong>x</strong> bytes are currently required by OpenSSL, but <strong>y</strong> bytes are available from
+the underlying BIO (where <strong>y</strong> &gt; <strong>x</strong>), then OpenSSL will read all <strong>y</strong> bytes
+into its buffer (providing that the buffer is large enough) if reading ahead is
+on, or <strong>x</strong> bytes otherwise.
+Setting the parameter <strong>yes</strong> to 0 turns reading ahead is off, other values turn
+it on.
+<code>SSL_CTX_set_default_read_ahead()</code> is identical to <code>SSL_CTX_set_read_ahead()</code>.</p>
+<p><code>SSL_CTX_get_read_ahead()</code> and <code>SSL_get_read_ahead()</code> indicate whether reading
+ahead has been set or not.
+<code>SSL_CTX_get_default_read_ahead()</code> is identical to <code>SSL_CTX_get_read_ahead()</code>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>These functions have no impact when used with DTLS. The return values for
+<code>SSL_CTX_get_read_head()</code> and <code>SSL_get_read_ahead()</code> are undefined for DTLS. Setting
+<strong>read_ahead</strong> can impact the behaviour of the <code>SSL_pending()</code> function
+(see <em>SSL_pending(3)</em>).</p>
+<p>Since <code>SSL_read()</code> can return <strong>SSL_ERROR_WANT_READ</strong> for non-application data
+records, and <code>SSL_has_pending()</code> can't tell the difference between processed and
+unprocessed data, it's recommended that if read ahead is turned on that
+<strong>SSL_MODE_AUTO_RETRY</strong> is not turned off using <code>SSL_CTX_clear_mode()</code>.
+That will prevent getting <strong>SSL_ERROR_WANT_READ</strong> when there is still a complete
+record available that hasn't been processed.</p>
+<p>If the application wants to continue to use the underlying transport (e.g. TCP
+connection) after the SSL connection is finished using <code>SSL_shutdown()</code> reading
+ahead should be turned off.
+Otherwise the SSL structure might read data that it shouldn't.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_get_read_ahead()</code> and <code>SSL_CTX_get_read_ahead()</code> return 0 if reading ahead is off,
+and non zero otherwise.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>, <em>SSL_pending(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

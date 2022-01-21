@@ -1,0 +1,154 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_sess_set_get_cb</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_sess_set_new_cb, SSL_CTX_sess_set_remove_cb, SSL_CTX_sess_set_get_cb, SSL_CTX_sess_get_new_cb, SSL_CTX_sess_get_remove_cb, SSL_CTX_sess_get_get_cb - provide callback functions for server side external session caching</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ void SSL_CTX_sess_set_new_cb(SSL_CTX *ctx,
+                              int (*new_session_cb)(SSL *, SSL_SESSION *));
+ void SSL_CTX_sess_set_remove_cb(SSL_CTX *ctx,
+                                 void (*remove_session_cb)(SSL_CTX *ctx,
+                                                           SSL_SESSION *));
+ void SSL_CTX_sess_set_get_cb(SSL_CTX *ctx,
+                              SSL_SESSION (*get_session_cb)(SSL *,
+                                                            const unsigned char *,
+                                                            int, int *));</pre>
+<pre>
+ int (*SSL_CTX_sess_get_new_cb(SSL_CTX *ctx))(struct ssl_st *ssl,
+                                              SSL_SESSION *sess);
+ void (*SSL_CTX_sess_get_remove_cb(SSL_CTX *ctx))(struct ssl_ctx_st *ctx,
+                                                  SSL_SESSION *sess);
+ SSL_SESSION *(*SSL_CTX_sess_get_get_cb(SSL_CTX *ctx))(struct ssl_st *ssl,
+                                                       const unsigned char *data,
+                                                       int len, int *copy);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_sess_set_new_cb()</code> sets the callback function that is
+called whenever a new session was negotiated.</p>
+<p><code>SSL_CTX_sess_set_remove_cb()</code> sets the callback function that is
+called whenever a session is removed by the SSL engine.  For example,
+this can occur because a session is considered faulty or has become obsolete
+because of exceeding the timeout value.</p>
+<p><code>SSL_CTX_sess_set_get_cb()</code> sets the callback function that is called
+whenever a TLS client proposed to resume a session but the session
+could not be found in the internal session cache (see
+<em>SSL_CTX_set_session_cache_mode(3)</em>).
+(TLS server only.)</p>
+<p><code>SSL_CTX_sess_get_new_cb()</code>, <code>SSL_CTX_sess_get_remove_cb()</code>, and
+<code>SSL_CTX_sess_get_get_cb()</code> retrieve the function pointers set by the
+corresponding set callback functions. If a callback function has not been
+set, the NULL pointer is returned.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>In order to allow external session caching, synchronization with the internal
+session cache is realized via callback functions. Inside these callback
+functions, session can be saved to disk or put into a database using the
+<em>d2i_SSL_SESSION(3)</em> interface.</p>
+<p>The <code>new_session_cb()</code> is called whenever a new session has been negotiated and
+session caching is enabled (see <em>SSL_CTX_set_session_cache_mode(3)</em>).  The
+<code>new_session_cb()</code> is passed the <strong>ssl</strong> connection and the nascent
+ssl session <strong>sess</strong>.
+Since sessions are reference-counted objects, the reference count on the
+session is incremented before the callback, on behalf of the application.  If
+the callback returns <strong>0</strong>, the session will be immediately removed from the
+internal cache and the reference count released. If the callback returns <strong>1</strong>,
+the application retains the reference (for an entry in the
+application-maintained &quot;external session cache&quot;), and is responsible for
+calling <code>SSL_SESSION_free()</code> when the session reference is no longer in use.</p>
+<p>Note that in TLSv1.3, sessions are established after the main
+handshake has completed. The server decides when to send the client the session
+information and this may occur some time after the end of the handshake (or not
+at all). This means that applications should expect the <code>new_session_cb()</code>
+function to be invoked during the handshake (for &lt;= TLSv1.2) or after the
+handshake (for TLSv1.3). It is also possible in TLSv1.3 for multiple sessions to
+be established with a single connection. In these case the <code>new_session_cb()</code>
+function will be invoked multiple times.</p>
+<p>In TLSv1.3 it is recommended that each SSL_SESSION object is only used for
+resumption once. One way of enforcing that is for applications to call
+<em>SSL_CTX_remove_session(3)</em> after a session has been used.</p>
+<p>The <code>remove_session_cb()</code> is called whenever the SSL engine removes a session
+from the internal cache. This can happen when the session is removed because
+it is expired or when a connection was not shutdown cleanly. It also happens
+for all sessions in the internal session cache when
+<em>SSL_CTX_free(3)</em> is called. The <code>remove_session_cb()</code> is passed
+the <strong>ctx</strong> and the ssl session <strong>sess</strong>. It does not provide any feedback.</p>
+<p>The <code>get_session_cb()</code> is only called on SSL/TLS servers, and is given
+the session id
+proposed by the client. The <code>get_session_cb()</code> is always called, even when
+session caching was disabled. The <code>get_session_cb()</code> is passed the
+<strong>ssl</strong> connection and the session id of length <strong>length</strong> at the memory location
+<strong>data</strong>. By setting the parameter <strong>copy</strong> to <strong>1</strong>, the callback can require the
+SSL engine to increment the reference count of the SSL_SESSION object;
+setting <strong>copy</strong> to <strong>0</strong> causes the reference count to remain unchanged.
+If the <code>get_session_cb()</code> does not write to <strong>copy</strong>, the reference count
+is incremented and the session must be explicitly freed with
+<em>SSL_SESSION_free(3)</em>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_CTX_sess_get_new_cb()</code>, <code>SSL_CTX_sess_get_remove_cb()</code> and <code>SSL_CTX_sess_get_get_cb()</code>
+return different callback function pointers respectively.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>, <em>d2i_SSL_SESSION(3)</em>,
+<em>SSL_CTX_set_session_cache_mode(3)</em>,
+<em>SSL_CTX_flush_sessions(3)</em>,
+<em>SSL_SESSION_free(3)</em>,
+<em>SSL_CTX_free(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2001-2020 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>X509_get0_uids</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>X509_get0_uids - get certificate unique identifiers</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/x509.h&gt;</pre>
+<pre>
+ void X509_get0_uids(const X509 *x, const ASN1_BIT_STRING **piuid,
+                     const ASN1_BIT_STRING **psuid);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>X509_get0_uids() sets <strong>*piuid</strong> and <strong>*psuid</strong> to the issuer and subject unique
+identifiers of certificate <strong>x</strong> or NULL if the fields are not present.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The issuer and subject unique identifier fields are very rarely encountered in
+practice outside test cases.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>X509_get0_uids() does not return a value.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>d2i_X509(3)</em>,
+<em>ERR_get_error(3)</em>,
+<em>X509_CRL_get0_by_serial(3)</em>,
+<em>X509_get0_signature(3)</em>,
+<em>X509_get_ext_d2i(3)</em>,
+<em>X509_get_extension_flags(3)</em>,
+<em>X509_get_pubkey(3)</em>,
+<em>X509_get_subject_name(3)</em>,
+<em>X509_get_version(3)</em>,
+<em>X509_NAME_add_entry_by_txt(3)</em>,
+<em>X509_NAME_ENTRY_get_object(3)</em>,
+<em>X509_NAME_get_index_by_NID(3)</em>,
+<em>X509_NAME_print_ex(3)</em>,
+<em>X509_new(3)</em>,
+<em>X509_sign(3)</em>,
+<em>X509V3_get_d2i(3)</em>,
+<em>X509_verify_cert(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

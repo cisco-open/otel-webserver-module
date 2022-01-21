@@ -1,0 +1,161 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>PEM_read</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>PEM_write, PEM_write_bio,
+PEM_read, PEM_read_bio, PEM_do_header, PEM_get_EVP_CIPHER_INFO
+- PEM encoding routines</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/pem.h&gt;</pre>
+<pre>
+ int PEM_write(FILE *fp, const char *name, const char *header,
+               const unsigned char *data, long len)
+ int PEM_write_bio(BIO *bp, const char *name, const char *header,
+                   const unsigned char *data, long len)</pre>
+<pre>
+ int PEM_read(FILE *fp, char **name, char **header,
+              unsigned char **data, long *len);
+ int PEM_read_bio(BIO *bp, char **name, char **header,
+                  unsigned char **data, long *len);</pre>
+<pre>
+ int PEM_get_EVP_CIPHER_INFO(char *header, EVP_CIPHER_INFO *cinfo);
+ int PEM_do_header(EVP_CIPHER_INFO *cinfo, unsigned char *data, long *len,
+                   pem_password_cb *cb, void *u);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>These functions read and write PEM-encoded objects, using the PEM
+type <strong>name</strong>, any additional <strong>header</strong> information, and the raw
+<strong>data</strong> of length <strong>len</strong>.</p>
+<p>PEM is the term used for binary content encoding first defined in IETF
+<a href="http://www.ietf.org/rfc/rfc1421.txt" class="rfc">RFC 1421</a>.  The content is a series of base64-encoded lines, surrounded
+by begin/end markers each on their own line.  For example:</p>
+<pre>
+ -----BEGIN PRIVATE KEY-----
+ MIICdg....
+ ... bhTQ==
+ -----END PRIVATE KEY-----</pre>
+<p>Optional header line(s) may appear after the begin line, and their
+existence depends on the type of object being written or read.</p>
+<p><code>PEM_write()</code> writes to the file <strong>fp</strong>, while <code>PEM_write_bio()</code> writes to
+the BIO <strong>bp</strong>.  The <strong>name</strong> is the name to use in the marker, the
+<strong>header</strong> is the header value or NULL, and <strong>data</strong> and <strong>len</strong> specify
+the data and its length.</p>
+<p>The final <strong>data</strong> buffer is typically an ASN.1 object which can be decoded with
+the <strong>d2i</strong> function appropriate to the type <strong>name</strong>; see <em>d2i_X509(3)</em>
+for examples.</p>
+<p><code>PEM_read()</code> reads from the file <strong>fp</strong>, while <code>PEM_read_bio()</code> reads
+from the BIO <strong>bp</strong>.
+Both skip any non-PEM data that precedes the start of the next PEM object.
+When an object is successfully retrieved, the type name from the &quot;----BEGIN
+&lt;type&gt;-----&quot; is returned via the <strong>name</strong> argument, any encapsulation headers
+are returned in <strong>header</strong> and the base64-decoded content and its length are
+returned via <strong>data</strong> and <strong>len</strong> respectively.
+The <strong>name</strong>, <strong>header</strong> and <strong>data</strong> pointers are allocated via <code>OPENSSL_malloc()</code>
+and should be freed by the caller via <code>OPENSSL_free()</code> when no longer needed.</p>
+<p><code>PEM_get_EVP_CIPHER_INFO()</code> can be used to determine the <strong>data</strong> returned by
+<code>PEM_read()</code> or <code>PEM_read_bio()</code> is encrypted and to retrieve the associated cipher
+and IV.
+The caller passes a pointer to structure of type <strong>EVP_CIPHER_INFO</strong> via the
+<strong>cinfo</strong> argument and the <strong>header</strong> returned via <code>PEM_read()</code> or <code>PEM_read_bio()</code>.
+If the call is successful 1 is returned and the cipher and IV are stored at the
+address pointed to by <strong>cinfo</strong>.
+When the header is malformed, or not supported or when the cipher is unknown
+or some internal error happens 0 is returned.
+This function is deprecated, see <strong>NOTES</strong> below.</p>
+<p><code>PEM_do_header()</code> can then be used to decrypt the data if the header
+indicates encryption.
+The <strong>cinfo</strong> argument is a pointer to the structure initialized by the previous
+call to <code>PEM_get_EVP_CIPHER_INFO()</code>.
+The <strong>data</strong> and <strong>len</strong> arguments are those returned by the previous call to
+<code>PEM_read()</code> or <code>PEM_read_bio()</code>.
+The <strong>cb</strong> and <strong>u</strong> arguments make it possible to override the default password
+prompt function as described in <em>PEM_read_PrivateKey(3)</em>.
+On successful completion the <strong>data</strong> is decrypted in place, and <strong>len</strong> is
+updated to indicate the plaintext length.
+This function is deprecated, see <strong>NOTES</strong> below.</p>
+<p>If the data is a priori known to not be encrypted, then neither <code>PEM_do_header()</code>
+nor <code>PEM_get_EVP_CIPHER_INFO()</code> need be called.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>PEM_read()</code> and <code>PEM_read_bio()</code> return 1 on success and 0 on failure, the latter
+includes the case when no more PEM objects remain in the input file.
+To distinguish end of file from more serious errors the caller must peek at the
+error stack and check for <strong>PEM_R_NO_START_LINE</strong>, which indicates that no more
+PEM objects were found.  See <em>ERR_peek_last_error(3)</em>, <em>ERR_GET_REASON(3)</em>.</p>
+<p><code>PEM_get_EVP_CIPHER_INFO()</code> and <code>PEM_do_header()</code> return 1 on success, and 0 on
+failure.
+The <strong>data</strong> is likely meaningless if these functions fail.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The <code>PEM_get_EVP_CIPHER_INFO()</code> and <code>PEM_do_header()</code> functions are deprecated.
+This is because the underlying PEM encryption format is obsolete, and should
+be avoided.
+It uses an encryption format with an OpenSSL-specific key-derivation function,
+which employs MD5 with an iteration count of 1!
+Instead, private keys should be stored in PKCS#8 form, with a strong PKCS#5
+v2.0 PBE.
+See <em>PEM_write_PrivateKey(3)</em> and <em>d2i_PKCS8PrivateKey_bio(3)</em>.</p>
+<p><code>PEM_do_header()</code> makes no assumption regarding the pass phrase received from the
+password callback.
+It will simply be treated as a byte sequence.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ERR_peek_last_error(3)</em>, <em>ERR_GET_LIB(3)</em>,
+<em>d2i_PKCS8PrivateKey_bio(3)</em>,
+<em>passphrase-encoding(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 1998-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

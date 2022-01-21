@@ -1,0 +1,148 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>OCSP_REQUEST_new</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>OCSP_REQUEST_new, OCSP_REQUEST_free, OCSP_request_add0_id, OCSP_request_sign,
+OCSP_request_add1_cert, OCSP_request_onereq_count,
+OCSP_request_onereq_get0 - OCSP request functions</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ocsp.h&gt;</pre>
+<pre>
+ OCSP_REQUEST *OCSP_REQUEST_new(void);
+ void OCSP_REQUEST_free(OCSP_REQUEST *req);</pre>
+<pre>
+ OCSP_ONEREQ *OCSP_request_add0_id(OCSP_REQUEST *req, OCSP_CERTID *cid);</pre>
+<pre>
+ int OCSP_request_sign(OCSP_REQUEST *req,
+                       X509 *signer, EVP_PKEY *key, const EVP_MD *dgst,
+                       STACK_OF(X509) *certs, unsigned long flags);</pre>
+<pre>
+ int OCSP_request_add1_cert(OCSP_REQUEST *req, X509 *cert);</pre>
+<pre>
+ int OCSP_request_onereq_count(OCSP_REQUEST *req);
+ OCSP_ONEREQ *OCSP_request_onereq_get0(OCSP_REQUEST *req, int i);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>OCSP_REQUEST_new()</code> allocates and returns an empty <strong>OCSP_REQUEST</strong> structure.</p>
+<p><code>OCSP_REQUEST_free()</code> frees up the request structure <strong>req</strong>.</p>
+<p>OCSP_request_add0_id() adds certificate ID <strong>cid</strong> to <strong>req</strong>. It returns
+the <strong>OCSP_ONEREQ</strong> structure added so an application can add additional
+extensions to the request. The <strong>id</strong> parameter <strong>MUST NOT</strong> be freed up after
+the operation.</p>
+<p><code>OCSP_request_sign()</code> signs OCSP request <strong>req</strong> using certificate
+<strong>signer</strong>, private key <strong>key</strong>, digest <strong>dgst</strong> and additional certificates
+<strong>certs</strong>. If the <strong>flags</strong> option <strong>OCSP_NOCERTS</strong> is set then no certificates
+will be included in the request.</p>
+<p>OCSP_request_add1_cert() adds certificate <strong>cert</strong> to request <strong>req</strong>. The
+application is responsible for freeing up <strong>cert</strong> after use.</p>
+<p><code>OCSP_request_onereq_count()</code> returns the total number of <strong>OCSP_ONEREQ</strong>
+structures in <strong>req</strong>.</p>
+<p>OCSP_request_onereq_get0() returns an internal pointer to the <strong>OCSP_ONEREQ</strong>
+contained in <strong>req</strong> of index <strong>i</strong>. The index value <strong>i</strong> runs from 0 to
+OCSP_request_onereq_count(req) - 1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>OCSP_REQUEST_new()</code> returns an empty <strong>OCSP_REQUEST</strong> structure or <strong>NULL</strong> if
+an error occurred.</p>
+<p>OCSP_request_add0_id() returns the <strong>OCSP_ONEREQ</strong> structure containing <strong>cid</strong>
+or <strong>NULL</strong> if an error occurred.</p>
+<p><code>OCSP_request_sign()</code> and OCSP_request_add1_cert() return 1 for success and 0
+for failure.</p>
+<p><code>OCSP_request_onereq_count()</code> returns the total number of <strong>OCSP_ONEREQ</strong>
+structures in <strong>req</strong>.</p>
+<p>OCSP_request_onereq_get0() returns a pointer to an <strong>OCSP_ONEREQ</strong> structure
+or <strong>NULL</strong> if the index value is out or range.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>An OCSP request structure contains one or more <strong>OCSP_ONEREQ</strong> structures
+corresponding to each certificate.</p>
+<p><code>OCSP_request_onereq_count()</code> and OCSP_request_onereq_get0() are mainly used by
+OCSP responders.</p>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>Create an <strong>OCSP_REQUEST</strong> structure for certificate <strong>cert</strong> with issuer
+<strong>issuer</strong>:</p>
+<pre>
+ OCSP_REQUEST *req;
+ OCSP_ID *cid;</pre>
+<pre>
+ req = OCSP_REQUEST_new();
+ if (req == NULL)
+    /* error */
+ cid = OCSP_cert_to_id(EVP_sha1(), cert, issuer);
+ if (cid == NULL)
+    /* error */</pre>
+<pre>
+ if (OCSP_REQUEST_add0_id(req, cid) == NULL)
+    /* error */</pre>
+<pre>
+ /* Do something with req, e.g. query responder */</pre>
+<pre>
+ OCSP_REQUEST_free(req);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>crypto(7)</em>,
+<em>OCSP_cert_to_id(3)</em>,
+<em>OCSP_request_add1_nonce(3)</em>,
+<em>OCSP_resp_find_status(3)</em>,
+<em>OCSP_response_status(3)</em>,
+<em>OCSP_sendreq_new(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

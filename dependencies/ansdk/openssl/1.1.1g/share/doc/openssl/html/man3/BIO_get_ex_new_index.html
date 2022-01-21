@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>BIO_get_ex_new_index</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>BIO_get_ex_new_index, BIO_set_ex_data, BIO_get_ex_data,
+ENGINE_get_ex_new_index, ENGINE_set_ex_data, ENGINE_get_ex_data,
+UI_get_ex_new_index, UI_set_ex_data, UI_get_ex_data,
+X509_get_ex_new_index, X509_set_ex_data, X509_get_ex_data,
+X509_STORE_get_ex_new_index, X509_STORE_set_ex_data, X509_STORE_get_ex_data,
+X509_STORE_CTX_get_ex_new_index, X509_STORE_CTX_set_ex_data, X509_STORE_CTX_get_ex_data,
+DH_get_ex_new_index, DH_set_ex_data, DH_get_ex_data,
+DSA_get_ex_new_index, DSA_set_ex_data, DSA_get_ex_data,
+ECDH_get_ex_new_index, ECDH_set_ex_data, ECDH_get_ex_data,
+EC_KEY_get_ex_new_index, EC_KEY_set_ex_data, EC_KEY_get_ex_data,
+RSA_get_ex_new_index, RSA_set_ex_data, RSA_get_ex_data
+- application-specific data</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/x509.h&gt;</pre>
+<pre>
+ int TYPE_get_ex_new_index(long argl, void *argp,
+                           CRYPTO_EX_new *new_func,
+                           CRYPTO_EX_dup *dup_func,
+                           CRYPTO_EX_free *free_func);</pre>
+<pre>
+ int TYPE_set_ex_data(TYPE *d, int idx, void *arg);</pre>
+<pre>
+ void *TYPE_get_ex_data(TYPE *d, int idx);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>In the description here, <em>TYPE</em> is used a placeholder
+for any of the OpenSSL datatypes listed in
+<em>CRYPTO_get_ex_new_index(3)</em>.</p>
+<p>These functions handle application-specific data for OpenSSL data
+structures.</p>
+<p><code>TYPE_get_ex_new_index()</code> is a macro that calls <code>CRYPTO_get_ex_new_index()</code>
+with the correct <strong>index</strong> value.</p>
+<p><code>TYPE_set_ex_data()</code> is a function that calls <code>CRYPTO_set_ex_data()</code> with
+an offset into the opaque exdata part of the TYPE object.</p>
+<p><code>TYPE_get_ex_data()</code> is a function that calls <code>CRYPTO_get_ex_data()</code> with
+an offset into the opaque exdata part of the TYPE object.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>TYPE_get_ex_new_index()</code> returns a new index on success or -1 on error.</p>
+<p><code>TYPE_set_ex_data()</code> returns 1 on success or 0 on error.</p>
+<p><code>TYPE_get_ex_data()</code> returns the application data or NULL if an error occurred.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>CRYPTO_get_ex_new_index(3)</em>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2020 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,182 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>EC_GROUP_new</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>EC_GROUP_get_ecparameters,
+EC_GROUP_get_ecpkparameters,
+EC_GROUP_new,
+EC_GROUP_new_from_ecparameters,
+EC_GROUP_new_from_ecpkparameters,
+EC_GROUP_free,
+EC_GROUP_clear_free,
+EC_GROUP_new_curve_GFp,
+EC_GROUP_new_curve_GF2m,
+EC_GROUP_new_by_curve_name,
+EC_GROUP_set_curve,
+EC_GROUP_get_curve,
+EC_GROUP_set_curve_GFp,
+EC_GROUP_get_curve_GFp,
+EC_GROUP_set_curve_GF2m,
+EC_GROUP_get_curve_GF2m,
+EC_get_builtin_curves - Functions for creating and destroying EC_GROUP
+objects</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ec.h&gt;</pre>
+<pre>
+ EC_GROUP *EC_GROUP_new(const EC_METHOD *meth);
+ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
+ EC_GROUP *EC_GROUP_new_from_ecpkparameters(const ECPKPARAMETERS *params)
+ void EC_GROUP_free(EC_GROUP *group);
+ void EC_GROUP_clear_free(EC_GROUP *group);</pre>
+<pre>
+ EC_GROUP *EC_GROUP_new_curve_GFp(const BIGNUM *p, const BIGNUM *a,
+                                  const BIGNUM *b, BN_CTX *ctx);
+ EC_GROUP *EC_GROUP_new_curve_GF2m(const BIGNUM *p, const BIGNUM *a,
+                                   const BIGNUM *b, BN_CTX *ctx);
+ EC_GROUP *EC_GROUP_new_by_curve_name(int nid);</pre>
+<pre>
+ int EC_GROUP_set_curve(EC_GROUP *group, const BIGNUM *p, const BIGNUM *a,
+                        const BIGNUM *b, BN_CTX *ctx);
+ int EC_GROUP_get_curve(const EC_GROUP *group, BIGNUM *p, BIGNUM *a, BIGNUM *b,
+                        BN_CTX *ctx);
+ int EC_GROUP_set_curve_GFp(EC_GROUP *group, const BIGNUM *p,
+                            const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx);
+ int EC_GROUP_get_curve_GFp(const EC_GROUP *group, BIGNUM *p,
+                            BIGNUM *a, BIGNUM *b, BN_CTX *ctx);
+ int EC_GROUP_set_curve_GF2m(EC_GROUP *group, const BIGNUM *p,
+                             const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx);
+ int EC_GROUP_get_curve_GF2m(const EC_GROUP *group, BIGNUM *p,
+                             BIGNUM *a, BIGNUM *b, BN_CTX *ctx);</pre>
+<pre>
+ ECPARAMETERS *EC_GROUP_get_ecparameters(const EC_GROUP *group, ECPARAMETERS *params)
+ ECPKPARAMETERS *EC_GROUP_get_ecpkparameters(const EC_GROUP *group, ECPKPARAMETERS *params)</pre>
+<pre>
+ size_t EC_get_builtin_curves(EC_builtin_curve *r, size_t nitems);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Within the library there are two forms of elliptic curve that are of interest.
+The first form is those defined over the prime field Fp. The elements of Fp are
+the integers 0 to p-1, where p is a prime number. This gives us a revised
+elliptic curve equation as follows:</p>
+<p>y^2 mod p = x^3 +ax + b mod p</p>
+<p>The second form is those defined over a binary field F2^m where the elements of
+the field are integers of length at most m bits. For this form the elliptic
+curve equation is modified to:</p>
+<p>y^2 + xy = x^3 + ax^2 + b (where b != 0)</p>
+<p>Operations in a binary field are performed relative to an <strong>irreducible
+polynomial</strong>. All such curves with OpenSSL use a trinomial or a pentanomial for
+this parameter.</p>
+<p>A new curve can be constructed by calling <code>EC_GROUP_new()</code>, using the
+implementation provided by <strong>meth</strong> (see <em>EC_GFp_simple_method(3)</em>). It is then
+necessary to call <code>EC_GROUP_set_curve()</code> to set the curve parameters.
+<code>EC_GROUP_new_from_ecparameters()</code> will create a group from the specified
+<strong>params</strong> and <code>EC_GROUP_new_from_ecpkparameters()</code> will create a group from the
+specific PK <strong>params</strong>.</p>
+<p><code>EC_GROUP_set_curve()</code> sets the curve parameters <strong>p</strong>, <strong>a</strong> and <strong>b</strong>. For a curve
+over Fp <strong>p</strong> is the prime for the field. For a curve over F2^m <strong>p</strong> represents
+the irreducible polynomial - each bit represents a term in the polynomial.
+Therefore there will either be three or five bits set dependent on whether the
+polynomial is a trinomial or a pentanomial.
+In either case, <strong>a</strong> and <strong>b</strong> represents the coefficients a and b from the
+relevant equation introduced above.</p>
+<p><code>EC_group_get_curve()</code> obtains the previously set curve parameters.</p>
+<p><code>EC_GROUP_set_curve_GFp()</code> and EC_GROUP_set_curve_GF2m() are synonyms for
+<code>EC_GROUP_set_curve()</code>. They are defined for backwards compatibility only and
+should not be used.</p>
+<p><code>EC_GROUP_get_curve_GFp()</code> and EC_GROUP_get_curve_GF2m() are synonyms for
+<code>EC_GROUP_get_curve()</code>. They are defined for backwards compatibility only and
+should not be used.</p>
+<p>The functions <code>EC_GROUP_new_curve_GFp()</code> and EC_GROUP_new_curve_GF2m() are
+shortcuts for calling <code>EC_GROUP_new()</code> and then the <code>EC_GROUP_set_curve()</code> function.
+An appropriate default implementation method will be used.</p>
+<p>Whilst the library can be used to create any curve using the functions described
+above, there are also a number of predefined curves that are available. In order
+to obtain a list of all of the predefined curves, call the function
+<code>EC_get_builtin_curves()</code>. The parameter <strong>r</strong> should be an array of
+EC_builtin_curve structures of size <strong>nitems</strong>. The function will populate the
+<strong>r</strong> array with information about the builtin curves. If <strong>nitems</strong> is less than
+the total number of curves available, then the first <strong>nitems</strong> curves will be
+returned. Otherwise the total number of curves will be provided. The return
+value is the total number of curves available (whether that number has been
+populated in <strong>r</strong> or not). Passing a NULL <strong>r</strong>, or setting <strong>nitems</strong> to 0 will
+do nothing other than return the total number of curves available.
+The EC_builtin_curve structure is defined as follows:</p>
+<pre>
+ typedef struct {
+        int nid;
+        const char *comment;
+        } EC_builtin_curve;</pre>
+<p>Each EC_builtin_curve item has a unique integer id (<strong>nid</strong>), and a human
+readable comment string describing the curve.</p>
+<p>In order to construct a builtin curve use the function
+<code>EC_GROUP_new_by_curve_name()</code> and provide the <strong>nid</strong> of the curve to
+be constructed.</p>
+<p><code>EC_GROUP_free()</code> frees the memory associated with the EC_GROUP.
+If <strong>group</strong> is NULL nothing is done.</p>
+<p><code>EC_GROUP_clear_free()</code> destroys any sensitive data held within the EC_GROUP and
+then frees its memory. If <strong>group</strong> is NULL nothing is done.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>All EC_GROUP_new* functions return a pointer to the newly constructed group, or
+NULL on error.</p>
+<p><code>EC_get_builtin_curves()</code> returns the number of builtin curves that are available.</p>
+<p><code>EC_GROUP_set_curve_GFp()</code>, <code>EC_GROUP_get_curve_GFp()</code>, EC_GROUP_set_curve_GF2m(),
+EC_GROUP_get_curve_GF2m() return 1 on success or 0 on error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>crypto(7)</em>, <em>EC_GROUP_copy(3)</em>,
+<em>EC_POINT_new(3)</em>, <em>EC_POINT_add(3)</em>, <em>EC_KEY_new(3)</em>,
+<em>EC_GFp_simple_method(3)</em>, <em>d2i_ECPKParameters(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2013-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

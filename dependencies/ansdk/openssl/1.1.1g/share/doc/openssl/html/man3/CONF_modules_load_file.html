@@ -1,0 +1,172 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>CONF_modules_load_file</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>CONF_modules_load_file, CONF_modules_load - OpenSSL configuration functions</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/conf.h&gt;</pre>
+<pre>
+ int CONF_modules_load_file(const char *filename, const char *appname,
+                            unsigned long flags);
+ int CONF_modules_load(const CONF *cnf, const char *appname,
+                       unsigned long flags);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The function <code>CONF_modules_load_file()</code> configures OpenSSL using file
+<strong>filename</strong> and application name <strong>appname</strong>. If <strong>filename</strong> is NULL
+the standard OpenSSL configuration file is used. If <strong>appname</strong> is
+NULL the standard OpenSSL application name <strong>openssl_conf</strong> is used.
+The behaviour can be customized using <strong>flags</strong>.</p>
+<p><code>CONF_modules_load()</code> is identical to <code>CONF_modules_load_file()</code> except it
+reads configuration information from <strong>cnf</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The following <strong>flags</strong> are currently recognized:</p>
+<p>If <strong>CONF_MFLAGS_IGNORE_ERRORS</strong> is set errors returned by individual
+configuration modules are ignored. If not set the first module error is
+considered fatal and no further modules are loaded.</p>
+<p>Normally any modules errors will add error information to the error queue. If
+<strong>CONF_MFLAGS_SILENT</strong> is set no error information is added.</p>
+<p>If <strong>CONF_MFLAGS_IGNORE_RETURN_CODES</strong> is set the function unconditionally
+returns success.
+This is used by default in <em>OPENSSL_init_crypto(3)</em> to ignore any errors in
+the default system-wide configuration file, as having all OpenSSL applications
+fail to start when there are potentially minor issues in the file is too risky.
+Applications calling <strong>CONF_modules_load_file</strong> explicitly should not generally
+set this flag.</p>
+<p>If <strong>CONF_MFLAGS_NO_DSO</strong> is set configuration module loading from DSOs is
+disabled.</p>
+<p><strong>CONF_MFLAGS_IGNORE_MISSING_FILE</strong> if set will make <code>CONF_load_modules_file()</code>
+ignore missing configuration files. Normally a missing configuration file
+return an error.</p>
+<p><strong>CONF_MFLAGS_DEFAULT_SECTION</strong> if set and <strong>appname</strong> is not NULL will use the
+default section pointed to by <strong>openssl_conf</strong> if <strong>appname</strong> does not exist.</p>
+<p>By using <code>CONF_modules_load_file()</code> with appropriate flags an application can
+customise application configuration to best suit its needs. In some cases the
+use of a configuration file is optional and its absence is not an error: in
+this case <strong>CONF_MFLAGS_IGNORE_MISSING_FILE</strong> would be set.</p>
+<p>Errors during configuration may also be handled differently by different
+applications. For example in some cases an error may simply print out a warning
+message and the application continue. In other cases an application might
+consider a configuration file error as fatal and exit immediately.</p>
+<p>Applications can use the <code>CONF_modules_load()</code> function if they wish to load a
+configuration file themselves and have finer control over how errors are
+treated.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>These functions return 1 for success and a zero or negative value for
+failure. If module errors are not ignored the return code will reflect the
+return value of the failing module (this will always be zero or negative).</p>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>Load a configuration file and print out any errors and exit (missing file
+considered fatal):</p>
+<pre>
+ if (CONF_modules_load_file(NULL, NULL, 0) &lt;= 0) {
+     fprintf(stderr, &quot;FATAL: error loading configuration file\n&quot;);
+     ERR_print_errors_fp(stderr);
+     exit(1);
+ }</pre>
+<p>Load default configuration file using the section indicated by &quot;myapp&quot;,
+tolerate missing files, but exit on other errors:</p>
+<pre>
+ if (CONF_modules_load_file(NULL, &quot;myapp&quot;,
+                            CONF_MFLAGS_IGNORE_MISSING_FILE) &lt;= 0) {
+     fprintf(stderr, &quot;FATAL: error loading configuration file\n&quot;);
+     ERR_print_errors_fp(stderr);
+     exit(1);
+ }</pre>
+<p>Load custom configuration file and section, only print warnings on error,
+missing configuration file ignored:</p>
+<pre>
+ if (CONF_modules_load_file(&quot;/something/app.cnf&quot;, &quot;myapp&quot;,
+                            CONF_MFLAGS_IGNORE_MISSING_FILE) &lt;= 0) {
+     fprintf(stderr, &quot;WARNING: error loading configuration file\n&quot;);
+     ERR_print_errors_fp(stderr);
+ }</pre>
+<p>Load and parse configuration file manually, custom error handling:</p>
+<pre>
+ FILE *fp;
+ CONF *cnf = NULL;
+ long eline;</pre>
+<pre>
+ fp = fopen(&quot;/somepath/app.cnf&quot;, &quot;r&quot;);
+ if (fp == NULL) {
+     fprintf(stderr, &quot;Error opening configuration file\n&quot;);
+     /* Other missing configuration file behaviour */
+ } else {
+     cnf = NCONF_new(NULL);
+     if (NCONF_load_fp(cnf, fp, &amp;eline) == 0) {
+         fprintf(stderr, &quot;Error on line %ld of configuration file\n&quot;, eline);
+         ERR_print_errors_fp(stderr);
+         /* Other malformed configuration file behaviour */
+     } else if (CONF_modules_load(cnf, &quot;appname&quot;, 0) &lt;= 0) {
+         fprintf(stderr, &quot;Error configuring application\n&quot;);
+         ERR_print_errors_fp(stderr);
+         /* Other configuration error behaviour */
+     }
+     fclose(fp);
+     NCONF_free(cnf);
+ }</pre>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>config(5)</em>, <em>OPENSSL_config(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2004-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,337 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>RAND_DRBG</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<ul>
+
+		<li><a href="#disclaimer">Disclaimer</a></li>
+		<li><a href="#typical_use_cases">Typical Use Cases</a></li>
+	</ul>
+
+	<li><a href="#chaining">CHAINING</a></li>
+	<li><a href="#the_three_shared_drbg_instances">THE THREE SHARED DRBG INSTANCES</a></li>
+	<ul>
+
+		<li><a href="#the__master__drbg_instance">The &lt;master&gt; DRBG instance</a></li>
+		<li><a href="#the__public__drbg_instance">The &lt;public&gt; DRBG instance</a></li>
+		<li><a href="#the__private__drbg_instance">The &lt;private&gt; DRBG instance</a></li>
+	</ul>
+
+	<li><a href="#locking">LOCKING</a></li>
+	<li><a href="#the_overall_picture">THE OVERALL PICTURE</a></li>
+	<li><a href="#reseeding">RESEEDING</a></li>
+	<ul>
+
+		<li><a href="#automatic_reseeding">Automatic Reseeding</a></li>
+		<li><a href="#manual_reseeding">Manual Reseeding</a></li>
+		<li><a href="#entropy_input_vs__additional_data">Entropy Input vs. Additional Data</a></li>
+		<li><a href="#configuring_the_random_seed_source">Configuring the Random Seed Source</a></li>
+		<li><a href="#reseeding_the_master_drbg_with_automatic_seeding_enabled">Reseeding the master DRBG with automatic seeding enabled</a></li>
+		<li><a href="#reseeding_the_master_drbg_with_automatic_seeding_disabled">Reseeding the master DRBG with automatic seeding disabled</a></li>
+	</ul>
+
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>RAND_DRBG - the deterministic random bit generator</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/rand_drbg.h&gt;</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The default OpenSSL RAND method is based on the RAND_DRBG class,
+which implements a deterministic random bit generator (DRBG).
+A DRBG is a certain type of cryptographically-secure pseudo-random
+number generator (CSPRNG), which is described in
+[NIST SP 800-90A Rev. 1].</p>
+<p>While the RAND API is the 'frontend' which is intended to be used by
+application developers for obtaining random bytes, the RAND_DRBG API
+serves as the 'backend', connecting the former with the operating
+systems's entropy sources and providing access to the DRBG's
+configuration parameters.</p>
+<p>
+</p>
+<h2><a name="disclaimer">Disclaimer</a></h2>
+<p>Unless you have very specific requirements for your random generator,
+it is in general not necessary to utilize the RAND_DRBG API directly.
+The usual way to obtain random bytes is to use <em>RAND_bytes(3)</em> or
+<em>RAND_priv_bytes(3)</em>, see also <em>RAND(7)</em>.</p>
+<p>
+</p>
+<h2><a name="typical_use_cases">Typical Use Cases</a></h2>
+<p>Typical examples for such special use cases are the following:</p>
+<ul>
+<li>
+<p>You want to use your own private DRBG instances.
+Multiple DRBG instances which are accessed only by a single thread provide
+additional security (because their internal states are independent) and
+better scalability in multithreaded applications (because they don't need
+to be locked).</p>
+</li>
+<li>
+<p>You need to integrate a previously unsupported entropy source.</p>
+</li>
+<li>
+<p>You need to change the default settings of the standard OpenSSL RAND
+implementation to meet specific requirements.</p>
+</li>
+</ul>
+<p>
+</p>
+<hr />
+<h1><a name="chaining">CHAINING</a></h1>
+<p>A DRBG instance can be used as the entropy source of another DRBG instance,
+provided it has itself access to a valid entropy source.
+The DRBG instance which acts as entropy source is called the <em>parent</em> DRBG,
+the other instance the <em>child</em> DRBG.</p>
+<p>This is called chaining. A chained DRBG instance is created by passing
+a pointer to the parent DRBG as argument to the <code>RAND_DRBG_new()</code> call.
+It is possible to create chains of more than two DRBG in a row.</p>
+<p>
+</p>
+<hr />
+<h1><a name="the_three_shared_drbg_instances">THE THREE SHARED DRBG INSTANCES</a></h1>
+<p>Currently, there are three shared DRBG instances,
+the &lt;master&gt;, &lt;public&gt;, and &lt;private&gt; DRBG.
+While the &lt;master&gt; DRBG is a single global instance, the &lt;public&gt; and &lt;private&gt;
+DRBG are created per thread and accessed through thread-local storage.</p>
+<p>By default, the functions <em>RAND_bytes(3)</em> and <em>RAND_priv_bytes(3)</em> use
+the thread-local &lt;public&gt; and &lt;private&gt; DRBG instance, respectively.</p>
+<p>
+</p>
+<h2><a name="the__master__drbg_instance">The &lt;master&gt; DRBG instance</a></h2>
+<p>The &lt;master&gt; DRBG is not used directly by the application, only for reseeding
+the two other two DRBG instances. It reseeds itself by obtaining randomness
+either from os entropy sources or by consuming randomness which was added
+previously by <em>RAND_add(3)</em>.</p>
+<p>
+</p>
+<h2><a name="the__public__drbg_instance">The &lt;public&gt; DRBG instance</a></h2>
+<p>This instance is used per default by <em>RAND_bytes(3)</em>.</p>
+<p>
+</p>
+<h2><a name="the__private__drbg_instance">The &lt;private&gt; DRBG instance</a></h2>
+<p>This instance is used per default by <em>RAND_priv_bytes(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="locking">LOCKING</a></h1>
+<p>The &lt;master&gt; DRBG is intended to be accessed concurrently for reseeding
+by its child DRBG instances. The necessary locking is done internally.
+It is <em>not</em> thread-safe to access the &lt;master&gt; DRBG directly via the
+RAND_DRBG interface.
+The &lt;public&gt; and &lt;private&gt; DRBG are thread-local, i.e. there is an
+instance of each per thread. So they can safely be accessed without
+locking via the RAND_DRBG interface.</p>
+<p>Pointers to these DRBG instances can be obtained using
+RAND_DRBG_get0_master(),
+RAND_DRBG_get0_public(), and
+RAND_DRBG_get0_private(), respectively.
+Note that it is not allowed to store a pointer to one of the thread-local
+DRBG instances in a variable or other memory location where it will be
+accessed and used by multiple threads.</p>
+<p>All other DRBG instances created by an application don't support locking,
+because they are intended to be used by a single thread.
+Instead of accessing a single DRBG instance concurrently from different
+threads, it is recommended to instantiate a separate DRBG instance per
+thread. Using the &lt;master&gt; DRBG as entropy source for multiple DRBG
+instances on different threads is thread-safe, because the DRBG instance
+will lock the &lt;master&gt; DRBG automatically for obtaining random input.</p>
+<p>
+</p>
+<hr />
+<h1><a name="the_overall_picture">THE OVERALL PICTURE</a></h1>
+<p>The following picture gives an overview over how the DRBG instances work
+together and are being used.</p>
+<pre>
+               +--------------------+
+               | os entropy sources |
+               +--------------------+
+                        |
+                        v           +-----------------------------+
+      RAND_add() ==&gt; &lt;master&gt;     &lt;-| shared DRBG (with locking)  |
+                      /   \         +-----------------------------+
+                     /     \              +---------------------------+
+              &lt;public&gt;     &lt;private&gt;   &lt;- | per-thread DRBG instances |
+                 |             |          +---------------------------+
+                 v             v
+               RAND_bytes()   RAND_priv_bytes()
+                    |               ^
+                    |               |
+    +------------------+      +------------------------------------+
+    | general purpose  |      | used for secrets like session keys |
+    | random generator |      | and private keys for certificates  |
+    +------------------+      +------------------------------------+</pre>
+<p>The usual way to obtain random bytes is to call RAND_bytes(...) or
+RAND_priv_bytes(...). These calls are roughly equivalent to calling
+RAND_DRBG_bytes(&lt;public&gt;, ...) and RAND_DRBG_bytes(&lt;private&gt;, ...),
+respectively. The method <em>RAND_DRBG_bytes(3)</em> is a convenience method
+wrapping the <em>RAND_DRBG_generate(3)</em> function, which serves the actual
+request for random data.</p>
+<p>
+</p>
+<hr />
+<h1><a name="reseeding">RESEEDING</a></h1>
+<p>A DRBG instance seeds itself automatically, pulling random input from
+its entropy source. The entropy source can be either a trusted operating
+system entropy source, or another DRBG with access to such a source.</p>
+<p>Automatic reseeding occurs after a predefined number of generate requests.
+The selection of the trusted entropy sources is configured at build
+time using the --with-rand-seed option. The following sections explain
+the reseeding process in more detail.</p>
+<p>
+</p>
+<h2><a name="automatic_reseeding">Automatic Reseeding</a></h2>
+<p>Before satisfying a generate request (<em>RAND_DRBG_generate(3)</em>), the DRBG
+reseeds itself automatically, if one of the following conditions holds:</p>
+<p>- the DRBG was not instantiated (=seeded) yet or has been uninstantiated.</p>
+<p>- the number of generate requests since the last reseeding exceeds a
+certain threshold, the so called <em>reseed_interval</em>.
+This behaviour can be disabled by setting the <em>reseed_interval</em> to 0.</p>
+<p>- the time elapsed since the last reseeding exceeds a certain time
+interval, the so called <em>reseed_time_interval</em>.
+This can be disabled by setting the <em>reseed_time_interval</em> to 0.</p>
+<p>- the DRBG is in an error state.</p>
+<p><strong>Note</strong>: An error state is entered if the entropy source fails while
+the DRBG is seeding or reseeding.
+The last case ensures that the DRBG automatically recovers
+from the error as soon as the entropy source is available again.</p>
+<p>
+</p>
+<h2><a name="manual_reseeding">Manual Reseeding</a></h2>
+<p>In addition to automatic reseeding, the caller can request an immediate
+reseeding of the DRBG with fresh entropy by setting the
+<em>prediction resistance</em> parameter to 1 when calling <em>RAND_DRBG_generate(3)</em>.</p>
+<p>The document [NIST SP 800-90C] describes prediction resistance requests
+in detail and imposes strict conditions on the entropy sources that are
+approved for providing prediction resistance.
+Since the default DRBG implementation does not have access to such an approved
+entropy source, a request for prediction resistance will currently always fail.
+In other words, prediction resistance is currently not supported yet by the DRBG.</p>
+<p>For the three shared DRBGs (and only for these) there is another way to
+reseed them manually:
+If <em>RAND_add(3)</em> is called with a positive <em>randomness</em> argument
+(or <em>RAND_seed(3)</em>), then this will immediately reseed the &lt;master&gt; DRBG.
+The &lt;public&gt; and &lt;private&gt; DRBG will detect this on their next generate
+call and reseed, pulling randomness from &lt;master&gt;.</p>
+<p>The last feature has been added to support the common practice used with
+previous OpenSSL versions to call <code>RAND_add()</code> before calling <code>RAND_bytes()</code>.</p>
+<p>
+</p>
+<h2><a name="entropy_input_vs__additional_data">Entropy Input vs. Additional Data</a></h2>
+<p>The DRBG distinguishes two different types of random input: <em>entropy</em>,
+which comes from a trusted source, and <em>additional input</em>',
+which can optionally be added by the user and is considered untrusted.
+It is possible to add <em>additional input</em> not only during reseeding,
+but also for every generate request.
+This is in fact done automatically by <em>RAND_DRBG_bytes(3)</em>.</p>
+<p>
+</p>
+<h2><a name="configuring_the_random_seed_source">Configuring the Random Seed Source</a></h2>
+<p>In most cases OpenSSL will automatically choose a suitable seed source
+for automatically seeding and reseeding its &lt;master&gt; DRBG. In some cases
+however, it will be necessary to explicitly specify a seed source during
+configuration, using the --with-rand-seed option. For more information,
+see the INSTALL instructions. There are also operating systems where no
+seed source is available and automatic reseeding is disabled by default.</p>
+<p>The following two sections describe the reseeding process of the master
+DRBG, depending on whether automatic reseeding is available or not.</p>
+<p>
+</p>
+<h2><a name="reseeding_the_master_drbg_with_automatic_seeding_enabled">Reseeding the master DRBG with automatic seeding enabled</a></h2>
+<p>Calling <code>RAND_poll()</code> or <code>RAND_add()</code> is not necessary, because the DRBG
+pulls the necessary entropy from its source automatically.
+However, both calls are permitted, and do reseed the RNG.</p>
+<p><code>RAND_add()</code> can be used to add both kinds of random input, depending on the
+value of the <strong>randomness</strong> argument:</p>
+<dl>
+<dt><strong><a name="randomness_0" class="item">randomness == 0:</a></strong></dt>
+
+<dd>
+<p>The random bytes are mixed as additional input into the current state of
+the DRBG.
+Mixing in additional input is not considered a full reseeding, hence the
+reseed counter is not reset.</p>
+</dd>
+<dt><strong><a name="randomness_02" class="item">randomness &gt; 0:</a></strong></dt>
+
+<dd>
+<p>The random bytes are used as entropy input for a full reseeding
+(resp. reinstantiation) if the DRBG is instantiated
+(resp. uninstantiated or in an error state).
+The number of random bits required for reseeding is determined by the
+security strength of the DRBG. Currently it defaults to 256 bits (32 bytes).
+It is possible to provide less randomness than required.
+In this case the missing randomness will be obtained by pulling random input
+from the trusted entropy sources.</p>
+</dd>
+</dl>
+<p>
+</p>
+<h2><a name="reseeding_the_master_drbg_with_automatic_seeding_disabled">Reseeding the master DRBG with automatic seeding disabled</a></h2>
+<p>Calling <code>RAND_poll()</code> will always fail.</p>
+<p><code>RAND_add()</code> needs to be called for initial seeding and periodic reseeding.
+At least 48 bytes (384 bits) of randomness have to be provided, otherwise
+the (re-)seeding of the DRBG will fail. This corresponds to one and a half
+times the security strength of the DRBG. The extra half is used for the
+nonce during instantiation.</p>
+<p>More precisely, the number of bytes needed for seeding depend on the
+<em>security strength</em> of the DRBG, which is set to 256 by default.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>RAND_DRBG_bytes(3)</em>,
+<em>RAND_DRBG_generate(3)</em>,
+<em>RAND_DRBG_reseed(3)</em>,
+<em>RAND_DRBG_get0_master(3)</em>,
+<em>RAND_DRBG_get0_public(3)</em>,
+<em>RAND_DRBG_get0_private(3)</em>,
+<em>RAND_DRBG_set_reseed_interval(3)</em>,
+<em>RAND_DRBG_set_reseed_time_interval(3)</em>,
+<em>RAND_DRBG_set_reseed_defaults(3)</em>,
+<em>RAND(7)</em>,</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2017-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

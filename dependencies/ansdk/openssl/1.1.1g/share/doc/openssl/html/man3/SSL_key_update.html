@@ -1,0 +1,139 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_key_update</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_key_update,
+SSL_get_key_update_type,
+SSL_renegotiate,
+SSL_renegotiate_abbreviated,
+SSL_renegotiate_pending
+- initiate and obtain information about updating connection keys</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_key_update(SSL *s, int updatetype);
+ int SSL_get_key_update_type(const SSL *s);</pre>
+<pre>
+ int SSL_renegotiate(SSL *s);
+ int SSL_renegotiate_abbreviated(SSL *s);
+ int SSL_renegotiate_pending(const SSL *s);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_key_update()</code> schedules an update of the keys for the current TLS connection.
+If the <strong>updatetype</strong> parameter is set to <strong>SSL_KEY_UPDATE_NOT_REQUESTED</strong> then
+the sending keys for this connection will be updated and the peer will be
+informed of the change. If the <strong>updatetype</strong> parameter is set to
+<strong>SSL_KEY_UPDATE_REQUESTED</strong> then the sending keys for this connection will be
+updated and the peer will be informed of the change along with a request for the
+peer to additionally update its sending keys. It is an error if <strong>updatetype</strong> is
+set to <strong>SSL_KEY_UPDATE_NONE</strong>.</p>
+<p><code>SSL_key_update()</code> must only be called after the initial handshake has been
+completed and TLSv1.3 has been negotiated. The key update will not take place
+until the next time an IO operation such as <code>SSL_read_ex()</code> or <code>SSL_write_ex()</code>
+takes place on the connection. Alternatively <code>SSL_do_handshake()</code> can be called to
+force the update to take place immediately.</p>
+<p><code>SSL_get_key_update_type()</code> can be used to determine whether a key update
+operation has been scheduled but not yet performed. The type of the pending key
+update operation will be returned if there is one, or SSL_KEY_UPDATE_NONE
+otherwise.</p>
+<p><code>SSL_renegotiate()</code> and <code>SSL_renegotiate_abbreviated()</code> should only be called for
+connections that have negotiated TLSv1.2 or less. Calling them on any other
+connection will result in an error.</p>
+<p>When called from the client side, <code>SSL_renegotiate()</code> schedules a completely new
+handshake over an existing SSL/TLS connection. The next time an IO operation
+such as <code>SSL_read_ex()</code> or <code>SSL_write_ex()</code> takes place on the connection a check
+will be performed to confirm that it is a suitable time to start a
+renegotiation. If so, then it will be initiated immediately. OpenSSL will not
+attempt to resume any session associated with the connection in the new
+handshake.</p>
+<p>When called from the client side, <code>SSL_renegotiate_abbreviated()</code> works in the
+same was as <code>SSL_renegotiate()</code> except that OpenSSL will attempt to resume the
+session associated with the current connection in the new handshake.</p>
+<p>When called from the server side, <code>SSL_renegotiate()</code> and
+<code>SSL_renegotiate_abbreviated()</code> behave identically. They both schedule a request
+for a new handshake to be sent to the client. The next time an IO operation is
+performed then the same checks as on the client side are performed and then, if
+appropriate, the request is sent. The client may or may not respond with a new
+handshake and it may or may not attempt to resume an existing session. If
+a new handshake is started then this will be handled transparently by calling
+any OpenSSL IO function.</p>
+<p>If an OpenSSL client receives a renegotiation request from a server then again
+this will be handled transparently through calling any OpenSSL IO function. For
+a TLS connection the client will attempt to resume the current session in the
+new handshake. For historical reasons, DTLS clients will not attempt to resume
+the session in the new handshake.</p>
+<p>The <code>SSL_renegotiate_pending()</code> function returns 1 if a renegotiation or
+renegotiation request has been scheduled but not yet acted on, or 0 otherwise.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_key_update()</code>, <code>SSL_renegotiate()</code> and <code>SSL_renegotiate_abbreviated()</code> return 1
+on success or 0 on error.</p>
+<p><code>SSL_get_key_update_type()</code> returns the update type of the pending key update
+operation or SSL_KEY_UPDATE_NONE if there is none.</p>
+<p><code>SSL_renegotiate_pending()</code> returns 1 if a renegotiation or renegotiation request
+has been scheduled but not yet acted on, or 0 otherwise.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>, <em>SSL_read_ex(3)</em>,
+<em>SSL_write_ex(3)</em>,
+<em>SSL_do_handshake(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The <code>SSL_key_update()</code> and <code>SSL_get_key_update_type()</code> functions were added in
+OpenSSL 1.1.1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2017-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

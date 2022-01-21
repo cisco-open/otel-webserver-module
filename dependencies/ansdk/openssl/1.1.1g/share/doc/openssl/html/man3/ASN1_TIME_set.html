@@ -1,0 +1,273 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>ASN1_TIME_set</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>ASN1_TIME_set, ASN1_UTCTIME_set, ASN1_GENERALIZEDTIME_set,
+ASN1_TIME_adj, ASN1_UTCTIME_adj, ASN1_GENERALIZEDTIME_adj,
+ASN1_TIME_check, ASN1_UTCTIME_check, ASN1_GENERALIZEDTIME_check,
+ASN1_TIME_set_string, ASN1_UTCTIME_set_string, ASN1_GENERALIZEDTIME_set_string,
+ASN1_TIME_set_string_X509,
+ASN1_TIME_normalize,
+ASN1_TIME_to_tm,
+ASN1_TIME_print, ASN1_UTCTIME_print, ASN1_GENERALIZEDTIME_print,
+ASN1_TIME_diff,
+ASN1_TIME_cmp_time_t, ASN1_UTCTIME_cmp_time_t,
+ASN1_TIME_compare,
+ASN1_TIME_to_generalizedtime - ASN.1 Time functions</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ ASN1_TIME *ASN1_TIME_set(ASN1_TIME *s, time_t t);
+ ASN1_UTCTIME *ASN1_UTCTIME_set(ASN1_UTCTIME *s, time_t t);
+ ASN1_GENERALIZEDTIME *ASN1_GENERALIZEDTIME_set(ASN1_GENERALIZEDTIME *s,
+                                                time_t t);</pre>
+<pre>
+ ASN1_TIME *ASN1_TIME_adj(ASN1_TIME *s, time_t t, int offset_day,
+                          long offset_sec);
+ ASN1_UTCTIME *ASN1_UTCTIME_adj(ASN1_UTCTIME *s, time_t t,
+                                int offset_day, long offset_sec);
+ ASN1_GENERALIZEDTIME *ASN1_GENERALIZEDTIME_adj(ASN1_GENERALIZEDTIME *s,
+                                                time_t t, int offset_day,
+                                                long offset_sec);</pre>
+<pre>
+ int ASN1_TIME_set_string(ASN1_TIME *s, const char *str);
+ int ASN1_TIME_set_string_X509(ASN1_TIME *s, const char *str);
+ int ASN1_UTCTIME_set_string(ASN1_UTCTIME *s, const char *str);
+ int ASN1_GENERALIZEDTIME_set_string(ASN1_GENERALIZEDTIME *s,
+                                     const char *str);</pre>
+<pre>
+ int ASN1_TIME_normalize(ASN1_TIME *s);</pre>
+<pre>
+ int ASN1_TIME_check(const ASN1_TIME *t);
+ int ASN1_UTCTIME_check(const ASN1_UTCTIME *t);
+ int ASN1_GENERALIZEDTIME_check(const ASN1_GENERALIZEDTIME *t);</pre>
+<pre>
+ int ASN1_TIME_print(BIO *b, const ASN1_TIME *s);
+ int ASN1_UTCTIME_print(BIO *b, const ASN1_UTCTIME *s);
+ int ASN1_GENERALIZEDTIME_print(BIO *b, const ASN1_GENERALIZEDTIME *s);</pre>
+<pre>
+ int ASN1_TIME_to_tm(const ASN1_TIME *s, struct tm *tm);
+ int ASN1_TIME_diff(int *pday, int *psec, const ASN1_TIME *from,
+                    const ASN1_TIME *to);</pre>
+<pre>
+ int ASN1_TIME_cmp_time_t(const ASN1_TIME *s, time_t t);
+ int ASN1_UTCTIME_cmp_time_t(const ASN1_UTCTIME *s, time_t t);</pre>
+<pre>
+ int ASN1_TIME_compare(const ASN1_TIME *a, const ASN1_TIME *b);</pre>
+<pre>
+ ASN1_GENERALIZEDTIME *ASN1_TIME_to_generalizedtime(ASN1_TIME *t,
+                                                    ASN1_GENERALIZEDTIME **out);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The ASN1_TIME_set(), ASN1_UTCTIME_set() and ASN1_GENERALIZEDTIME_set()
+functions set the structure <strong>s</strong> to the time represented by the time_t
+value <strong>t</strong>. If <strong>s</strong> is NULL a new time structure is allocated and returned.</p>
+<p>The ASN1_TIME_adj(), ASN1_UTCTIME_adj() and ASN1_GENERALIZEDTIME_adj()
+functions set the time structure <strong>s</strong> to the time represented
+by the time <strong>offset_day</strong> and <strong>offset_sec</strong> after the time_t value <strong>t</strong>.
+The values of <strong>offset_day</strong> or <strong>offset_sec</strong> can be negative to set a
+time before <strong>t</strong>. The <strong>offset_sec</strong> value can also exceed the number of
+seconds in a day. If <strong>s</strong> is NULL a new structure is allocated
+and returned.</p>
+<p>The ASN1_TIME_set_string(), ASN1_UTCTIME_set_string() and
+ASN1_GENERALIZEDTIME_set_string() functions set the time structure <strong>s</strong>
+to the time represented by string <strong>str</strong> which must be in appropriate ASN.1
+time format (for example YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ). If <strong>s</strong> is NULL
+this function performs a format check on <strong>str</strong> only. The string <strong>str</strong>
+is copied into <strong>s</strong>.</p>
+<p>ASN1_TIME_set_string_X509() sets ASN1_TIME structure <strong>s</strong> to the time
+represented by string <strong>str</strong> which must be in appropriate time format
+that <a href="http://www.ietf.org/rfc/rfc5280.txt" class="rfc">RFC 5280</a> requires, which means it only allows YYMMDDHHMMSSZ and
+YYYYMMDDHHMMSSZ (leap second is rejected), all other ASN.1 time format
+are not allowed. If <strong>s</strong> is NULL this function performs a format check
+on <strong>str</strong> only.</p>
+<p>The ASN1_TIME_normalize() function converts an ASN1_GENERALIZEDTIME or
+ASN1_UTCTIME into a time value that can be used in a certificate. It
+should be used after the ASN1_TIME_set_string() functions and before
+ASN1_TIME_print() functions to get consistent (i.e. GMT) results.</p>
+<p>The ASN1_TIME_check(), ASN1_UTCTIME_check() and ASN1_GENERALIZEDTIME_check()
+functions check the syntax of the time structure <strong>s</strong>.</p>
+<p>The ASN1_TIME_print(), ASN1_UTCTIME_print() and ASN1_GENERALIZEDTIME_print()
+functions print the time structure <strong>s</strong> to BIO <strong>b</strong> in human readable
+format. It will be of the format MMM DD HH:MM:SS YYYY [GMT], for example
+&quot;Feb  3 00:55:52 2015 GMT&quot; it does not include a newline. If the time
+structure has invalid format it prints out &quot;Bad time value&quot; and returns
+an error. The output for generalized time may include a fractional part
+following the second.</p>
+<p>ASN1_TIME_to_tm() converts the time <strong>s</strong> to the standard <strong>tm</strong> structure.
+If <strong>s</strong> is NULL, then the current time is converted. The output time is GMT.
+The <strong>tm_sec</strong>, <strong>tm_min</strong>, <strong>tm_hour</strong>, <strong>tm_mday</strong>, <strong>tm_wday</strong>, <strong>tm_yday</strong>,
+<strong>tm_mon</strong> and <strong>tm_year</strong> fields of <strong>tm</strong> structure are set to proper values,
+whereas all other fields are set to 0. If <strong>tm</strong> is NULL this function performs
+a format check on <strong>s</strong> only. If <strong>s</strong> is in Generalized format with fractional
+seconds, e.g. YYYYMMDDHHMMSS.SSSZ, the fractional seconds will be lost while
+converting <strong>s</strong> to <strong>tm</strong> structure.</p>
+<p>ASN1_TIME_diff() sets <strong>*pday</strong> and <strong>*psec</strong> to the time difference between
+<strong>from</strong> and <strong>to</strong>. If <strong>to</strong> represents a time later than <strong>from</strong> then
+one or both (depending on the time difference) of <strong>*pday</strong> and <strong>*psec</strong>
+will be positive. If <strong>to</strong> represents a time earlier than <strong>from</strong> then
+one or both of <strong>*pday</strong> and <strong>*psec</strong> will be negative. If <strong>to</strong> and <strong>from</strong>
+represent the same time then <strong>*pday</strong> and <strong>*psec</strong> will both be zero.
+If both <strong>*pday</strong> and <strong>*psec</strong> are non-zero they will always have the same
+sign. The value of <strong>*psec</strong> will always be less than the number of seconds
+in a day. If <strong>from</strong> or <strong>to</strong> is NULL the current time is used.</p>
+<p>The ASN1_TIME_cmp_time_t() and ASN1_UTCTIME_cmp_time_t() functions compare
+the two times represented by the time structure <strong>s</strong> and the time_t <strong>t</strong>.</p>
+<p>The ASN1_TIME_compare() function compares the two times represented by the
+time structures <strong>a</strong> and <strong>b</strong>.</p>
+<p>The ASN1_TIME_to_generalizedtime() function converts an ASN1_TIME to an
+ASN1_GENERALIZEDTIME, regardless of year. If either <strong>out</strong> or
+<strong>*out</strong> are NULL, then a new object is allocated and must be freed after use.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The ASN1_TIME structure corresponds to the ASN.1 structure <strong>Time</strong>
+defined in <a href="http://www.ietf.org/rfc/rfc5280.txt" class="rfc">RFC5280</a> et al. The time setting functions obey the rules outlined
+in <a href="http://www.ietf.org/rfc/rfc5280.txt" class="rfc">RFC5280</a>: if the date can be represented by UTCTime it is used, else
+GeneralizedTime is used.</p>
+<p>The ASN1_TIME, ASN1_UTCTIME and ASN1_GENERALIZEDTIME structures are represented
+as an ASN1_STRING internally and can be freed up using ASN1_STRING_free().</p>
+<p>The ASN1_TIME structure can represent years from 0000 to 9999 but no attempt
+is made to correct ancient calendar changes (for example from Julian to
+Gregorian calendars).</p>
+<p>ASN1_UTCTIME is limited to a year range of 1950 through 2049.</p>
+<p>Some applications add offset times directly to a time_t value and pass the
+results to ASN1_TIME_set() (or equivalent). This can cause problems as the
+time_t value can overflow on some systems resulting in unexpected results.
+New applications should use ASN1_TIME_adj() instead and pass the offset value
+in the <strong>offset_sec</strong> and <strong>offset_day</strong> parameters instead of directly
+manipulating a time_t value.</p>
+<p>ASN1_TIME_adj() may change the type from ASN1_GENERALIZEDTIME to ASN1_UTCTIME,
+or vice versa, based on the resulting year. The ASN1_GENERALIZEDTIME_adj() and
+ASN1_UTCTIME_adj() functions will not modify the type of the return structure.</p>
+<p>It is recommended that functions starting with ASN1_TIME be used instead of
+those starting with ASN1_UTCTIME or ASN1_GENERALIZEDTIME. The functions
+starting with ASN1_UTCTIME and ASN1_GENERALIZEDTIME act only on that specific
+time format. The functions starting with ASN1_TIME will operate on either
+format.</p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>ASN1_TIME_print(), ASN1_UTCTIME_print() and ASN1_GENERALIZEDTIME_print()
+do not print out the time zone: it either prints out &quot;GMT&quot; or nothing. But all
+certificates complying with <a href="http://www.ietf.org/rfc/rfc5280.txt" class="rfc">RFC5280</a> et al use GMT anyway.</p>
+<p>Use the ASN1_TIME_normalize() function to normalize the time value before
+printing to get GMT results.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>ASN1_TIME_set(), ASN1_UTCTIME_set(), ASN1_GENERALIZEDTIME_set(), ASN1_TIME_adj(),
+ASN1_UTCTIME_adj and ASN1_GENERALIZEDTIME_set return a pointer to a time structure
+or NULL if an error occurred.</p>
+<p>ASN1_TIME_set_string(), ASN1_UTCTIME_set_string(), ASN1_GENERALIZEDTIME_set_string()
+ASN1_TIME_set_string_X509() return 1 if the time value is successfully set and 0 otherwise.</p>
+<p>ASN1_TIME_normalize() returns 1 on success, and 0 on error.</p>
+<p>ASN1_TIME_check(), ASN1_UTCTIME_check and ASN1_GENERALIZEDTIME_check() return 1
+if the structure is syntactically correct and 0 otherwise.</p>
+<p>ASN1_TIME_print(), ASN1_UTCTIME_print() and ASN1_GENERALIZEDTIME_print() return 1
+if the time is successfully printed out and 0 if an error occurred (I/O error or
+invalid time format).</p>
+<p>ASN1_TIME_to_tm() returns 1 if the time is successfully parsed and 0 if an
+error occurred (invalid time format).</p>
+<p>ASN1_TIME_diff() returns 1 for success and 0 for failure. It can fail if the
+passed-in time structure has invalid syntax, for example.</p>
+<p>ASN1_TIME_cmp_time_t() and ASN1_UTCTIME_cmp_time_t() return -1 if <strong>s</strong> is
+before <strong>t</strong>, 0 if <strong>s</strong> equals <strong>t</strong>, or 1 if <strong>s</strong> is after <strong>t</strong>. -2 is returned
+on error.</p>
+<p>ASN1_TIME_compare() returns -1 if <strong>a</strong> is before <strong>b</strong>, 0 if <strong>a</strong> equals <strong>b</strong>, or 1 if <strong>a</strong> is after <strong>b</strong>. -2 is returned on error.</p>
+<p>ASN1_TIME_to_generalizedtime() returns a pointer to
+the appropriate time structure on success or NULL if an error occurred.</p>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>Set a time structure to one hour after the current time and print it out:</p>
+<pre>
+ #include &lt;time.h&gt;
+ #include &lt;openssl/asn1.h&gt;</pre>
+<pre>
+ ASN1_TIME *tm;
+ time_t t;
+ BIO *b;</pre>
+<pre>
+ t = time(NULL);
+ tm = ASN1_TIME_adj(NULL, t, 0, 60 * 60);
+ b = BIO_new_fp(stdout, BIO_NOCLOSE);
+ ASN1_TIME_print(b, tm);
+ ASN1_STRING_free(tm);
+ BIO_free(b);</pre>
+<p>Determine if one time is later or sooner than the current time:</p>
+<pre>
+ int day, sec;</pre>
+<pre>
+ if (!ASN1_TIME_diff(&amp;day, &amp;sec, NULL, to))
+     /* Invalid time format */</pre>
+<pre>
+ if (day &gt; 0 || sec &gt; 0)
+     printf(&quot;Later\n&quot;);
+ else if (day &lt; 0 || sec &lt; 0)
+     printf(&quot;Sooner\n&quot;);
+ else
+     printf(&quot;Same\n&quot;);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The ASN1_TIME_to_tm() function was added in OpenSSL 1.1.1.
+The ASN1_TIME_set_string_X509() function was added in OpenSSL 1.1.1.
+The ASN1_TIME_normalize() function was added in OpenSSL 1.1.1.
+The ASN1_TIME_cmp_time_t() function was added in OpenSSL 1.1.1.
+The ASN1_TIME_compare() function was added in OpenSSL 1.1.1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,176 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>ASYNC_WAIT_CTX_new</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>ASYNC_WAIT_CTX_new, ASYNC_WAIT_CTX_free, ASYNC_WAIT_CTX_set_wait_fd,
+ASYNC_WAIT_CTX_get_fd, ASYNC_WAIT_CTX_get_all_fds,
+ASYNC_WAIT_CTX_get_changed_fds, ASYNC_WAIT_CTX_clear_fd - functions to manage
+waiting for asynchronous jobs to complete</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/async.h&gt;</pre>
+<pre>
+ ASYNC_WAIT_CTX *ASYNC_WAIT_CTX_new(void);
+ void ASYNC_WAIT_CTX_free(ASYNC_WAIT_CTX *ctx);
+ int ASYNC_WAIT_CTX_set_wait_fd(ASYNC_WAIT_CTX *ctx, const void *key,
+                                OSSL_ASYNC_FD fd,
+                                void *custom_data,
+                                void (*cleanup)(ASYNC_WAIT_CTX *, const void *,
+                                                OSSL_ASYNC_FD, void *));
+ int ASYNC_WAIT_CTX_get_fd(ASYNC_WAIT_CTX *ctx, const void *key,
+                           OSSL_ASYNC_FD *fd, void **custom_data);
+ int ASYNC_WAIT_CTX_get_all_fds(ASYNC_WAIT_CTX *ctx, OSSL_ASYNC_FD *fd,
+                                size_t *numfds);
+ int ASYNC_WAIT_CTX_get_changed_fds(ASYNC_WAIT_CTX *ctx, OSSL_ASYNC_FD *addfd,
+                                    size_t *numaddfds, OSSL_ASYNC_FD *delfd,
+                                    size_t *numdelfds);
+ int ASYNC_WAIT_CTX_clear_fd(ASYNC_WAIT_CTX *ctx, const void *key);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>For an overview of how asynchronous operations are implemented in OpenSSL see
+<em>ASYNC_start_job(3)</em>. An ASYNC_WAIT_CTX object represents an asynchronous
+&quot;session&quot;, i.e. a related set of crypto operations. For example in SSL terms
+this would have a one-to-one correspondence with an SSL connection.</p>
+<p>Application code must create an ASYNC_WAIT_CTX using the <code>ASYNC_WAIT_CTX_new()</code>
+function prior to calling <code>ASYNC_start_job()</code> (see <em>ASYNC_start_job(3)</em>). When
+the job is started it is associated with the ASYNC_WAIT_CTX for the duration of
+that job. An ASYNC_WAIT_CTX should only be used for one ASYNC_JOB at any one
+time, but can be reused after an ASYNC_JOB has finished for a subsequent
+ASYNC_JOB. When the session is complete (e.g. the SSL connection is closed),
+application code cleans up with <code>ASYNC_WAIT_CTX_free()</code>.</p>
+<p>ASYNC_WAIT_CTXs can have &quot;wait&quot; file descriptors associated with them. Calling
+<code>ASYNC_WAIT_CTX_get_all_fds()</code> and passing in a pointer to an ASYNC_WAIT_CTX in
+the <strong>ctx</strong> parameter will return the wait file descriptors associated with that
+job in <strong>*fd</strong>. The number of file descriptors returned will be stored in
+<strong>*numfds</strong>. It is the caller's responsibility to ensure that sufficient memory
+has been allocated in <strong>*fd</strong> to receive all the file descriptors. Calling
+<code>ASYNC_WAIT_CTX_get_all_fds()</code> with a NULL <strong>fd</strong> value will return no file
+descriptors but will still populate <strong>*numfds</strong>. Therefore application code is
+typically expected to call this function twice: once to get the number of fds,
+and then again when sufficient memory has been allocated. If only one
+asynchronous engine is being used then normally this call will only ever return
+one fd. If multiple asynchronous engines are being used then more could be
+returned.</p>
+<p>The function <code>ASYNC_WAIT_CTX_get_changed_fds()</code> can be used to detect if any fds
+have changed since the last call time <code>ASYNC_start_job()</code> returned an ASYNC_PAUSE
+result (or since the ASYNC_WAIT_CTX was created if no ASYNC_PAUSE result has
+been received). The <strong>numaddfds</strong> and <strong>numdelfds</strong> parameters will be populated
+with the number of fds added or deleted respectively. <strong>*addfd</strong> and <strong>*delfd</strong>
+will be populated with the list of added and deleted fds respectively. Similarly
+to <code>ASYNC_WAIT_CTX_get_all_fds()</code> either of these can be NULL, but if they are not
+NULL then the caller is responsible for ensuring sufficient memory is allocated.</p>
+<p>Implementors of async aware code (e.g. engines) are encouraged to return a
+stable fd for the lifetime of the ASYNC_WAIT_CTX in order to reduce the &quot;churn&quot;
+of regularly changing fds - although no guarantees of this are provided to
+applications.</p>
+<p>Applications can wait for the file descriptor to be ready for &quot;read&quot; using a
+system function call such as select or poll (being ready for &quot;read&quot; indicates
+that the job should be resumed). If no file descriptor is made available then an
+application will have to periodically &quot;poll&quot; the job by attempting to restart it
+to see if it is ready to continue.</p>
+<p>Async aware code (e.g. engines) can get the current ASYNC_WAIT_CTX from the job
+via <em>ASYNC_get_wait_ctx(3)</em> and provide a file descriptor to use for waiting
+on by calling <code>ASYNC_WAIT_CTX_set_wait_fd()</code>. Typically this would be done by an
+engine immediately prior to calling <code>ASYNC_pause_job()</code> and not by end user code.
+An existing association with a file descriptor can be obtained using
+<code>ASYNC_WAIT_CTX_get_fd()</code> and cleared using <code>ASYNC_WAIT_CTX_clear_fd()</code>. Both of
+these functions requires a <strong>key</strong> value which is unique to the async aware
+code.  This could be any unique value but a good candidate might be the
+<strong>ENGINE *</strong> for the engine. The <strong>custom_data</strong> parameter can be any value, and
+will be returned in a subsequent call to <code>ASYNC_WAIT_CTX_get_fd()</code>. The
+<code>ASYNC_WAIT_CTX_set_wait_fd()</code> function also expects a pointer to a &quot;cleanup&quot;
+routine. This can be NULL but if provided will automatically get called when
+the ASYNC_WAIT_CTX is freed, and gives the engine the opportunity to close the
+fd or any other resources. Note: The &quot;cleanup&quot; routine does not get called if
+the fd is cleared directly via a call to <code>ASYNC_WAIT_CTX_clear_fd()</code>.</p>
+<p>An example of typical usage might be an async capable engine. User code would
+initiate cryptographic operations. The engine would initiate those operations
+asynchronously and then call <code>ASYNC_WAIT_CTX_set_wait_fd()</code> followed by
+<code>ASYNC_pause_job()</code> to return control to the user code. The user code can then
+perform other tasks or wait for the job to be ready by calling &quot;select&quot; or other
+similar function on the wait file descriptor. The engine can signal to the user
+code that the job should be resumed by making the wait file descriptor
+&quot;readable&quot;. Once resumed the engine should clear the wake signal on the wait
+file descriptor.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>ASYNC_WAIT_CTX_new()</code> returns a pointer to the newly allocated ASYNC_WAIT_CTX or
+NULL on error.</p>
+<p>ASYNC_WAIT_CTX_set_wait_fd, ASYNC_WAIT_CTX_get_fd, ASYNC_WAIT_CTX_get_all_fds,
+ASYNC_WAIT_CTX_get_changed_fds and ASYNC_WAIT_CTX_clear_fd all return 1 on
+success or 0 on error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>On Windows platforms the openssl/async.h header is dependent on some
+of the types customarily made available by including windows.h. The
+application developer is likely to require control over when the latter
+is included, commonly as one of the first included headers. Therefore
+it is defined as an application developer's responsibility to include
+windows.h prior to async.h.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>crypto(7)</em>, <em>ASYNC_start_job(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p><code>ASYNC_WAIT_CTX_new()</code>, <code>ASYNC_WAIT_CTX_free()</code>, <code>ASYNC_WAIT_CTX_set_wait_fd()</code>,
+<code>ASYNC_WAIT_CTX_get_fd()</code>, <code>ASYNC_WAIT_CTX_get_all_fds()</code>,
+<code>ASYNC_WAIT_CTX_get_changed_fds()</code> and <code>ASYNC_WAIT_CTX_clear_fd()</code>
+were added in OpenSSL 1.1.0.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

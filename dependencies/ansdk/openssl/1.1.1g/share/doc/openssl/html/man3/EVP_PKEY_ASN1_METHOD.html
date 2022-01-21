@@ -1,0 +1,434 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>EVP_PKEY_ASN1_METHOD</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<ul>
+
+		<li><a href="#methods">Methods</a></li>
+		<li><a href="#functions">Functions</a></li>
+	</ul>
+
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>EVP_PKEY_ASN1_METHOD,
+EVP_PKEY_asn1_new,
+EVP_PKEY_asn1_copy,
+EVP_PKEY_asn1_free,
+EVP_PKEY_asn1_add0,
+EVP_PKEY_asn1_add_alias,
+EVP_PKEY_asn1_set_public,
+EVP_PKEY_asn1_set_private,
+EVP_PKEY_asn1_set_param,
+EVP_PKEY_asn1_set_free,
+EVP_PKEY_asn1_set_ctrl,
+EVP_PKEY_asn1_set_item,
+EVP_PKEY_asn1_set_siginf,
+EVP_PKEY_asn1_set_check,
+EVP_PKEY_asn1_set_public_check,
+EVP_PKEY_asn1_set_param_check,
+EVP_PKEY_asn1_set_security_bits,
+EVP_PKEY_asn1_set_set_priv_key,
+EVP_PKEY_asn1_set_set_pub_key,
+EVP_PKEY_asn1_set_get_priv_key,
+EVP_PKEY_asn1_set_get_pub_key,
+EVP_PKEY_get0_asn1
+- manipulating and registering EVP_PKEY_ASN1_METHOD structure</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/evp.h&gt;</pre>
+<pre>
+ typedef struct evp_pkey_asn1_method_st EVP_PKEY_ASN1_METHOD;</pre>
+<pre>
+ EVP_PKEY_ASN1_METHOD *EVP_PKEY_asn1_new(int id, int flags,
+                                         const char *pem_str,
+                                         const char *info);
+ void EVP_PKEY_asn1_copy(EVP_PKEY_ASN1_METHOD *dst,
+                         const EVP_PKEY_ASN1_METHOD *src);
+ void EVP_PKEY_asn1_free(EVP_PKEY_ASN1_METHOD *ameth);
+ int EVP_PKEY_asn1_add0(const EVP_PKEY_ASN1_METHOD *ameth);
+ int EVP_PKEY_asn1_add_alias(int to, int from);</pre>
+<pre>
+ void EVP_PKEY_asn1_set_public(EVP_PKEY_ASN1_METHOD *ameth,
+                               int (*pub_decode) (EVP_PKEY *pk,
+                                                  X509_PUBKEY *pub),
+                               int (*pub_encode) (X509_PUBKEY *pub,
+                                                  const EVP_PKEY *pk),
+                               int (*pub_cmp) (const EVP_PKEY *a,
+                                               const EVP_PKEY *b),
+                               int (*pub_print) (BIO *out,
+                                                 const EVP_PKEY *pkey,
+                                                 int indent, ASN1_PCTX *pctx),
+                               int (*pkey_size) (const EVP_PKEY *pk),
+                               int (*pkey_bits) (const EVP_PKEY *pk));
+ void EVP_PKEY_asn1_set_private(EVP_PKEY_ASN1_METHOD *ameth,
+                                int (*priv_decode) (EVP_PKEY *pk,
+                                                    const PKCS8_PRIV_KEY_INFO
+                                                    *p8inf),
+                                int (*priv_encode) (PKCS8_PRIV_KEY_INFO *p8,
+                                                    const EVP_PKEY *pk),
+                                int (*priv_print) (BIO *out,
+                                                   const EVP_PKEY *pkey,
+                                                   int indent,
+                                                   ASN1_PCTX *pctx));
+ void EVP_PKEY_asn1_set_param(EVP_PKEY_ASN1_METHOD *ameth,
+                              int (*param_decode) (EVP_PKEY *pkey,
+                                                   const unsigned char **pder,
+                                                   int derlen),
+                              int (*param_encode) (const EVP_PKEY *pkey,
+                                                   unsigned char **pder),
+                              int (*param_missing) (const EVP_PKEY *pk),
+                              int (*param_copy) (EVP_PKEY *to,
+                                                 const EVP_PKEY *from),
+                              int (*param_cmp) (const EVP_PKEY *a,
+                                                const EVP_PKEY *b),
+                              int (*param_print) (BIO *out,
+                                                  const EVP_PKEY *pkey,
+                                                  int indent,
+                                                  ASN1_PCTX *pctx));</pre>
+<pre>
+ void EVP_PKEY_asn1_set_free(EVP_PKEY_ASN1_METHOD *ameth,
+                             void (*pkey_free) (EVP_PKEY *pkey));
+ void EVP_PKEY_asn1_set_ctrl(EVP_PKEY_ASN1_METHOD *ameth,
+                             int (*pkey_ctrl) (EVP_PKEY *pkey, int op,
+                                               long arg1, void *arg2));
+ void EVP_PKEY_asn1_set_item(EVP_PKEY_ASN1_METHOD *ameth,
+                             int (*item_verify) (EVP_MD_CTX *ctx,
+                                                 const ASN1_ITEM *it,
+                                                 void *asn,
+                                                 X509_ALGOR *a,
+                                                 ASN1_BIT_STRING *sig,
+                                                 EVP_PKEY *pkey),
+                             int (*item_sign) (EVP_MD_CTX *ctx,
+                                               const ASN1_ITEM *it,
+                                               void *asn,
+                                               X509_ALGOR *alg1,
+                                               X509_ALGOR *alg2,
+                                               ASN1_BIT_STRING *sig));</pre>
+<pre>
+ void EVP_PKEY_asn1_set_siginf(EVP_PKEY_ASN1_METHOD *ameth,
+                               int (*siginf_set) (X509_SIG_INFO *siginf,
+                                                  const X509_ALGOR *alg,
+                                                  const ASN1_STRING *sig));</pre>
+<pre>
+ void EVP_PKEY_asn1_set_check(EVP_PKEY_ASN1_METHOD *ameth,
+                              int (*pkey_check) (const EVP_PKEY *pk));</pre>
+<pre>
+ void EVP_PKEY_asn1_set_public_check(EVP_PKEY_ASN1_METHOD *ameth,
+                                     int (*pkey_pub_check) (const EVP_PKEY *pk));</pre>
+<pre>
+ void EVP_PKEY_asn1_set_param_check(EVP_PKEY_ASN1_METHOD *ameth,
+                                    int (*pkey_param_check) (const EVP_PKEY *pk));</pre>
+<pre>
+ void EVP_PKEY_asn1_set_security_bits(EVP_PKEY_ASN1_METHOD *ameth,
+                                      int (*pkey_security_bits) (const EVP_PKEY
+                                                                 *pk));</pre>
+<pre>
+ void EVP_PKEY_asn1_set_set_priv_key(EVP_PKEY_ASN1_METHOD *ameth,
+                                     int (*set_priv_key) (EVP_PKEY *pk,
+                                                          const unsigned char
+                                                             *priv,
+                                                          size_t len));</pre>
+<pre>
+ void EVP_PKEY_asn1_set_set_pub_key(EVP_PKEY_ASN1_METHOD *ameth,
+                                    int (*set_pub_key) (EVP_PKEY *pk,
+                                                        const unsigned char *pub,
+                                                        size_t len));</pre>
+<pre>
+ void EVP_PKEY_asn1_set_get_priv_key(EVP_PKEY_ASN1_METHOD *ameth,
+                                     int (*get_priv_key) (const EVP_PKEY *pk,
+                                                          unsigned char *priv,
+                                                          size_t *len));</pre>
+<pre>
+ void EVP_PKEY_asn1_set_get_pub_key(EVP_PKEY_ASN1_METHOD *ameth,
+                                    int (*get_pub_key) (const EVP_PKEY *pk,
+                                                        unsigned char *pub,
+                                                        size_t *len));</pre>
+<pre>
+ const EVP_PKEY_ASN1_METHOD *EVP_PKEY_get0_asn1(const EVP_PKEY *pkey);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><strong>EVP_PKEY_ASN1_METHOD</strong> is a structure which holds a set of ASN.1
+conversion, printing and information methods for a specific public key
+algorithm.</p>
+<p>There are two places where the <strong>EVP_PKEY_ASN1_METHOD</strong> objects are
+stored: one is a built-in array representing the standard methods for
+different algorithms, and the other one is a stack of user-defined
+application-specific methods, which can be manipulated by using
+<em>EVP_PKEY_asn1_add0(3)</em>.</p>
+<p>
+</p>
+<h2><a name="methods">Methods</a></h2>
+<p>The methods are the underlying implementations of a particular public
+key algorithm present by the <strong>EVP_PKEY</strong> object.</p>
+<pre>
+ int (*pub_decode) (EVP_PKEY *pk, X509_PUBKEY *pub);
+ int (*pub_encode) (X509_PUBKEY *pub, const EVP_PKEY *pk);
+ int (*pub_cmp) (const EVP_PKEY *a, const EVP_PKEY *b);
+ int (*pub_print) (BIO *out, const EVP_PKEY *pkey, int indent,
+                   ASN1_PCTX *pctx);</pre>
+<p>The <code>pub_decode()</code> and <code>pub_encode()</code> methods are called to decode /
+encode <strong>X509_PUBKEY</strong> ASN.1 parameters to / from <strong>pk</strong>.
+They MUST return 0 on error, 1 on success.
+They're called by <em>X509_PUBKEY_get0(3)</em> and <em>X509_PUBKEY_set(3)</em>.</p>
+<p>The <code>pub_cmp()</code> method is called when two public keys are to be
+compared.
+It MUST return 1 when the keys are equal, 0 otherwise.
+It's called by <em>EVP_PKEY_cmp(3)</em>.</p>
+<p>The <code>pub_print()</code> method is called to print a public key in humanly
+readable text to <strong>out</strong>, indented <strong>indent</strong> spaces.
+It MUST return 0 on error, 1 on success.
+It's called by <em>EVP_PKEY_print_public(3)</em>.</p>
+<pre>
+ int (*priv_decode) (EVP_PKEY *pk, const PKCS8_PRIV_KEY_INFO *p8inf);
+ int (*priv_encode) (PKCS8_PRIV_KEY_INFO *p8, const EVP_PKEY *pk);
+ int (*priv_print) (BIO *out, const EVP_PKEY *pkey, int indent,
+                    ASN1_PCTX *pctx);</pre>
+<p>The <code>priv_decode()</code> and <code>priv_encode()</code> methods are called to decode /
+encode <strong>PKCS8_PRIV_KEY_INFO</strong> form private key to / from <strong>pk</strong>.
+They MUST return 0 on error, 1 on success.
+They're called by <em>EVP_PKCS82PKEY(3)</em> and <em>EVP_PKEY2PKCS8(3)</em>.</p>
+<p>The <code>priv_print()</code> method is called to print a private key in humanly
+readable text to <strong>out</strong>, indented <strong>indent</strong> spaces.
+It MUST return 0 on error, 1 on success.
+It's called by <em>EVP_PKEY_print_private(3)</em>.</p>
+<pre>
+ int (*pkey_size) (const EVP_PKEY *pk);
+ int (*pkey_bits) (const EVP_PKEY *pk);
+ int (*pkey_security_bits) (const EVP_PKEY *pk);</pre>
+<p>The <code>pkey_size()</code> method returns the key size in bytes.
+It's called by <em>EVP_PKEY_size(3)</em>.</p>
+<p>The <code>pkey_bits()</code> method returns the key size in bits.
+It's called by <em>EVP_PKEY_bits(3)</em>.</p>
+<pre>
+ int (*param_decode) (EVP_PKEY *pkey,
+                      const unsigned char **pder, int derlen);
+ int (*param_encode) (const EVP_PKEY *pkey, unsigned char **pder);
+ int (*param_missing) (const EVP_PKEY *pk);
+ int (*param_copy) (EVP_PKEY *to, const EVP_PKEY *from);
+ int (*param_cmp) (const EVP_PKEY *a, const EVP_PKEY *b);
+ int (*param_print) (BIO *out, const EVP_PKEY *pkey, int indent,
+                     ASN1_PCTX *pctx);</pre>
+<p>The <code>param_decode()</code> and <code>param_encode()</code> methods are called to decode /
+encode DER formatted parameters to / from <strong>pk</strong>.
+They MUST return 0 on error, 1 on success.
+They're called by <em>PEM_read_bio_Parameters(3)</em> and the <strong>file:</strong>
+<em>OSSL_STORE_LOADER(3)</em>.</p>
+<p>The <code>param_missing()</code> method returns 0 if a key parameter is missing,
+otherwise 1.
+It's called by <em>EVP_PKEY_missing_parameters(3)</em>.</p>
+<p>The <code>param_copy()</code> method copies key parameters from <strong>from</strong> to <strong>to</strong>.
+It MUST return 0 on error, 1 on success.
+It's called by <em>EVP_PKEY_copy_parameters(3)</em>.</p>
+<p>The <code>param_cmp()</code> method compares the parameters of keys <strong>a</strong> and <strong>b</strong>.
+It MUST return 1 when the keys are equal, 0 when not equal, or a
+negative number on error.
+It's called by <em>EVP_PKEY_cmp_parameters(3)</em>.</p>
+<p>The <code>param_print()</code> method prints the private key parameters in humanly
+readable text to <strong>out</strong>, indented <strong>indent</strong> spaces.
+It MUST return 0 on error, 1 on success.
+It's called by <em>EVP_PKEY_print_params(3)</em>.</p>
+<pre>
+ int (*sig_print) (BIO *out,
+                   const X509_ALGOR *sigalg, const ASN1_STRING *sig,
+                   int indent, ASN1_PCTX *pctx);</pre>
+<p>The <code>sig_print()</code> method prints a signature in humanly readable text to
+<strong>out</strong>, indented <strong>indent</strong> spaces.
+<strong>sigalg</strong> contains the exact signature algorithm.
+If the signature in <strong>sig</strong> doesn't correspond to what this method
+expects, X509_signature_dump() must be used as a last resort.
+It MUST return 0 on error, 1 on success.
+It's called by <em>X509_signature_print(3)</em>.</p>
+<pre>
+ void (*pkey_free) (EVP_PKEY *pkey);</pre>
+<p>The <code>pkey_free()</code> method helps freeing the internals of <strong>pkey</strong>.
+It's called by <em>EVP_PKEY_free(3)</em>, <em>EVP_PKEY_set_type(3)</em>,
+<em>EVP_PKEY_set_type_str(3)</em>, and <em>EVP_PKEY_assign(3)</em>.</p>
+<pre>
+ int (*pkey_ctrl) (EVP_PKEY *pkey, int op, long arg1, void *arg2);</pre>
+<p>The <code>pkey_ctrl()</code> method adds extra algorithm specific control.
+It's called by <em>EVP_PKEY_get_default_digest_nid(3)</em>,
+<em>EVP_PKEY_set1_tls_encodedpoint(3)</em>,
+<em>EVP_PKEY_get1_tls_encodedpoint(3)</em>, <em>PKCS7_SIGNER_INFO_set(3)</em>,
+<em>PKCS7_RECIP_INFO_set(3)</em>, ...</p>
+<pre>
+ int (*old_priv_decode) (EVP_PKEY *pkey,
+                         const unsigned char **pder, int derlen);
+ int (*old_priv_encode) (const EVP_PKEY *pkey, unsigned char **pder);</pre>
+<p>The <code>old_priv_decode()</code> and <code>old_priv_encode()</code> methods decode / encode
+they private key <strong>pkey</strong> from / to a DER formatted array.
+These are exclusively used to help decoding / encoding older (pre
+PKCS#8) PEM formatted encrypted private keys.
+<code>old_priv_decode()</code> MUST return 0 on error, 1 on success.
+<code>old_priv_encode()</code> MUST the return same kind of values as
+i2d_PrivateKey().
+They're called by <em>d2i_PrivateKey(3)</em> and <em>i2d_PrivateKey(3)</em>.</p>
+<pre>
+ int (*item_verify) (EVP_MD_CTX *ctx, const ASN1_ITEM *it, void *asn,
+                     X509_ALGOR *a, ASN1_BIT_STRING *sig, EVP_PKEY *pkey);
+ int (*item_sign) (EVP_MD_CTX *ctx, const ASN1_ITEM *it, void *asn,
+                   X509_ALGOR *alg1, X509_ALGOR *alg2,
+                   ASN1_BIT_STRING *sig);</pre>
+<p>The <code>item_sign()</code> and  <code>item_verify()</code> methods make it possible to have
+algorithm specific signatures and verification of them.</p>
+<p><code>item_sign()</code> MUST return one of:</p>
+<dl>
+<dt><strong><a name="__0" class="item">&lt;=0</a></strong></dt>
+
+<dd>
+<p>error</p>
+</li>
+<li>
+<p><code>item_sign()</code> did everything, OpenSSL internals just needs to pass the
+signature length back.</p>
+</li>
+<li>
+<p><code>item_sign()</code> did nothing, OpenSSL internal standard routines are
+expected to continue with the default signature production.</p>
+</li>
+<li>
+<p><code>item_sign()</code> set the algorithm identifier <strong>algor1</strong> and <strong>algor2</strong>,
+OpenSSL internals should just sign using those algorithms.</p>
+</dd>
+</dl>
+<p><code>item_verify()</code> MUST return one of:</p>
+<dl>
+<dt><strong><a name="__02" class="item">&lt;=0</a></strong></dt>
+
+<dd>
+<p>error</p>
+</li>
+<li>
+<p><code>item_sign()</code> did everything, OpenSSL internals just needs to pass the
+signature length back.</p>
+</li>
+<li>
+<p><code>item_sign()</code> did nothing, OpenSSL internal standard routines are
+expected to continue with the default signature production.</p>
+</dd>
+</dl>
+<p><code>item_verify()</code> and <code>item_sign()</code> are called by <em>ASN1_item_verify(3)</em> and
+<em>ASN1_item_sign(3)</em>, and by extension, <em>X509_verify(3)</em>,
+<em>X509_REQ_verify(3)</em>, <em>X509_sign(3)</em>, <em>X509_REQ_sign(3)</em>, ...</p>
+<pre>
+ int (*siginf_set) (X509_SIG_INFO *siginf, const X509_ALGOR *alg,
+                    const ASN1_STRING *sig);</pre>
+<p>The <code>siginf_set()</code> method is used to set custom <strong>X509_SIG_INFO</strong>
+parameters.
+It MUST return 0 on error, or 1 on success.
+It's called as part of <em>X509_check_purpose(3)</em>, <em>X509_check_ca(3)</em>
+and <em>X509_check_issued(3)</em>.</p>
+<pre>
+ int (*pkey_check) (const EVP_PKEY *pk);
+ int (*pkey_public_check) (const EVP_PKEY *pk);
+ int (*pkey_param_check) (const EVP_PKEY *pk);</pre>
+<p>The <code>pkey_check()</code>, <code>pkey_public_check()</code> and <code>pkey_param_check()</code> methods are used
+to check the validity of <strong>pk</strong> for key-pair, public component and parameters,
+respectively.
+They MUST return 0 for an invalid key, or 1 for a valid key.
+They are called by <em>EVP_PKEY_check(3)</em>, <em>EVP_PKEY_public_check(3)</em> and
+<em>EVP_PKEY_param_check(3)</em> respectively.</p>
+<pre>
+ int (*set_priv_key) (EVP_PKEY *pk, const unsigned char *priv, size_t len);
+ int (*set_pub_key) (EVP_PKEY *pk, const unsigned char *pub, size_t len);</pre>
+<p>The <code>set_priv_key()</code> and <code>set_pub_key()</code> methods are used to set the raw private and
+public key data for an EVP_PKEY. They MUST return 0 on error, or 1 on success.
+They are called by <em>EVP_PKEY_new_raw_private_key(3)</em>, and
+<em>EVP_PKEY_new_raw_public_key(3)</em> respectively.</p>
+<p>
+</p>
+<h2><a name="functions">Functions</a></h2>
+<p>EVP_PKEY_asn1_new() creates and returns a new <strong>EVP_PKEY_ASN1_METHOD</strong>
+object, and associates the given <strong>id</strong>, <strong>flags</strong>, <strong>pem_str</strong> and
+<strong>info</strong>.
+<strong>id</strong> is a NID, <strong>pem_str</strong> is the PEM type string, <strong>info</strong> is a
+descriptive string.
+The following <strong>flags</strong> are supported:</p>
+<pre>
+ ASN1_PKEY_SIGPARAM_NULL</pre>
+<p>If <strong>ASN1_PKEY_SIGPARAM_NULL</strong> is set, then the signature algorithm
+parameters are given the type <strong>V_ASN1_NULL</strong> by default, otherwise
+they will be given the type <strong>V_ASN1_UNDEF</strong> (i.e. the parameter is
+omitted).
+See <em>X509_ALGOR_set0(3)</em> for more information.</p>
+<p>EVP_PKEY_asn1_copy() copies an <strong>EVP_PKEY_ASN1_METHOD</strong> object from
+<strong>src</strong> to <strong>dst</strong>.
+This function is not thread safe, it's recommended to only use this
+when initializing the application.</p>
+<p>EVP_PKEY_asn1_free() frees an existing <strong>EVP_PKEY_ASN1_METHOD</strong> pointed
+by <strong>ameth</strong>.</p>
+<p>EVP_PKEY_asn1_add0() adds <strong>ameth</strong> to the user defined stack of
+methods unless another <strong>EVP_PKEY_ASN1_METHOD</strong> with the same NID is
+already there.
+This function is not thread safe, it's recommended to only use this
+when initializing the application.</p>
+<p>EVP_PKEY_asn1_add_alias() creates an alias with the NID <strong>to</strong> for the
+<strong>EVP_PKEY_ASN1_METHOD</strong> with NID <strong>from</strong> unless another
+<strong>EVP_PKEY_ASN1_METHOD</strong> with the same NID is already added.
+This function is not thread safe, it's recommended to only use this
+when initializing the application.</p>
+<p>EVP_PKEY_asn1_set_public(), EVP_PKEY_asn1_set_private(),
+EVP_PKEY_asn1_set_param(), EVP_PKEY_asn1_set_free(),
+EVP_PKEY_asn1_set_ctrl(), EVP_PKEY_asn1_set_item(),
+EVP_PKEY_asn1_set_siginf(), EVP_PKEY_asn1_set_check(),
+EVP_PKEY_asn1_set_public_check(), EVP_PKEY_asn1_set_param_check(),
+EVP_PKEY_asn1_set_security_bits(), EVP_PKEY_asn1_set_set_priv_key(),
+EVP_PKEY_asn1_set_set_pub_key(), EVP_PKEY_asn1_set_get_priv_key() and
+EVP_PKEY_asn1_set_get_pub_key() set the diverse methods of the given
+<strong>EVP_PKEY_ASN1_METHOD</strong> object.</p>
+<p>EVP_PKEY_get0_asn1() finds the <strong>EVP_PKEY_ASN1_METHOD</strong> associated
+with the key <strong>pkey</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>EVP_PKEY_asn1_new() returns NULL on error, or a pointer to an
+<strong>EVP_PKEY_ASN1_METHOD</strong> object otherwise.</p>
+<p>EVP_PKEY_asn1_add0() and EVP_PKEY_asn1_add_alias() return 0 on error,
+or 1 on success.</p>
+<p>EVP_PKEY_get0_asn1() returns NULL on error, or a pointer to a constant
+<strong>EVP_PKEY_ASN1_METHOD</strong> object otherwise.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2017-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

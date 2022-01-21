@@ -1,0 +1,94 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_flush_sessions</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_flush_sessions - remove expired sessions</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ void SSL_CTX_flush_sessions(SSL_CTX *ctx, long tm);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_flush_sessions()</code> causes a run through the session cache of
+<strong>ctx</strong> to remove sessions expired at time <strong>tm</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>If enabled, the internal session cache will collect all sessions established
+up to the specified maximum number (see SSL_CTX_sess_set_cache_size()).
+As sessions will not be reused ones they are expired, they should be
+removed from the cache to save resources. This can either be done
+automatically whenever 255 new sessions were established (see
+<em>SSL_CTX_set_session_cache_mode(3)</em>)
+or manually by calling <code>SSL_CTX_flush_sessions()</code>.</p>
+<p>The parameter <strong>tm</strong> specifies the time which should be used for the
+expiration test, in most cases the actual time given by <code>time(0)</code>
+will be used.</p>
+<p><code>SSL_CTX_flush_sessions()</code> will only check sessions stored in the internal
+cache. When a session is found and removed, the remove_session_cb is however
+called to synchronize with the external cache (see
+<em>SSL_CTX_sess_set_get_cb(3)</em>).</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_CTX_flush_sessions()</code> does not return a value.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>,
+<em>SSL_CTX_set_session_cache_mode(3)</em>,
+<em>SSL_CTX_set_timeout(3)</em>,
+<em>SSL_CTX_sess_set_get_cb(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2001-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

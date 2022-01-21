@@ -1,0 +1,113 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_set_max_cert_list</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_set_max_cert_list, SSL_CTX_get_max_cert_list, SSL_set_max_cert_list, SSL_get_max_cert_list - manipulate allowed size for the peer's certificate chain</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ long SSL_CTX_set_max_cert_list(SSL_CTX *ctx, long size);
+ long SSL_CTX_get_max_cert_list(SSL_CTX *ctx);</pre>
+<pre>
+ long SSL_set_max_cert_list(SSL *ssl, long size);
+ long SSL_get_max_cert_list(SSL *ctx);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_set_max_cert_list()</code> sets the maximum size allowed for the peer's
+certificate chain for all SSL objects created from <strong>ctx</strong> to be &lt;size&gt; bytes.
+The SSL objects inherit the setting valid for <strong>ctx</strong> at the time
+<em>SSL_new(3)</em> is being called.</p>
+<p><code>SSL_CTX_get_max_cert_list()</code> returns the currently set maximum size for <strong>ctx</strong>.</p>
+<p><code>SSL_set_max_cert_list()</code> sets the maximum size allowed for the peer's
+certificate chain for <strong>ssl</strong> to be &lt;size&gt; bytes. This setting stays valid
+until a new value is set.</p>
+<p><code>SSL_get_max_cert_list()</code> returns the currently set maximum size for <strong>ssl</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>During the handshake process, the peer may send a certificate chain.
+The TLS/SSL standard does not give any maximum size of the certificate chain.
+The OpenSSL library handles incoming data by a dynamically allocated buffer.
+In order to prevent this buffer from growing without bounds due to data
+received from a faulty or malicious peer, a maximum size for the certificate
+chain is set.</p>
+<p>The default value for the maximum certificate chain size is 100kB (30kB
+on the 16bit DOS platform). This should be sufficient for usual certificate
+chains (OpenSSL's default maximum chain length is 10, see
+<em>SSL_CTX_set_verify(3)</em>, and certificates
+without special extensions have a typical size of 1-2kB).</p>
+<p>For special applications it can be necessary to extend the maximum certificate
+chain size allowed to be sent by the peer, see e.g. the work on
+&quot;Internet X.509 Public Key Infrastructure Proxy Certificate Profile&quot;
+and &quot;TLS Delegation Protocol&quot; at <a href="http://www.ietf.org/">http://www.ietf.org/</a> and
+<a href="http://www.globus.org/">http://www.globus.org/</a> .</p>
+<p>Under normal conditions it should never be necessary to set a value smaller
+than the default, as the buffer is handled dynamically and only uses the
+memory actually required by the data sent by the peer.</p>
+<p>If the maximum certificate chain size allowed is exceeded, the handshake will
+fail with a SSL_R_EXCESSIVE_MESSAGE_SIZE error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_CTX_set_max_cert_list()</code> and <code>SSL_set_max_cert_list()</code> return the previously
+set value.</p>
+<p><code>SSL_CTX_get_max_cert_list()</code> and <code>SSL_get_max_cert_list()</code> return the currently
+set value.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>, <em>SSL_new(3)</em>,
+<em>SSL_CTX_set_verify(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2001-2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

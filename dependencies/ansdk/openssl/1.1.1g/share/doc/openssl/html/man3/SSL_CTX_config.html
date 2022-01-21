@@ -1,0 +1,131 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_config</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_config, SSL_config - configure SSL_CTX or SSL structure</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_CTX_config(SSL_CTX *ctx, const char *name);
+ int SSL_config(SSL *s, const char *name);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The functions <code>SSL_CTX_config()</code> and <code>SSL_config()</code> configure an <strong>SSL_CTX</strong> or
+<strong>SSL</strong> structure using the configuration <strong>name</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>By calling <code>SSL_CTX_config()</code> or <code>SSL_config()</code> an application can perform many
+complex tasks based on the contents of the configuration file: greatly
+simplifying application configuration code. A degree of future proofing
+can also be achieved: an application can support configuration features
+in newer versions of OpenSSL automatically.</p>
+<p>A configuration file must have been previously loaded, for example using
+<code>CONF_modules_load_file()</code>. See <em>config(5)</em> for details of the configuration
+file syntax.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_CTX_config()</code> and <code>SSL_config()</code> return 1 for success or 0 if an error
+occurred.</p>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>If the file &quot;config.cnf&quot; contains the following:</p>
+<pre>
+ testapp = test_sect</pre>
+<pre>
+ [test_sect]
+ # list of configuration modules</pre>
+<pre>
+ ssl_conf = ssl_sect</pre>
+<pre>
+ [ssl_sect]
+ server = server_section</pre>
+<pre>
+ [server_section]
+ RSA.Certificate = server-rsa.pem
+ ECDSA.Certificate = server-ecdsa.pem
+ Ciphers = ALL:!RC4</pre>
+<p>An application could call:</p>
+<pre>
+ if (CONF_modules_load_file(&quot;config.cnf&quot;, &quot;testapp&quot;, 0) &lt;= 0) {
+     fprintf(stderr, &quot;Error processing config file\n&quot;);
+     goto err;
+ }</pre>
+<pre>
+ ctx = SSL_CTX_new(TLS_server_method());</pre>
+<pre>
+ if (SSL_CTX_config(ctx, &quot;server&quot;) == 0) {
+     fprintf(stderr, &quot;Error configuring server.\n&quot;);
+     goto err;
+ }</pre>
+<p>In this example two certificates and the cipher list are configured without
+the need for any additional application code.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>config(5)</em>,
+<em>SSL_CONF_cmd(3)</em>,
+<em>CONF_modules_load_file(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The <code>SSL_CTX_config()</code> and <code>SSL_config()</code> functions were added in OpenSSL 1.1.0.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

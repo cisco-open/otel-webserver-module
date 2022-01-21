@@ -1,0 +1,166 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>UI_STRING</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>UI_STRING, UI_string_types, UI_get_string_type,
+UI_get_input_flags, UI_get0_output_string,
+UI_get0_action_string, UI_get0_result_string, UI_get_result_string_length,
+UI_get0_test_string, UI_get_result_minsize,
+UI_get_result_maxsize, UI_set_result, UI_set_result_ex
+- User interface string parsing</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ui.h&gt;</pre>
+<pre>
+ typedef struct ui_string_st UI_STRING;</pre>
+<pre>
+ enum UI_string_types {
+     UIT_NONE = 0,
+     UIT_PROMPT,                 /* Prompt for a string */
+     UIT_VERIFY,                 /* Prompt for a string and verify */
+     UIT_BOOLEAN,                /* Prompt for a yes/no response */
+     UIT_INFO,                   /* Send info to the user */
+     UIT_ERROR                   /* Send an error message to the user */
+ };</pre>
+<pre>
+ enum UI_string_types UI_get_string_type(UI_STRING *uis);
+ int UI_get_input_flags(UI_STRING *uis);
+ const char *UI_get0_output_string(UI_STRING *uis);
+ const char *UI_get0_action_string(UI_STRING *uis);
+ const char *UI_get0_result_string(UI_STRING *uis);
+ int UI_get_result_string_length(UI_STRING *uis);
+ const char *UI_get0_test_string(UI_STRING *uis);
+ int UI_get_result_minsize(UI_STRING *uis);
+ int UI_get_result_maxsize(UI_STRING *uis);
+ int UI_set_result(UI *ui, UI_STRING *uis, const char *result);
+ int UI_set_result_ex(UI *ui, UI_STRING *uis, const char *result, int len);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The <strong>UI_STRING</strong> gets created internally and added to a <strong>UI</strong> whenever
+one of the functions <code>UI_add_input_string()</code>, <code>UI_dup_input_string()</code>,
+<code>UI_add_verify_string()</code>, <code>UI_dup_verify_string()</code>,
+<code>UI_add_input_boolean()</code>, <code>UI_dup_input_boolean()</code>, <code>UI_add_info_string()</code>,
+<code>UI_dup_info_string()</code>, <code>UI_add_error_string()</code> or <code>UI_dup_error_string()</code>
+is called.
+For a <strong>UI_METHOD</strong> user, there's no need to know more.
+For a <strong>UI_METHOD</strong> creator, it is of interest to fetch text from these
+<strong>UI_STRING</strong> objects as well as adding results to some of them.</p>
+<p><code>UI_get_string_type()</code> is used to retrieve the type of the given
+<strong>UI_STRING</strong>.</p>
+<p><code>UI_get_input_flags()</code> is used to retrieve the flags associated with the
+given <strong>UI_STRING</strong>.</p>
+<p>UI_get0_output_string() is used to retrieve the actual string to
+output (prompt, info, error, ...).</p>
+<p>UI_get0_action_string() is used to retrieve the action description
+associated with a <strong>UIT_BOOLEAN</strong> type <strong>UI_STRING</strong>.
+For all other <strong>UI_STRING</strong> types, NULL is returned.
+See <em>UI_add_input_boolean(3)</em>.</p>
+<p>UI_get0_result_string() and <code>UI_get_result_string_length()</code> are used to
+retrieve the result of a prompt and its length.
+This is only useful for <strong>UIT_PROMPT</strong> and <strong>UIT_VERIFY</strong> type strings.
+For all other <strong>UI_STRING</strong> types, UI_get0_result_string() returns NULL
+and <code>UI_get_result_string_length()</code> returns -1.</p>
+<p>UI_get0_test_string() is used to retrieve the string to compare the
+prompt result with.
+This is only useful for <strong>UIT_VERIFY</strong> type strings.
+For all other <strong>UI_STRING</strong> types, NULL is returned.</p>
+<p><code>UI_get_result_minsize()</code> and <code>UI_get_result_maxsize()</code> are used to
+retrieve the minimum and maximum required size of the result.
+This is only useful for <strong>UIT_PROMPT</strong> and <strong>UIT_VERIFY</strong> type strings.
+For all other <strong>UI_STRING</strong> types, -1 is returned.</p>
+<p><code>UI_set_result_ex()</code> is used to set the result value of a prompt and its length.
+For <strong>UIT_PROMPT</strong> and <strong>UIT_VERIFY</strong> type UI strings, this sets the
+result retrievable with UI_get0_result_string() by copying the
+contents of <strong>result</strong> if its length fits the minimum and maximum size
+requirements.
+For <strong>UIT_BOOLEAN</strong> type UI strings, this sets the first character of
+the result retrievable with UI_get0_result_string() to the first
+<strong>ok_char</strong> given with <code>UI_add_input_boolean()</code> or <code>UI_dup_input_boolean()</code>
+if the <strong>result</strong> matched any of them, or the first of the
+<strong>cancel_chars</strong> if the <strong>result</strong> matched any of them, otherwise it's
+set to the NUL char <code>\0</code>.
+See <em>UI_add_input_boolean(3)</em> for more information on <strong>ok_chars</strong> and
+<strong>cancel_chars</strong>.</p>
+<p><code>UI_set_result()</code> does the same thing as <code>UI_set_result_ex()</code>, but calculates
+its length internally.
+It expects the string to be terminated with a NUL byte, and is therefore
+only useful with normal C strings.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>UI_get_string_type()</code> returns the UI string type.</p>
+<p><code>UI_get_input_flags()</code> returns the UI string flags.</p>
+<p>UI_get0_output_string() returns the UI string output string.</p>
+<p>UI_get0_action_string() returns the UI string action description
+string for <strong>UIT_BOOLEAN</strong> type UI strings, NULL for any other type.</p>
+<p>UI_get0_result_string() returns the UI string result buffer for
+<strong>UIT_PROMPT</strong> and <strong>UIT_VERIFY</strong> type UI strings, NULL for any other
+type.</p>
+<p><code>UI_get_result_string_length()</code> returns the UI string result buffer's
+content length for <strong>UIT_PROMPT</strong> and <strong>UIT_VERIFY</strong> type UI strings,
+-1 for any other type.</p>
+<p>UI_get0_test_string() returns the UI string action description
+string for <strong>UIT_VERIFY</strong> type UI strings, NULL for any other type.</p>
+<p><code>UI_get_result_minsize()</code> returns the minimum allowed result size for
+the UI string for <strong>UIT_PROMPT</strong> and <strong>UIT_VERIFY</strong> type strings,
+-1 for any other type.</p>
+<p><code>UI_get_result_maxsize()</code> returns the minimum allowed result size for
+the UI string for <strong>UIT_PROMPT</strong> and <strong>UIT_VERIFY</strong> type strings,
+-1 for any other type.</p>
+<p><code>UI_set_result()</code> returns 0 on success or when the UI string is of any
+type other than <strong>UIT_PROMPT</strong>, <strong>UIT_VERIFY</strong> or <strong>UIT_BOOLEAN</strong>, -1 on
+error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>UI(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2001-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

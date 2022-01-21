@@ -1,0 +1,88 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_get_peer_signature_nid</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_get_peer_signature_nid, SSL_get_peer_signature_type_nid,
+SSL_get_signature_nid, SSL_get_signature_type_nid - get TLS message signing
+types</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_get_peer_signature_nid(SSL *ssl, int *psig_nid);
+ int SSL_get_peer_signature_type_nid(const SSL *ssl, int *psigtype_nid);
+ int SSL_get_signature_nid(SSL *ssl, int *psig_nid);
+ int SSL_get_signature_type_nid(const SSL *ssl, int *psigtype_nid);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_get_peer_signature_nid()</code> sets <strong>*psig_nid</strong> to the NID of the digest used
+by the peer to sign TLS messages. It is implemented as a macro.</p>
+<p><code>SSL_get_peer_signature_type_nid()</code> sets <strong>*psigtype_nid</strong> to the signature
+type used by the peer to sign TLS messages. Currently the signature type
+is the NID of the public key type used for signing except for PSS signing
+where it is <strong>EVP_PKEY_RSA_PSS</strong>. To differentiate between
+<strong>rsa_pss_rsae_*</strong> and <strong>rsa_pss_pss_*</strong> signatures, it's necessary to check
+the type of public key in the peer's certificate.</p>
+<p><code>SSL_get_signature_nid()</code> and <code>SSL_get_signature_type_nid()</code> return the equivalent
+information for the local end of the connection.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>These functions return 1 for success and 0 for failure. There are several
+possible reasons for failure: the cipher suite has no signature (e.g. it
+uses RSA key exchange or is anonymous), the TLS version is below 1.2 or
+the functions were called too early, e.g. before the peer signed a message.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>, <em>SSL_get_peer_certificate(3)</em>,</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2017-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

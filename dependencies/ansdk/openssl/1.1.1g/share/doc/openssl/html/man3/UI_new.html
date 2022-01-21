@@ -1,0 +1,257 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>UI_new</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>UI,
+UI_new, UI_new_method, UI_free, UI_add_input_string, UI_dup_input_string,
+UI_add_verify_string, UI_dup_verify_string, UI_add_input_boolean,
+UI_dup_input_boolean, UI_add_info_string, UI_dup_info_string,
+UI_add_error_string, UI_dup_error_string, UI_construct_prompt,
+UI_add_user_data, UI_dup_user_data, UI_get0_user_data, UI_get0_result,
+UI_get_result_length,
+UI_process, UI_ctrl, UI_set_default_method, UI_get_default_method,
+UI_get_method, UI_set_method, UI_OpenSSL, UI_null - user interface</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ui.h&gt;</pre>
+<pre>
+ typedef struct ui_st UI;</pre>
+<pre>
+ UI *UI_new(void);
+ UI *UI_new_method(const UI_METHOD *method);
+ void UI_free(UI *ui);</pre>
+<pre>
+ int UI_add_input_string(UI *ui, const char *prompt, int flags,
+                         char *result_buf, int minsize, int maxsize);
+ int UI_dup_input_string(UI *ui, const char *prompt, int flags,
+                         char *result_buf, int minsize, int maxsize);
+ int UI_add_verify_string(UI *ui, const char *prompt, int flags,
+                          char *result_buf, int minsize, int maxsize,
+                          const char *test_buf);
+ int UI_dup_verify_string(UI *ui, const char *prompt, int flags,
+                          char *result_buf, int minsize, int maxsize,
+                          const char *test_buf);
+ int UI_add_input_boolean(UI *ui, const char *prompt, const char *action_desc,
+                          const char *ok_chars, const char *cancel_chars,
+                          int flags, char *result_buf);
+ int UI_dup_input_boolean(UI *ui, const char *prompt, const char *action_desc,
+                          const char *ok_chars, const char *cancel_chars,
+                          int flags, char *result_buf);
+ int UI_add_info_string(UI *ui, const char *text);
+ int UI_dup_info_string(UI *ui, const char *text);
+ int UI_add_error_string(UI *ui, const char *text);
+ int UI_dup_error_string(UI *ui, const char *text);</pre>
+<pre>
+ char *UI_construct_prompt(UI *ui_method,
+        const char *object_desc, const char *object_name);</pre>
+<pre>
+ void *UI_add_user_data(UI *ui, void *user_data);
+ int UI_dup_user_data(UI *ui, void *user_data);
+ void *UI_get0_user_data(UI *ui);</pre>
+<pre>
+ const char *UI_get0_result(UI *ui, int i);
+ int UI_get_result_length(UI *ui, int i);</pre>
+<pre>
+ int UI_process(UI *ui);</pre>
+<pre>
+ int UI_ctrl(UI *ui, int cmd, long i, void *p, void (*f)());</pre>
+<pre>
+ void UI_set_default_method(const UI_METHOD *meth);
+ const UI_METHOD *UI_get_default_method(void);
+ const UI_METHOD *UI_get_method(UI *ui);
+ const UI_METHOD *UI_set_method(UI *ui, const UI_METHOD *meth);</pre>
+<pre>
+ UI_METHOD *UI_OpenSSL(void);
+ const UI_METHOD *UI_null(void);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>UI stands for User Interface, and is general purpose set of routines to
+prompt the user for text-based information.  Through user-written methods
+(see <em>UI_create_method(3)</em>), prompting can be done in any way
+imaginable, be it plain text prompting, through dialog boxes or from a
+cell phone.</p>
+<p>All the functions work through a context of the type UI.  This context
+contains all the information needed to prompt correctly as well as a
+reference to a UI_METHOD, which is an ordered vector of functions that
+carry out the actual prompting.</p>
+<p>The first thing to do is to create a UI with <code>UI_new()</code> or <code>UI_new_method()</code>,
+then add information to it with the UI_add or UI_dup functions.  Also,
+user-defined random data can be passed down to the underlying method
+through calls to <code>UI_add_user_data()</code> or <code>UI_dup_user_data()</code>.  The default
+UI method doesn't care about these data, but other methods might.  Finally,
+use <code>UI_process()</code> to actually perform the prompting and UI_get0_result()
+and <code>UI_get_result_length()</code> to find the result to the prompt and its length.</p>
+<p>A UI can contain more than one prompt, which are performed in the given
+sequence.  Each prompt gets an index number which is returned by the
+UI_add and UI_dup functions, and has to be used to get the corresponding
+result with UI_get0_result() and <code>UI_get_result_length()</code>.</p>
+<p><code>UI_process()</code> can be called more than once on the same UI, thereby allowing
+a UI to have a long lifetime, but can just as well have a short lifetime.</p>
+<p>The functions are as follows:</p>
+<p><code>UI_new()</code> creates a new UI using the default UI method.  When done with
+this UI, it should be freed using <code>UI_free()</code>.</p>
+<p><code>UI_new_method()</code> creates a new UI using the given UI method.  When done with
+this UI, it should be freed using <code>UI_free()</code>.</p>
+<p><code>UI_OpenSSL()</code> returns the built-in UI method (note: not necessarily the
+default one, since the default can be changed.  See further on).  This
+method is the most machine/OS dependent part of OpenSSL and normally
+generates the most problems when porting.</p>
+<p><code>UI_null()</code> returns a UI method that does nothing.  Its use is to avoid
+getting internal defaults for passed UI_METHOD pointers.</p>
+<p><code>UI_free()</code> removes a UI from memory, along with all other pieces of memory
+that's connected to it, like duplicated input strings, results and others.
+If <strong>ui</strong> is NULL nothing is done.</p>
+<p><code>UI_add_input_string()</code> and <code>UI_add_verify_string()</code> add a prompt to the UI,
+as well as flags and a result buffer and the desired minimum and maximum
+sizes of the result, not counting the final NUL character.  The given
+information is used to prompt for information, for example a password,
+and to verify a password (i.e. having the user enter it twice and check
+that the same string was entered twice).  <code>UI_add_verify_string()</code> takes
+and extra argument that should be a pointer to the result buffer of the
+input string that it's supposed to verify, or verification will fail.</p>
+<p><code>UI_add_input_boolean()</code> adds a prompt to the UI that's supposed to be answered
+in a boolean way, with a single character for yes and a different character
+for no.  A set of characters that can be used to cancel the prompt is given
+as well.  The prompt itself is divided in two, one part being the
+descriptive text (given through the <em>prompt</em> argument) and one describing
+the possible answers (given through the <em>action_desc</em> argument).</p>
+<p><code>UI_add_info_string()</code> and <code>UI_add_error_string()</code> add strings that are shown at
+the same time as the prompt for extra information or to show an error string.
+The difference between the two is only conceptual.  With the builtin method,
+there's no technical difference between them.  Other methods may make a
+difference between them, however.</p>
+<p>The flags currently supported are <strong>UI_INPUT_FLAG_ECHO</strong>, which is relevant for
+<code>UI_add_input_string()</code> and will have the users response be echoed (when
+prompting for a password, this flag should obviously not be used, and
+<strong>UI_INPUT_FLAG_DEFAULT_PWD</strong>, which means that a default password of some
+sort will be used (completely depending on the application and the UI
+method).</p>
+<p><code>UI_dup_input_string()</code>, <code>UI_dup_verify_string()</code>, <code>UI_dup_input_boolean()</code>,
+<code>UI_dup_info_string()</code> and <code>UI_dup_error_string()</code> are basically the same
+as their UI_add counterparts, except that they make their own copies
+of all strings.</p>
+<p><code>UI_construct_prompt()</code> is a helper function that can be used to create
+a prompt from two pieces of information: an description and a name.
+The default constructor (if there is none provided by the method used)
+creates a string &quot;Enter <em>description</em> for <em>name</em>:&quot;.  With the
+description &quot;pass phrase&quot; and the file name &quot;foo.key&quot;, that becomes
+&quot;Enter pass phrase for foo.key:&quot;.  Other methods may create whatever
+string and may include encodings that will be processed by the other
+method functions.</p>
+<p><code>UI_add_user_data()</code> adds a user data pointer for the method to use at any
+time.  The builtin UI method doesn't care about this info.  Note that several
+calls to this function doesn't add data, it replaces the previous blob
+with the one given as argument.</p>
+<p><code>UI_dup_user_data()</code> duplicates the user data and works as an alternative
+to <code>UI_add_user_data()</code> when the user data needs to be preserved for a longer
+duration, perhaps even the lifetime of the application.  The UI object takes
+ownership of this duplicate and will free it whenever it gets replaced or
+the UI is destroyed.  <code>UI_dup_user_data()</code> returns 0 on success, or -1 on memory
+allocation failure or if the method doesn't have a duplicator function.</p>
+<p>UI_get0_user_data() retrieves the data that has last been given to the
+UI with <code>UI_add_user_data()</code> or UI_dup_user_data.</p>
+<p>UI_get0_result() returns a pointer to the result buffer associated with
+the information indexed by <em>i</em>.</p>
+<p><code>UI_get_result_length()</code> returns the length of the result buffer associated with
+the information indexed by <em>i</em>.</p>
+<p><code>UI_process()</code> goes through the information given so far, does all the printing
+and prompting and returns the final status, which is -2 on out-of-band events
+(Interrupt, Cancel, ...), -1 on error and 0 on success.</p>
+<p><code>UI_ctrl()</code> adds extra control for the application author.  For now, it
+understands two commands: <strong>UI_CTRL_PRINT_ERRORS</strong>, which makes <code>UI_process()</code>
+print the OpenSSL error stack as part of processing the UI, and
+<strong>UI_CTRL_IS_REDOABLE</strong>, which returns a flag saying if the used UI can
+be used again or not.</p>
+<p><code>UI_set_default_method()</code> changes the default UI method to the one given.
+This function is not thread-safe and should not be called at the same time
+as other OpenSSL functions.</p>
+<p><code>UI_get_default_method()</code> returns a pointer to the current default UI method.</p>
+<p><code>UI_get_method()</code> returns the UI method associated with a given UI.</p>
+<p><code>UI_set_method()</code> changes the UI method associated with a given UI.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The resulting strings that the built in method <code>UI_OpenSSL()</code> generate
+are assumed to be encoded according to the current locale or (for
+Windows) code page.
+For applications having different demands, these strings need to be
+converted appropriately by the caller.
+For Windows, if the OPENSSL_WIN32_UTF8 environment variable is set,
+the built-in method <code>UI_OpenSSL()</code> will produce UTF-8 encoded strings
+instead.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>UI_new()</code> and <code>UI_new_method()</code> return a valid <strong>UI</strong> structure or NULL if an error
+occurred.</p>
+<p><code>UI_add_input_string()</code>, <code>UI_dup_input_string()</code>, <code>UI_add_verify_string()</code>,
+<code>UI_dup_verify_string()</code>, <code>UI_add_input_boolean()</code>, <code>UI_dup_input_boolean()</code>,
+<code>UI_add_info_string()</code>, <code>UI_dup_info_string()</code>, <code>UI_add_error_string()</code>
+and <code>UI_dup_error_string()</code> return a positive number on success or a value which
+is less than or equal to 0 otherwise.</p>
+<p><code>UI_construct_prompt()</code> returns a string or NULL if an error occurred.</p>
+<p><code>UI_dup_user_data()</code> returns 0 on success or -1 on error.</p>
+<p>UI_get0_result() returns a string or NULL on error.</p>
+<p><code>UI_get_result_length()</code> returns a positive integer or 0 on success; otherwise it
+returns -1 on error.</p>
+<p><code>UI_process()</code> returns 0 on success or a negative value on error.</p>
+<p><code>UI_ctrl()</code> returns a mask on success or -1 on error.</p>
+<p><code>UI_get_default_method()</code>, <code>UI_get_method()</code>, <code>UI_OpenSSL()</code>, <code>UI_null()</code> and
+<code>UI_set_method()</code> return either a valid <strong>UI_METHOD</strong> structure or NULL
+respectively.</p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The <code>UI_dup_user_data()</code> function was added in OpenSSL 1.1.1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2001-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,115 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_set_cert_cb</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_set_cert_cb, SSL_set_cert_cb - handle certificate callback function</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ void SSL_CTX_set_cert_cb(SSL_CTX *c, int (*cert_cb)(SSL *ssl, void *arg),
+                          void *arg);
+ void SSL_set_cert_cb(SSL *s, int (*cert_cb)(SSL *ssl, void *arg), void *arg);</pre>
+<pre>
+ int (*cert_cb)(SSL *ssl, void *arg);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_set_cert_cb()</code> and <code>SSL_set_cert_cb()</code> sets the <code>cert_cb()</code> callback,
+<strong>arg</strong> value is pointer which is passed to the application callback.</p>
+<p>When <code>cert_cb()</code> is NULL, no callback function is used.</p>
+<p><code>cert_cb()</code> is the application defined callback. It is called before a
+certificate will be used by a client or server. The callback can then inspect
+the passed <strong>ssl</strong> structure and set or clear any appropriate certificates. If
+the callback is successful it <strong>MUST</strong> return 1 even if no certificates have
+been set. A zero is returned on error which will abort the handshake with a
+fatal internal error alert. A negative return value will suspend the handshake
+and the handshake function will return immediately.
+<em>SSL_get_error(3)</em> will return SSL_ERROR_WANT_X509_LOOKUP to
+indicate, that the handshake was suspended. The next call to the handshake
+function will again lead to the call of <code>cert_cb()</code>. It is the job of the
+<code>cert_cb()</code> to store information about the state of the last call,
+if required to continue.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>An application will typically call <code>SSL_use_certificate()</code> and
+<code>SSL_use_PrivateKey()</code> to set the end entity certificate and private key.
+It can add intermediate and optionally the root CA certificates using
+SSL_add1_chain_cert().</p>
+<p>It might also call <code>SSL_certs_clear()</code> to delete any certificates associated
+with the <strong>SSL</strong> object.</p>
+<p>The certificate callback functionality supersedes the (largely broken)
+functionality provided by the old client certificate callback interface.
+It is <strong>always</strong> called even is a certificate is already set so the callback
+can modify or delete the existing certificate.</p>
+<p>A more advanced callback might examine the handshake parameters and set
+whatever chain is appropriate. For example a legacy client supporting only
+TLSv1.0 might receive a certificate chain signed using SHA1 whereas a
+TLSv1.2 or later client which advertises support for SHA256 could receive a
+chain using SHA256.</p>
+<p>Normal server sanity checks are performed on any certificates set
+by the callback. So if an EC chain is set for a curve the client does not
+support it will <strong>not</strong> be used.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_CTX_set_cert_cb()</code> and <code>SSL_set_cert_cb()</code> do not return values.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>, <em>SSL_use_certificate(3)</em>,
+<em>SSL_add1_chain_cert(3)</em>,
+<em>SSL_get_client_CA_list(3)</em>,
+<em>SSL_clear(3)</em>, <em>SSL_free(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2014-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

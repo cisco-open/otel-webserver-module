@@ -1,0 +1,263 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>BIO_set_callback</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#callback_operations">CALLBACK OPERATIONS</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>BIO_set_callback_ex, BIO_get_callback_ex, BIO_set_callback, BIO_get_callback,
+BIO_set_callback_arg, BIO_get_callback_arg, BIO_debug_callback,
+BIO_callback_fn_ex, BIO_callback_fn
+- BIO callback functions</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/bio.h&gt;</pre>
+<pre>
+ typedef long (*BIO_callback_fn_ex)(BIO *b, int oper, const char *argp,
+                                    size_t len, int argi,
+                                    long argl, int ret, size_t *processed);
+ typedef long (*BIO_callback_fn)(BIO *b, int oper, const char *argp, int argi,
+                                 long argl, long ret);</pre>
+<pre>
+ void BIO_set_callback_ex(BIO *b, BIO_callback_fn_ex callback);
+ BIO_callback_fn_ex BIO_get_callback_ex(const BIO *b);</pre>
+<pre>
+ void BIO_set_callback(BIO *b, BIO_callback_fn cb);
+ BIO_callback_fn BIO_get_callback(BIO *b);
+ void BIO_set_callback_arg(BIO *b, char *arg);
+ char *BIO_get_callback_arg(const BIO *b);</pre>
+<pre>
+ long BIO_debug_callback(BIO *bio, int cmd, const char *argp, int argi,
+                         long argl, long ret);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>BIO_set_callback_ex()</code> and <code>BIO_get_callback_ex()</code> set and retrieve the BIO
+callback. The callback is called during most high level BIO operations. It can
+be used for debugging purposes to trace operations on a BIO or to modify its
+operation.</p>
+<p><code>BIO_set_callback()</code> and <code>BIO_get_callback()</code> set and retrieve the old format BIO
+callback. New code should not use these functions, but they are retained for
+backwards compatibility. Any callback set via <code>BIO_set_callback_ex()</code> will get
+called in preference to any set by <code>BIO_set_callback()</code>.</p>
+<p><code>BIO_set_callback_arg()</code> and <code>BIO_get_callback_arg()</code> are macros which can be
+used to set and retrieve an argument for use in the callback.</p>
+<p><code>BIO_debug_callback()</code> is a standard debugging callback which prints
+out information relating to each BIO operation. If the callback
+argument is set it is interpreted as a BIO to send the information
+to, otherwise stderr is used.</p>
+<p><code>BIO_callback_fn_ex()</code> is the type of the callback function and <code>BIO_callback_fn()</code>
+is the type of the old format callback function. The meaning of each argument
+is described below:</p>
+<dl>
+<dt><strong><a name="b" class="item"><strong>b</strong></a></strong></dt>
+
+<dd>
+<p>The BIO the callback is attached to is passed in <strong>b</strong>.</p>
+</dd>
+<dt><strong><a name="oper" class="item"><strong>oper</strong></a></strong></dt>
+
+<dd>
+<p><strong>oper</strong> is set to the operation being performed. For some operations
+the callback is called twice, once before and once after the actual
+operation, the latter case has <strong>oper</strong> or'ed with BIO_CB_RETURN.</p>
+</dd>
+<dt><strong><a name="len" class="item"><strong>len</strong></a></strong></dt>
+
+<dd>
+<p>The length of the data requested to be read or written. This is only useful if
+<strong>oper</strong> is BIO_CB_READ, BIO_CB_WRITE or BIO_CB_GETS.</p>
+</dd>
+<dt><strong><a name="argp_argi_argl" class="item"><strong>argp</strong> <strong>argi</strong> <strong>argl</strong></a></strong></dt>
+
+<dd>
+<p>The meaning of the arguments <strong>argp</strong>, <strong>argi</strong> and <strong>argl</strong> depends on
+the value of <strong>oper</strong>, that is the operation being performed.</p>
+</dd>
+<dt><strong><a name="processed" class="item"><strong>processed</strong></a></strong></dt>
+
+<dd>
+<p><strong>processed</strong> is a pointer to a location which will be updated with the amount of
+data that was actually read or written. Only used for BIO_CB_READ, BIO_CB_WRITE,
+BIO_CB_GETS and BIO_CB_PUTS.</p>
+</dd>
+<dt><strong><a name="ret" class="item"><strong>ret</strong></a></strong></dt>
+
+<dd>
+<p><strong>ret</strong> is the return value that would be returned to the
+application if no callback were present. The actual value returned
+is the return value of the callback itself. In the case of callbacks
+called before the actual BIO operation 1 is placed in <strong>ret</strong>, if
+the return value is not positive it will be immediately returned to
+the application and the BIO operation will not be performed.</p>
+</dd>
+</dl>
+<p>The callback should normally simply return <strong>ret</strong> when it has
+finished processing, unless it specifically wishes to modify the
+value returned to the application.</p>
+<p>
+</p>
+<hr />
+<h1><a name="callback_operations">CALLBACK OPERATIONS</a></h1>
+<p>In the notes below, <strong>callback</strong> defers to the actual callback
+function that is called.</p>
+<dl>
+<dt><strong><a name="bio_free" class="item"><strong>BIO_free(b)</strong></a></strong></dt>
+
+<dd>
+<pre>
+ callback_ex(b, BIO_CB_FREE, NULL, 0, 0, 0L, 1L, NULL)</pre>
+<p>or</p>
+<pre>
+ callback(b, BIO_CB_FREE, NULL, 0L, 0L, 1L)</pre>
+<p>is called before the free operation.</p>
+</dd>
+<dt><strong><a name="bio_read_ex" class="item"><strong>BIO_read_ex(b, data, dlen, readbytes)</strong></a></strong></dt>
+
+<dd>
+<pre>
+ callback_ex(b, BIO_CB_READ, data, dlen, 0, 0L, 1L, NULL)</pre>
+<p>or</p>
+<pre>
+ callback(b, BIO_CB_READ, data, dlen, 0L, 1L)</pre>
+<p>is called before the read and</p>
+<pre>
+ callback_ex(b, BIO_CB_READ | BIO_CB_RETURN, data, dlen, 0, 0L, retvalue,
+             &amp;readbytes)</pre>
+<p>or</p>
+<pre>
+ callback(b, BIO_CB_READ|BIO_CB_RETURN, data, dlen, 0L, retvalue)</pre>
+<p>after.</p>
+</dd>
+<dt><strong><a name="bio_write" class="item"><strong>BIO_write(b, data, dlen, written)</strong></a></strong></dt>
+
+<dd>
+<pre>
+ callback_ex(b, BIO_CB_WRITE, data, dlen, 0, 0L, 1L, NULL)</pre>
+<p>or</p>
+<pre>
+ callback(b, BIO_CB_WRITE, datat, dlen, 0L, 1L)</pre>
+<p>is called before the write and</p>
+<pre>
+ callback_ex(b, BIO_CB_WRITE | BIO_CB_RETURN, data, dlen, 0, 0L, retvalue,
+             &amp;written)</pre>
+<p>or</p>
+<pre>
+ callback(b, BIO_CB_WRITE|BIO_CB_RETURN, data, dlen, 0L, retvalue)</pre>
+<p>after.</p>
+</dd>
+<dt><strong><a name="bio_gets" class="item"><strong>BIO_gets(b, buf, size)</strong></a></strong></dt>
+
+<dd>
+<pre>
+ callback_ex(b, BIO_CB_GETS, buf, size, 0, 0L, 1, NULL, NULL)</pre>
+<p>or</p>
+<pre>
+ callback(b, BIO_CB_GETS, buf, size, 0L, 1L)</pre>
+<p>is called before the operation and</p>
+<pre>
+ callback_ex(b, BIO_CB_GETS | BIO_CB_RETURN, buf, size, 0, 0L, retvalue,
+             &amp;readbytes)</pre>
+<p>or</p>
+<pre>
+ callback(b, BIO_CB_GETS|BIO_CB_RETURN, buf, size, 0L, retvalue)</pre>
+<p>after.</p>
+</dd>
+<dt><strong><a name="bio_puts" class="item"><strong>BIO_puts(b, buf)</strong></a></strong></dt>
+
+<dd>
+<pre>
+ callback_ex(b, BIO_CB_PUTS, buf, 0, 0, 0L, 1L, NULL);</pre>
+<p>or</p>
+<pre>
+ callback(b, BIO_CB_PUTS, buf, 0, 0L, 1L)</pre>
+<p>is called before the operation and</p>
+<pre>
+ callback_ex(b, BIO_CB_PUTS | BIO_CB_RETURN, buf, 0, 0, 0L, retvalue, &amp;written)</pre>
+<p>or</p>
+<pre>
+ callback(b, BIO_CB_PUTS|BIO_CB_RETURN, buf, 0, 0L, retvalue)</pre>
+<p>after.</p>
+</dd>
+<dt><strong><a name="bio_ctrl" class="item"><strong>BIO_ctrl(BIO *b, int cmd, long larg, void *parg)</strong></a></strong></dt>
+
+<dd>
+<pre>
+ callback_ex(b, BIO_CB_CTRL, parg, 0, cmd, larg, 1L, NULL)</pre>
+<p>or</p>
+<pre>
+ callback(b, BIO_CB_CTRL, parg, cmd, larg, 1L)</pre>
+<p>is called before the call and</p>
+<pre>
+ callback_ex(b, BIO_CB_CTRL | BIO_CB_RETURN, parg, 0, cmd, larg, ret, NULL)</pre>
+<p>or</p>
+<pre>
+ callback(b, BIO_CB_CTRL|BIO_CB_RETURN, parg, cmd, larg, ret)</pre>
+<p>after.</p>
+<p>Note: <strong>cmd</strong> == <strong>BIO_CTRL_SET_CALLBACK</strong> is special, because <strong>parg</strong> is not the
+argument of type <strong>BIO_info_cb</strong> itself.  In this case <strong>parg</strong> is a pointer to
+the actual call parameter, see <strong>BIO_callback_ctrl</strong>.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>BIO_get_callback_ex()</code> and <code>BIO_get_callback()</code> return the callback function
+previously set by a call to <code>BIO_set_callback_ex()</code> and <code>BIO_set_callback()</code>
+respectively.</p>
+<p><code>BIO_get_callback_arg()</code> returns a <strong>char</strong> pointer to the value previously set
+via a call to <code>BIO_set_callback_arg()</code>.</p>
+<p><code>BIO_debug_callback()</code> returns 1 or <strong>ret</strong> if it's called after specific BIO
+operations.</p>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>The <code>BIO_debug_callback()</code> function is a good example, its source is
+in crypto/bio/bio_cb.c</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

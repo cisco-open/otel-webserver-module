@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>DSA_sign</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#conforming_to">CONFORMING TO</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>DSA_sign, DSA_sign_setup, DSA_verify - DSA signatures</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/dsa.h&gt;</pre>
+<pre>
+ int DSA_sign(int type, const unsigned char *dgst, int len,
+              unsigned char *sigret, unsigned int *siglen, DSA *dsa);</pre>
+<pre>
+ int DSA_sign_setup(DSA *dsa, BN_CTX *ctx, BIGNUM **kinvp, BIGNUM **rp);</pre>
+<pre>
+ int DSA_verify(int type, const unsigned char *dgst, int len,
+                unsigned char *sigbuf, int siglen, DSA *dsa);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>DSA_sign()</code> computes a digital signature on the <strong>len</strong> byte message
+digest <strong>dgst</strong> using the private key <strong>dsa</strong> and places its ASN.1 DER
+encoding at <strong>sigret</strong>. The length of the signature is places in
+*<strong>siglen</strong>. <strong>sigret</strong> must point to DSA_size(<strong>dsa</strong>) bytes of memory.</p>
+<p><code>DSA_sign_setup()</code> is defined only for backward binary compatibility and
+should not be used.
+Since OpenSSL 1.1.0 the DSA type is opaque and the output of
+<code>DSA_sign_setup()</code> cannot be used anyway: calling this function will only
+cause overhead, and does not affect the actual signature
+(pre-)computation.</p>
+<p><code>DSA_verify()</code> verifies that the signature <strong>sigbuf</strong> of size <strong>siglen</strong>
+matches a given message digest <strong>dgst</strong> of size <strong>len</strong>.
+<strong>dsa</strong> is the signer's public key.</p>
+<p>The <strong>type</strong> parameter is ignored.</p>
+<p>The random generator must be seeded when <code>DSA_sign()</code> (or DSA_sign_setup())
+is called.
+If the automatic seeding or reseeding of the OpenSSL CSPRNG fails due to
+external circumstances (see <em>RAND(7)</em>), the operation will fail.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>DSA_sign()</code> and <code>DSA_sign_setup()</code> return 1 on success, 0 on error.
+<code>DSA_verify()</code> returns 1 for a valid signature, 0 for an incorrect
+signature and -1 on error. The error codes can be obtained by
+<em>ERR_get_error(3)</em>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="conforming_to">CONFORMING TO</a></h1>
+<p>US Federal Information Processing Standard FIPS 186 (Digital Signature
+Standard, DSS), ANSI X9.30</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>DSA_new(3)</em>, <em>ERR_get_error(3)</em>, <em>RAND_bytes(3)</em>,
+<em>DSA_do_sign(3)</em>,
+<em>RAND(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,100 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>EVP_md5</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#conforming_to">CONFORMING TO</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>EVP_md5,
+EVP_md5_sha1
+- MD5 For EVP</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/evp.h&gt;</pre>
+<pre>
+ const EVP_MD *EVP_md5(void);
+ const EVP_MD *EVP_md5_sha1(void);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>MD5 is a cryptographic hash function standardized in <a href="http://www.ietf.org/rfc/rfc1321.txt" class="rfc">RFC 1321</a> and designed by
+Ronald Rivest.</p>
+<p>The CMU Software Engineering Institute considers MD5 unsuitable for further
+use since its security has been severely compromised.</p>
+<dl>
+<dt><strong><a name="evp_md5" class="item">EVP_md5()</a></strong></dt>
+
+<dd>
+<p>The MD5 algorithm which produces a 128-bit output from a given input.</p>
+</dd>
+<dt><strong><a name="evp_md5_sha1" class="item">EVP_md5_sha1()</a></strong></dt>
+
+<dd>
+<p>A hash algorithm of SSL v3 that combines MD5 with SHA-1 as described in <a href="http://www.ietf.org/rfc/rfc6101.txt" class="rfc">RFC
+6101</a>.</p>
+<p>WARNING: this algorithm is not intended for non-SSL usage.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>These functions return a <strong>EVP_MD</strong> structure that contains the
+implementation of the symmetric cipher. See <em>EVP_MD_meth_new(3)</em> for
+details of the <strong>EVP_MD</strong> structure.</p>
+<p>
+</p>
+<hr />
+<h1><a name="conforming_to">CONFORMING TO</a></h1>
+<p>IETF <a href="http://www.ietf.org/rfc/rfc1321.txt" class="rfc">RFC 1321</a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>evp(7)</em>,
+<em>EVP_DigestInit(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2017-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

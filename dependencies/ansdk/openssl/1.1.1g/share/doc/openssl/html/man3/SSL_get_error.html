@@ -1,0 +1,227 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_get_error</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_get_error - obtain result code for TLS/SSL I/O operation</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_get_error(const SSL *ssl, int ret);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_get_error()</code> returns a result code (suitable for the C &quot;switch&quot;
+statement) for a preceding call to <code>SSL_connect()</code>, <code>SSL_accept()</code>, <code>SSL_do_handshake()</code>,
+<code>SSL_read_ex()</code>, <code>SSL_read()</code>, <code>SSL_peek_ex()</code>, <code>SSL_peek()</code>, <code>SSL_shutdown()</code>,
+<code>SSL_write_ex()</code> or <code>SSL_write()</code> on <strong>ssl</strong>.  The value returned by that TLS/SSL I/O
+function must be passed to <code>SSL_get_error()</code> in parameter <strong>ret</strong>.</p>
+<p>In addition to <strong>ssl</strong> and <strong>ret</strong>, <code>SSL_get_error()</code> inspects the
+current thread's OpenSSL error queue.  Thus, <code>SSL_get_error()</code> must be
+used in the same thread that performed the TLS/SSL I/O operation, and no
+other OpenSSL function calls should appear in between.  The current
+thread's error queue must be empty before the TLS/SSL I/O operation is
+attempted, or <code>SSL_get_error()</code> will not work reliably.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>The following return values can currently occur:</p>
+<dl>
+<dt><strong><a name="ssl_error_none" class="item">SSL_ERROR_NONE</a></strong></dt>
+
+<dd>
+<p>The TLS/SSL I/O operation completed.  This result code is returned
+if and only if <strong>ret &gt; 0</strong>.</p>
+</dd>
+<dt><strong><a name="ssl_error_zero_return" class="item">SSL_ERROR_ZERO_RETURN</a></strong></dt>
+
+<dd>
+<p>The TLS/SSL peer has closed the connection for writing by sending the
+close_notify alert.
+No more data can be read.
+Note that <strong>SSL_ERROR_ZERO_RETURN</strong> does not necessarily
+indicate that the underlying transport has been closed.</p>
+</dd>
+<dt><strong><a name="ssl_error_want_read_ssl_error_want_write" class="item">SSL_ERROR_WANT_READ, SSL_ERROR_WANT_WRITE</a></strong></dt>
+
+<dd>
+<p>The operation did not complete and can be retried later.</p>
+<p><strong>SSL_ERROR_WANT_READ</strong> is returned when the last operation was a read
+operation from a non-blocking <strong>BIO</strong>.
+It means that not enough data was available at this time to complete the
+operation.
+If at a later time the underlying <strong>BIO</strong> has data available for reading the same
+function can be called again.</p>
+<p><code>SSL_read()</code> and <code>SSL_read_ex()</code> can also set <strong>SSL_ERROR_WANT_READ</strong> when there is
+still unprocessed data available at either the <strong>SSL</strong> or the <strong>BIO</strong> layer, even
+for a blocking <strong>BIO</strong>.
+See <em>SSL_read(3)</em> for more information.</p>
+<p><strong>SSL_ERROR_WANT_WRITE</strong> is returned when the last operation was a write
+to a non-blocking <strong>BIO</strong> and it was unable to sent all data to the <strong>BIO</strong>.
+When the <strong>BIO</strong> is writeable again, the same function can be called again.</p>
+<p>Note that the retry may again lead to an <strong>SSL_ERROR_WANT_READ</strong> or
+<strong>SSL_ERROR_WANT_WRITE</strong> condition.
+There is no fixed upper limit for the number of iterations that
+may be necessary until progress becomes visible at application
+protocol level.</p>
+<p>It is safe to call <code>SSL_read()</code> or <code>SSL_read_ex()</code> when more data is available
+even when the call that set this error was an <code>SSL_write()</code> or <code>SSL_write_ex()</code>.
+However if the call was an <code>SSL_write()</code> or <code>SSL_write_ex()</code>, it should be called
+again to continue sending the application data.</p>
+<p>For socket <strong>BIO</strong>s (e.g. when <code>SSL_set_fd()</code> was used), <code>select()</code> or
+<code>poll()</code> on the underlying socket can be used to find out when the
+TLS/SSL I/O function should be retried.</p>
+<p>Caveat: Any TLS/SSL I/O function can lead to either of
+<strong>SSL_ERROR_WANT_READ</strong> and <strong>SSL_ERROR_WANT_WRITE</strong>.
+In particular,
+<code>SSL_read_ex()</code>, <code>SSL_read()</code>, <code>SSL_peek_ex()</code>, or <code>SSL_peek()</code> may want to write data
+and <code>SSL_write()</code> or <code>SSL_write_ex()</code> may want to read data.
+This is mainly because
+TLS/SSL handshakes may occur at any time during the protocol (initiated by
+either the client or the server); <code>SSL_read_ex()</code>, <code>SSL_read()</code>, <code>SSL_peek_ex()</code>,
+<code>SSL_peek()</code>, <code>SSL_write_ex()</code>, and <code>SSL_write()</code> will handle any pending handshakes.</p>
+</dd>
+<dt><strong><a name="ssl_error_want_connect_ssl_error_want_accept" class="item">SSL_ERROR_WANT_CONNECT, SSL_ERROR_WANT_ACCEPT</a></strong></dt>
+
+<dd>
+<p>The operation did not complete; the same TLS/SSL I/O function should be
+called again later. The underlying BIO was not connected yet to the peer
+and the call would block in connect()/accept(). The SSL function should be
+called again when the connection is established. These messages can only
+appear with a <code>BIO_s_connect()</code> or <code>BIO_s_accept()</code> BIO, respectively.
+In order to find out, when the connection has been successfully established,
+on many platforms <code>select()</code> or <code>poll()</code> for writing on the socket file descriptor
+can be used.</p>
+</dd>
+<dt><strong><a name="ssl_error_want_x509_lookup" class="item">SSL_ERROR_WANT_X509_LOOKUP</a></strong></dt>
+
+<dd>
+<p>The operation did not complete because an application callback set by
+<code>SSL_CTX_set_client_cert_cb()</code> has asked to be called again.
+The TLS/SSL I/O function should be called again later.
+Details depend on the application.</p>
+</dd>
+<dt><strong><a name="ssl_error_want_async" class="item">SSL_ERROR_WANT_ASYNC</a></strong></dt>
+
+<dd>
+<p>The operation did not complete because an asynchronous engine is still
+processing data. This will only occur if the mode has been set to SSL_MODE_ASYNC
+using <em>SSL_CTX_set_mode(3)</em> or <em>SSL_set_mode(3)</em> and an asynchronous capable
+engine is being used. An application can determine whether the engine has
+completed its processing using <code>select()</code> or <code>poll()</code> on the asynchronous wait file
+descriptor. This file descriptor is available by calling
+<em>SSL_get_all_async_fds(3)</em> or <em>SSL_get_changed_async_fds(3)</em>. The TLS/SSL I/O
+function should be called again later. The function <strong>must</strong> be called from the
+same thread that the original call was made from.</p>
+</dd>
+<dt><strong><a name="ssl_error_want_async_job" class="item">SSL_ERROR_WANT_ASYNC_JOB</a></strong></dt>
+
+<dd>
+<p>The asynchronous job could not be started because there were no async jobs
+available in the pool (see ASYNC_init_thread(3)). This will only occur if the
+mode has been set to SSL_MODE_ASYNC using <em>SSL_CTX_set_mode(3)</em> or
+<em>SSL_set_mode(3)</em> and a maximum limit has been set on the async job pool
+through a call to <em>ASYNC_init_thread(3)</em>. The application should retry the
+operation after a currently executing asynchronous operation for the current
+thread has completed.</p>
+</dd>
+<dt><strong><a name="ssl_error_want_client_hello_cb" class="item">SSL_ERROR_WANT_CLIENT_HELLO_CB</a></strong></dt>
+
+<dd>
+<p>The operation did not complete because an application callback set by
+<code>SSL_CTX_set_client_hello_cb()</code> has asked to be called again.
+The TLS/SSL I/O function should be called again later.
+Details depend on the application.</p>
+</dd>
+<dt><strong><a name="ssl_error_syscall" class="item">SSL_ERROR_SYSCALL</a></strong></dt>
+
+<dd>
+<p>Some non-recoverable, fatal I/O error occurred. The OpenSSL error queue may
+contain more information on the error. For socket I/O on Unix systems, consult
+<strong>errno</strong> for details. If this error occurs then no further I/O operations should
+be performed on the connection and <code>SSL_shutdown()</code> must not be called.</p>
+<p>This value can also be returned for other errors, check the error queue for
+details.</p>
+</dd>
+<dt><strong><a name="ssl_error_ssl" class="item">SSL_ERROR_SSL</a></strong></dt>
+
+<dd>
+<p>A non-recoverable, fatal error in the SSL library occurred, usually a protocol
+error.  The OpenSSL error queue contains more information on the error. If this
+error occurs then no further I/O operations should be performed on the
+connection and <code>SSL_shutdown()</code> must not be called.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>The <strong>SSL_ERROR_SYSCALL</strong> with <strong>errno</strong> value of 0 indicates unexpected EOF from
+the peer. This will be properly reported as <strong>SSL_ERROR_SSL</strong> with reason
+code <strong>SSL_R_UNEXPECTED_EOF_WHILE_READING</strong> in the OpenSSL 3.0 release because
+it is truly a TLS protocol error to terminate the connection without
+a <code>SSL_shutdown()</code>.</p>
+<p>The issue is kept unfixed in OpenSSL 1.1.1 releases because many applications
+which choose to ignore this protocol error depend on the existing way of
+reporting the error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The SSL_ERROR_WANT_ASYNC error code was added in OpenSSL 1.1.0.
+The SSL_ERROR_WANT_CLIENT_HELLO_CB error code was added in OpenSSL 1.1.1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2020 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

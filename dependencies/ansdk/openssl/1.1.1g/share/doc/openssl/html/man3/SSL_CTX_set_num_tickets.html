@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_set_num_tickets</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_set_num_tickets,
+SSL_get_num_tickets,
+SSL_CTX_set_num_tickets,
+SSL_CTX_get_num_tickets
+- control the number of TLSv1.3 session tickets that are issued</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_set_num_tickets(SSL *s, size_t num_tickets);
+ size_t SSL_get_num_tickets(SSL *s);
+ int SSL_CTX_set_num_tickets(SSL_CTX *ctx, size_t num_tickets);
+ size_t SSL_CTX_get_num_tickets(SSL_CTX *ctx);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_set_num_tickets()</code> and <code>SSL_set_num_tickets()</code> can be called for a server
+application and set the number of TLSv1.3 session tickets that will be sent to
+the client after a full handshake. Set the desired value (which could be 0) in
+the <strong>num_tickets</strong> argument. Typically these functions should be called before
+the start of the handshake.</p>
+<p>The default number of tickets is 2; the default number of tickets sent following
+a resumption handshake is 1 but this cannot be changed using these functions.
+The number of tickets following a resumption handshake can be reduced to 0 using
+custom session ticket callbacks (see <em>SSL_CTX_set_session_ticket_cb(3)</em>).</p>
+<p>Tickets are also issued on receipt of a post-handshake certificate from the
+client following a request by the server using
+<em>SSL_verify_client_post_handshake(3)</em>. These new tickets will be associated
+with the updated client identity (i.e. including their certificate and
+verification status). The number of tickets issued will normally be the same as
+was used for the initial handshake. If the initial handshake was a full
+handshake then <code>SSL_set_num_tickets()</code> can be called again prior to calling
+<code>SSL_verify_client_post_handshake()</code> to update the number of tickets that will be
+sent.</p>
+<p><code>SSL_CTX_get_num_tickets()</code> and <code>SSL_get_num_tickets()</code> return the number of
+tickets set by a previous call to <code>SSL_CTX_set_num_tickets()</code> or
+<code>SSL_set_num_tickets()</code>, or 2 if no such call has been made.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_CTX_set_num_tickets()</code> and <code>SSL_set_num_tickets()</code> return 1 on success or 0 on
+failure.</p>
+<p><code>SSL_CTX_get_num_tickets()</code> and <code>SSL_get_num_tickets()</code> return the number of tickets
+that have been previously set.</p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>These functions were added in OpenSSL 1.1.1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

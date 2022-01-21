@@ -1,0 +1,280 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>EVP_CIPHER_meth_new</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>EVP_CIPHER_meth_new, EVP_CIPHER_meth_dup, EVP_CIPHER_meth_free,
+EVP_CIPHER_meth_set_iv_length, EVP_CIPHER_meth_set_flags,
+EVP_CIPHER_meth_set_impl_ctx_size, EVP_CIPHER_meth_set_init,
+EVP_CIPHER_meth_set_do_cipher, EVP_CIPHER_meth_set_cleanup,
+EVP_CIPHER_meth_set_set_asn1_params, EVP_CIPHER_meth_set_get_asn1_params,
+EVP_CIPHER_meth_set_ctrl, EVP_CIPHER_meth_get_init,
+EVP_CIPHER_meth_get_do_cipher, EVP_CIPHER_meth_get_cleanup,
+EVP_CIPHER_meth_get_set_asn1_params, EVP_CIPHER_meth_get_get_asn1_params,
+EVP_CIPHER_meth_get_ctrl - Routines to build up EVP_CIPHER methods</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/evp.h&gt;</pre>
+<pre>
+ EVP_CIPHER *EVP_CIPHER_meth_new(int cipher_type, int block_size, int key_len);
+ EVP_CIPHER *EVP_CIPHER_meth_dup(const EVP_CIPHER *cipher);
+ void EVP_CIPHER_meth_free(EVP_CIPHER *cipher);</pre>
+<pre>
+ int EVP_CIPHER_meth_set_iv_length(EVP_CIPHER *cipher, int iv_len);
+ int EVP_CIPHER_meth_set_flags(EVP_CIPHER *cipher, unsigned long flags);
+ int EVP_CIPHER_meth_set_impl_ctx_size(EVP_CIPHER *cipher, int ctx_size);
+ int EVP_CIPHER_meth_set_init(EVP_CIPHER *cipher,
+                              int (*init)(EVP_CIPHER_CTX *ctx,
+                                          const unsigned char *key,
+                                          const unsigned char *iv,
+                                          int enc));
+ int EVP_CIPHER_meth_set_do_cipher(EVP_CIPHER *cipher,
+                                   int (*do_cipher)(EVP_CIPHER_CTX *ctx,
+                                                    unsigned char *out,
+                                                    const unsigned char *in,
+                                                    size_t inl));
+ int EVP_CIPHER_meth_set_cleanup(EVP_CIPHER *cipher,
+                                 int (*cleanup)(EVP_CIPHER_CTX *));
+ int EVP_CIPHER_meth_set_set_asn1_params(EVP_CIPHER *cipher,
+                                         int (*set_asn1_parameters)(EVP_CIPHER_CTX *,
+                                                                    ASN1_TYPE *));
+ int EVP_CIPHER_meth_set_get_asn1_params(EVP_CIPHER *cipher,
+                                         int (*get_asn1_parameters)(EVP_CIPHER_CTX *,
+                                                                    ASN1_TYPE *));
+ int EVP_CIPHER_meth_set_ctrl(EVP_CIPHER *cipher,
+                              int (*ctrl)(EVP_CIPHER_CTX *, int type,
+                                          int arg, void *ptr));</pre>
+<pre>
+ int (*EVP_CIPHER_meth_get_init(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *ctx,
+                                                           const unsigned char *key,
+                                                           const unsigned char *iv,
+                                                           int enc);
+ int (*EVP_CIPHER_meth_get_do_cipher(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *ctx,
+                                                                unsigned char *out,
+                                                                const unsigned char *in,
+                                                                size_t inl);
+ int (*EVP_CIPHER_meth_get_cleanup(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *);
+ int (*EVP_CIPHER_meth_get_set_asn1_params(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *,
+                                                                      ASN1_TYPE *);
+ int (*EVP_CIPHER_meth_get_get_asn1_params(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *,
+                                                                      ASN1_TYPE *);
+ int (*EVP_CIPHER_meth_get_ctrl(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *,
+                                                           int type, int arg,
+                                                           void *ptr);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The <strong>EVP_CIPHER</strong> type is a structure for symmetric cipher method
+implementation.</p>
+<p><code>EVP_CIPHER_meth_new()</code> creates a new <strong>EVP_CIPHER</strong> structure.</p>
+<p><code>EVP_CIPHER_meth_dup()</code> creates a copy of <strong>cipher</strong>.</p>
+<p><code>EVP_CIPHER_meth_free()</code> destroys a <strong>EVP_CIPHER</strong> structure.</p>
+<p><code>EVP_CIPHER_meth_set_iv_length()</code> sets the length of the IV.
+This is only needed when the implemented cipher mode requires it.</p>
+<p><code>EVP_CIPHER_meth_set_flags()</code> sets the flags to describe optional
+behaviours in the particular <strong>cipher</strong>.
+With the exception of cipher modes, of which only one may be present,
+several flags can be or'd together.
+The available flags are:</p>
+<dl>
+<dt><strong><a name="evp_ciph_stream_cipher_evp_ciph_ecb_mode_evp_ciph_cbc_mode_evp_ciph_cfb_mode_evp_ciph_ofb_mode_evp_ciph_ctr_mode_evp_ciph_gcm_mode_evp_ciph_ccm_mode_evp_ciph_xts_mode_evp_ciph_wrap_mode_evp_ciph_ocb_mode" class="item">EVP_CIPH_STREAM_CIPHER, EVP_CIPH_ECB_MODE EVP_CIPH_CBC_MODE,
+EVP_CIPH_CFB_MODE, EVP_CIPH_OFB_MODE, EVP_CIPH_CTR_MODE, EVP_CIPH_GCM_MODE,
+EVP_CIPH_CCM_MODE, EVP_CIPH_XTS_MODE, EVP_CIPH_WRAP_MODE,
+EVP_CIPH_OCB_MODE</a></strong></dt>
+
+<dd>
+<p>The cipher mode.</p>
+</dd>
+<dt><strong><a name="evp_ciph_variable_length" class="item">EVP_CIPH_VARIABLE_LENGTH</a></strong></dt>
+
+<dd>
+<p>This cipher is of variable length.</p>
+</dd>
+<dt><strong><a name="evp_ciph_custom_iv" class="item">EVP_CIPH_CUSTOM_IV</a></strong></dt>
+
+<dd>
+<p>Storing and initialising the IV is left entirely to the
+implementation.</p>
+</dd>
+<dt><strong><a name="evp_ciph_always_call_init" class="item">EVP_CIPH_ALWAYS_CALL_INIT</a></strong></dt>
+
+<dd>
+<p>Set this if the implementation's <code>init()</code> function should be called even
+if <strong>key</strong> is <strong>NULL</strong>.</p>
+</dd>
+<dt><strong><a name="evp_ciph_ctrl_init" class="item">EVP_CIPH_CTRL_INIT</a></strong></dt>
+
+<dd>
+<p>Set this to have the implementation's <code>ctrl()</code> function called with
+command code <strong>EVP_CTRL_INIT</strong> early in its setup.</p>
+</dd>
+<dt><strong><a name="evp_ciph_custom_key_length" class="item">EVP_CIPH_CUSTOM_KEY_LENGTH</a></strong></dt>
+
+<dd>
+<p>Checking and setting the key length after creating the <strong>EVP_CIPHER</strong>
+is left to the implementation.
+Whenever someone uses <code>EVP_CIPHER_CTX_set_key_length()</code> on a
+<strong>EVP_CIPHER</strong> with this flag set, the implementation's <code>ctrl()</code> function
+will be called with the control code <strong>EVP_CTRL_SET_KEY_LENGTH</strong> and
+the key length in <strong>arg</strong>.</p>
+</dd>
+<dt><strong><a name="evp_ciph_no_padding" class="item">EVP_CIPH_NO_PADDING</a></strong></dt>
+
+<dd>
+<p>Don't use standard block padding.</p>
+</dd>
+<dt><strong><a name="evp_ciph_rand_key" class="item">EVP_CIPH_RAND_KEY</a></strong></dt>
+
+<dd>
+<p>Making a key with random content is left to the implementation.
+This is done by calling the implementation's <code>ctrl()</code> function with the
+control code <strong>EVP_CTRL_RAND_KEY</strong> and the pointer to the key memory
+storage in <strong>ptr</strong>.</p>
+</dd>
+<dt><strong><a name="evp_ciph_custom_copy" class="item">EVP_CIPH_CUSTOM_COPY</a></strong></dt>
+
+<dd>
+<p>Set this to have the implementation's <code>ctrl()</code> function called with
+command code <strong>EVP_CTRL_COPY</strong> at the end of <code>EVP_CIPHER_CTX_copy()</code>.
+The intended use is for further things to deal with after the
+implementation specific data block has been copied.
+The destination <strong>EVP_CIPHER_CTX</strong> is passed to the control with the
+<strong>ptr</strong> parameter.
+The implementation specific data block is reached with
+<code>EVP_CIPHER_CTX_get_cipher_data()</code>.</p>
+</dd>
+<dt><strong><a name="evp_ciph_flag_default_asn1" class="item">EVP_CIPH_FLAG_DEFAULT_ASN1</a></strong></dt>
+
+<dd>
+<p>Use the default EVP routines to pass IV to and from ASN.1.</p>
+</dd>
+<dt><strong><a name="evp_ciph_flag_length_bits" class="item">EVP_CIPH_FLAG_LENGTH_BITS</a></strong></dt>
+
+<dd>
+<p>Signals that the length of the input buffer for encryption /
+decryption is to be understood as the number of bits instead of
+bytes for this implementation.
+This is only useful for CFB1 ciphers.</p>
+</dd>
+<dt><strong><a name="evp_ciph_flag_custom_cipher" class="item">EVP_CIPH_FLAG_CUSTOM_CIPHER</a></strong></dt>
+
+<dd>
+<p>This indicates that the implementation takes care of everything,
+including padding, buffering and finalization.
+The EVP routines will simply give them control and do nothing more.</p>
+</dd>
+<dt><strong><a name="evp_ciph_flag_aead_cipher" class="item">EVP_CIPH_FLAG_AEAD_CIPHER</a></strong></dt>
+
+<dd>
+<p>This indicates that this is an AEAD cipher implementation.</p>
+</dd>
+<dt><strong><a name="evp_ciph_flag_tls1_1_multiblock" class="item">EVP_CIPH_FLAG_TLS1_1_MULTIBLOCK</a></strong></dt>
+
+<dd>
+<p>Allow interleaving of crypto blocks, a particular optimization only applicable
+to certain TLS ciphers.</p>
+</dd>
+</dl>
+<p><code>EVP_CIPHER_meth_set_impl_ctx_size()</code> sets the size of the EVP_CIPHER's
+implementation context so that it can be automatically allocated.</p>
+<p><code>EVP_CIPHER_meth_set_init()</code> sets the cipher init function for
+<strong>cipher</strong>.
+The cipher init function is called by <code>EVP_CipherInit()</code>,
+<code>EVP_CipherInit_ex()</code>, <code>EVP_EncryptInit()</code>, <code>EVP_EncryptInit_ex()</code>,
+<code>EVP_DecryptInit()</code>, <code>EVP_DecryptInit_ex()</code>.</p>
+<p><code>EVP_CIPHER_meth_set_do_cipher()</code> sets the cipher function for
+<strong>cipher</strong>.
+The cipher function is called by <code>EVP_CipherUpdate()</code>,
+<code>EVP_EncryptUpdate()</code>, <code>EVP_DecryptUpdate()</code>, <code>EVP_CipherFinal()</code>,
+<code>EVP_EncryptFinal()</code>, <code>EVP_EncryptFinal_ex()</code>, <code>EVP_DecryptFinal()</code> and
+<code>EVP_DecryptFinal_ex()</code>.</p>
+<p><code>EVP_CIPHER_meth_set_cleanup()</code> sets the function for <strong>cipher</strong> to do
+extra cleanup before the method's private data structure is cleaned
+out and freed.
+Note that the cleanup function is passed a <strong>EVP_CIPHER_CTX *</strong>, the
+private data structure is then available with
+<code>EVP_CIPHER_CTX_get_cipher_data()</code>.
+This cleanup function is called by <code>EVP_CIPHER_CTX_reset()</code> and
+<code>EVP_CIPHER_CTX_free()</code>.</p>
+<p>EVP_CIPHER_meth_set_set_asn1_params() sets the function for <strong>cipher</strong>
+to set the AlgorithmIdentifier &quot;parameter&quot; based on the passed cipher.
+This function is called by EVP_CIPHER_param_to_asn1().
+EVP_CIPHER_meth_set_get_asn1_params() sets the function for <strong>cipher</strong>
+that sets the cipher parameters based on an ASN.1 AlgorithmIdentifier
+&quot;parameter&quot;.
+Both these functions are needed when there is a need for custom data
+(more or other than the cipher IV).
+They are called by EVP_CIPHER_param_to_asn1() and
+EVP_CIPHER_asn1_to_param() respectively if defined.</p>
+<p><code>EVP_CIPHER_meth_set_ctrl()</code> sets the control function for <strong>cipher</strong>.</p>
+<p><code>EVP_CIPHER_meth_get_init()</code>, <code>EVP_CIPHER_meth_get_do_cipher()</code>,
+<code>EVP_CIPHER_meth_get_cleanup()</code>, EVP_CIPHER_meth_get_set_asn1_params(),
+EVP_CIPHER_meth_get_get_asn1_params() and <code>EVP_CIPHER_meth_get_ctrl()</code>
+are all used to retrieve the method data given with the
+EVP_CIPHER_meth_set_*() functions above.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>EVP_CIPHER_meth_new()</code> and <code>EVP_CIPHER_meth_dup()</code> return a pointer to a
+newly created <strong>EVP_CIPHER</strong>, or NULL on failure.
+All EVP_CIPHER_meth_set_*() functions return 1.
+All EVP_CIPHER_meth_get_*() functions return pointers to their
+respective <strong>cipher</strong> function.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><a href="/man3/EVP_EncryptInit.html">the EVP_EncryptInit manpage</a></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The functions described here were added in OpenSSL 1.1.0.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2016-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

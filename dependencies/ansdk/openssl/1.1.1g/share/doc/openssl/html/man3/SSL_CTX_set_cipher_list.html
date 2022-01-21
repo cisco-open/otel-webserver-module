@@ -1,0 +1,139 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_set_cipher_list</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_set_cipher_list,
+SSL_set_cipher_list,
+SSL_CTX_set_ciphersuites,
+SSL_set_ciphersuites
+- choose list of available SSL_CIPHERs</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_CTX_set_cipher_list(SSL_CTX *ctx, const char *str);
+ int SSL_set_cipher_list(SSL *ssl, const char *str);</pre>
+<pre>
+ int SSL_CTX_set_ciphersuites(SSL_CTX *ctx, const char *str);
+ int SSL_set_ciphersuites(SSL *s, const char *str);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_set_cipher_list()</code> sets the list of available ciphers (TLSv1.2 and below)
+for <strong>ctx</strong> using the control string <strong>str</strong>. The format of the string is described
+in <em>ciphers(1)</em>. The list of ciphers is inherited by all
+<strong>ssl</strong> objects created from <strong>ctx</strong>. This function does not impact TLSv1.3
+ciphersuites. Use <code>SSL_CTX_set_ciphersuites()</code> to configure those.</p>
+<p><code>SSL_set_cipher_list()</code> sets the list of ciphers (TLSv1.2 and below) only for
+<strong>ssl</strong>.</p>
+<p><code>SSL_CTX_set_ciphersuites()</code> is used to configure the available TLSv1.3
+ciphersuites for <strong>ctx</strong>. This is a simple colon (&quot;:&quot;) separated list of TLSv1.3
+ciphersuite names in order of preference. Valid TLSv1.3 ciphersuite names are:</p>
+<dl>
+<dt><strong><a name="tls_aes_128_gcm_sha256" class="item">TLS_AES_128_GCM_SHA256</a></strong></dt>
+
+<dt><strong><a name="tls_aes_256_gcm_sha384" class="item">TLS_AES_256_GCM_SHA384</a></strong></dt>
+
+<dt><strong><a name="tls_chacha20_poly1305_sha256" class="item">TLS_CHACHA20_POLY1305_SHA256</a></strong></dt>
+
+<dt><strong><a name="tls_aes_128_ccm_sha256" class="item">TLS_AES_128_CCM_SHA256</a></strong></dt>
+
+<dt><strong><a name="tls_aes_128_ccm_8_sha256" class="item">TLS_AES_128_CCM_8_SHA256</a></strong></dt>
+
+</dl>
+<p>An empty list is permissible. The default value for the this setting is:</p>
+<p>&quot;TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256&quot;</p>
+<p><code>SSL_set_ciphersuites()</code> is the same as <code>SSL_CTX_set_ciphersuites()</code> except it
+configures the ciphersuites for <strong>ssl</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The control string <strong>str</strong> for <code>SSL_CTX_set_cipher_list()</code> and
+<code>SSL_set_cipher_list()</code> should be universally usable and not depend
+on details of the library configuration (ciphers compiled in). Thus no
+syntax checking takes place. Items that are not recognized, because the
+corresponding ciphers are not compiled in or because they are mistyped,
+are simply ignored. Failure is only flagged if no ciphers could be collected
+at all.</p>
+<p>It should be noted, that inclusion of a cipher to be used into the list is
+a necessary condition. On the client side, the inclusion into the list is
+also sufficient unless the security level excludes it. On the server side,
+additional restrictions apply. All ciphers have additional requirements.
+ADH ciphers don't need a certificate, but DH-parameters must have been set.
+All other ciphers need a corresponding certificate and key.</p>
+<p>A RSA cipher can only be chosen, when a RSA certificate is available.
+RSA ciphers using DHE need a certificate and key and additional DH-parameters
+(see <em>SSL_CTX_set_tmp_dh_callback(3)</em>).</p>
+<p>A DSA cipher can only be chosen, when a DSA certificate is available.
+DSA ciphers always use DH key exchange and therefore need DH-parameters
+(see <em>SSL_CTX_set_tmp_dh_callback(3)</em>).</p>
+<p>When these conditions are not met for any cipher in the list (e.g. a
+client only supports export RSA ciphers with an asymmetric key length
+of 512 bits and the server is not configured to use temporary RSA
+keys), the &quot;no shared cipher&quot; (SSL_R_NO_SHARED_CIPHER) error is generated
+and the handshake will fail.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_CTX_set_cipher_list()</code> and <code>SSL_set_cipher_list()</code> return 1 if any cipher
+could be selected and 0 on complete failure.</p>
+<p><code>SSL_CTX_set_ciphersuites()</code> and <code>SSL_set_ciphersuites()</code> return 1 if the requested
+ciphersuite list was configured, and 0 otherwise.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>, <em>SSL_get_ciphers(3)</em>,
+<em>SSL_CTX_use_certificate(3)</em>,
+<em>SSL_CTX_set_tmp_dh_callback(3)</em>,
+<em>ciphers(1)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

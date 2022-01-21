@@ -1,0 +1,196 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>OSSL_STORE_open</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<ul>
+
+		<li><a href="#types">Types</a></li>
+		<li><a href="#functions">Functions</a></li>
+	</ul>
+
+	<li><a href="#supported_schemes">SUPPORTED SCHEMES</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>OSSL_STORE_CTX, OSSL_STORE_post_process_info_fn, OSSL_STORE_open,
+OSSL_STORE_ctrl, OSSL_STORE_load, OSSL_STORE_eof, OSSL_STORE_error,
+OSSL_STORE_close - Types and functions to read objects from a URI</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/store.h&gt;</pre>
+<pre>
+ typedef struct ossl_store_ctx_st OSSL_STORE_CTX;</pre>
+<pre>
+ typedef OSSL_STORE_INFO *(*OSSL_STORE_post_process_info_fn)(OSSL_STORE_INFO *,
+                                                             void *);</pre>
+<pre>
+ OSSL_STORE_CTX *OSSL_STORE_open(const char *uri, const UI_METHOD *ui_method,
+                                 void *ui_data,
+                                 OSSL_STORE_post_process_info_fn post_process,
+                                 void *post_process_data);
+ int OSSL_STORE_ctrl(OSSL_STORE_CTX *ctx, int cmd, ... /* args */);
+ OSSL_STORE_INFO *OSSL_STORE_load(OSSL_STORE_CTX *ctx);
+ int OSSL_STORE_eof(OSSL_STORE_CTX *ctx);
+ int OSSL_STORE_error(OSSL_STORE_CTX *ctx);
+ int OSSL_STORE_close(OSSL_STORE_CTX *ctx);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>These functions help the application to fetch supported objects (see
+<em>OSSL_STORE_INFO(3)/SUPPORTED OBJECTS</em> for information on which those are)
+from a given URI (see <a href="#supported_schemes">SUPPORTED SCHEMES</a> for more information on
+the supported URI schemes).
+The general method to do so is to &quot;open&quot; the URI using <code>OSSL_STORE_open()</code>,
+read each available and supported object using <code>OSSL_STORE_load()</code> as long as
+<code>OSSL_STORE_eof()</code> hasn't been reached, and finish it off with <code>OSSL_STORE_close()</code>.</p>
+<p>The retrieved information is stored in a <strong>OSSL_STORE_INFO</strong>, which is further
+described in <em>OSSL_STORE_INFO(3)</em>.</p>
+<p>
+</p>
+<h2><a name="types">Types</a></h2>
+<p><strong>OSSL_STORE_CTX</strong> is a context variable that holds all the internal
+information for <code>OSSL_STORE_open()</code>, <code>OSSL_STORE_load()</code>, <code>OSSL_STORE_eof()</code> and
+<code>OSSL_STORE_close()</code> to work together.</p>
+<p>
+</p>
+<h2><a name="functions">Functions</a></h2>
+<p><code>OSSL_STORE_open()</code> takes a uri or path <strong>uri</strong>, password UI method
+<strong>ui_method</strong> with associated data <strong>ui_data</strong>, and post processing
+callback <strong>post_process</strong> with associated data <strong>post_process_data</strong>,
+opens a channel to the data located at that URI and returns a
+<strong>OSSL_STORE_CTX</strong> with all necessary internal information.
+The given <strong>ui_method</strong> and <strong>ui_data_data</strong> will be reused by all
+functions that use <strong>OSSL_STORE_CTX</strong> when interaction is needed.
+The given <strong>post_process</strong> and <strong>post_process_data</strong> will be reused by
+<code>OSSL_STORE_load()</code> to manipulate or drop the value to be returned.
+The <strong>post_process</strong> function drops values by returning <strong>NULL</strong>, which
+will cause <code>OSSL_STORE_load()</code> to start its process over with loading
+the next object, until <strong>post_process</strong> returns something other than
+<strong>NULL</strong>, or the end of data is reached as indicated by <code>OSSL_STORE_eof()</code>.</p>
+<p><code>OSSL_STORE_ctrl()</code> takes a <strong>OSSL_STORE_CTX</strong>, and command number <strong>cmd</strong> and
+more arguments not specified here.
+The available loader specific command numbers and arguments they each
+take depends on the loader that's used and is documented together with
+that loader.</p>
+<p>There are also global controls available:</p>
+<dl>
+<dt><strong><a name="ossl_store_c_use_secmem" class="item"><strong>OSSL_STORE_C_USE_SECMEM</strong></a></strong></dt>
+
+<dd>
+<p>Controls if the loader should attempt to use secure memory for any
+allocated <strong>OSSL_STORE_INFO</strong> and its contents.
+This control expects one argument, a pointer to an <strong>int</strong> that is expected to
+have the value 1 (yes) or 0 (no).
+Any other value is an error.</p>
+</dd>
+</dl>
+<p><code>OSSL_STORE_load()</code> takes a <strong>OSSL_STORE_CTX</strong>, tries to load the next available
+object and return it wrapped with  <strong>OSSL_STORE_INFO</strong>.</p>
+<p><code>OSSL_STORE_eof()</code> takes a <strong>OSSL_STORE_CTX</strong> and checks if we've reached the end
+of data.</p>
+<p><code>OSSL_STORE_error()</code> takes a <strong>OSSL_STORE_CTX</strong> and checks if an error occurred in
+the last <code>OSSL_STORE_load()</code> call.
+Note that it may still be meaningful to try and load more objects, unless
+<code>OSSL_STORE_eof()</code> shows that the end of data has been reached.</p>
+<p><code>OSSL_STORE_close()</code> takes a <strong>OSSL_STORE_CTX</strong>, closes the channel that was opened
+by <code>OSSL_STORE_open()</code> and frees all other information that was stored in the
+<strong>OSSL_STORE_CTX</strong>, as well as the <strong>OSSL_STORE_CTX</strong> itself.</p>
+<p>
+</p>
+<hr />
+<h1><a name="supported_schemes">SUPPORTED SCHEMES</a></h1>
+<p>The basic supported scheme is <strong>file:</strong>.
+Any other scheme can be added dynamically, using
+<code>OSSL_STORE_register_loader()</code>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>A string without a scheme prefix (that is, a non-URI string) is
+implicitly interpreted as using the <em class="file">file:</em> scheme.</p>
+<p>There are some tools that can be used together with
+<code>OSSL_STORE_open()</code> to determine if any failure is caused by an unparsable
+URI, or if it's a different error (such as memory allocation
+failures); if the URI was parsable but the scheme unregistered, the
+top error will have the reason <code>OSSL_STORE_R_UNREGISTERED_SCHEME</code>.</p>
+<p>These functions make no direct assumption regarding the pass phrase received
+from the password callback.
+The loaders may make assumptions, however.
+For example, the <strong>file:</strong> scheme loader inherits the assumptions made by
+OpenSSL functionality that handles the different file types; this is mostly
+relevant for PKCS#12 objects.
+See <em>passphrase-encoding(7)</em> for further information.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>OSSL_STORE_open()</code> returns a pointer to a <strong>OSSL_STORE_CTX</strong> on success, or
+<strong>NULL</strong> on failure.</p>
+<p><code>OSSL_STORE_load()</code> returns a pointer to a <strong>OSSL_STORE_INFO</strong> on success, or
+<strong>NULL</strong> on error or when end of data is reached.
+Use <code>OSSL_STORE_error()</code> and <code>OSSL_STORE_eof()</code> to determine the meaning of a
+returned <strong>NULL</strong>.</p>
+<p><code>OSSL_STORE_eof()</code> returns 1 if the end of data has been reached, otherwise
+0.</p>
+<p><code>OSSL_STORE_error()</code> returns 1 if an error occurred in an <code>OSSL_STORE_load()</code> call,
+otherwise 0.</p>
+<p><code>OSSL_STORE_ctrl()</code> and <code>OSSL_STORE_close()</code> returns 1 on success, or 0 on failure.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ossl_store(7)</em>, <em>OSSL_STORE_INFO(3)</em>, <em>OSSL_STORE_register_loader(3)</em>,
+<em>passphrase-encoding(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p><code>OSSL_STORE_CTX()</code>, <code>OSSL_STORE_post_process_info_fn()</code>, <code>OSSL_STORE_open()</code>,
+<code>OSSL_STORE_ctrl()</code>, <code>OSSL_STORE_load()</code>, <code>OSSL_STORE_eof()</code> and <code>OSSL_STORE_close()</code>
+were added in OpenSSL 1.1.1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2016-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

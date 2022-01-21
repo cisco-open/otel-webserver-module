@@ -1,0 +1,198 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>crl</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#options">OPTIONS</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>openssl-crl,
+crl - CRL utility</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p><strong>openssl</strong> <strong>crl</strong>
+[<strong>-help</strong>]
+[<strong>-inform PEM|DER</strong>]
+[<strong>-outform PEM|DER</strong>]
+[<strong>-text</strong>]
+[<strong>-in filename</strong>]
+[<strong>-out filename</strong>]
+[<strong>-nameopt option</strong>]
+[<strong>-noout</strong>]
+[<strong>-hash</strong>]
+[<strong>-issuer</strong>]
+[<strong>-lastupdate</strong>]
+[<strong>-nextupdate</strong>]
+[<strong>-CAfile file</strong>]
+[<strong>-CApath dir</strong>]</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The <strong>crl</strong> command processes CRL files in DER or PEM format.</p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<dl>
+<dt><strong><a name="help" class="item"><strong>-help</strong></a></strong></dt>
+
+<dd>
+<p>Print out a usage message.</p>
+</dd>
+<dt><strong><a name="inform_der_pem" class="item"><strong>-inform DER|PEM</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the input format. <strong>DER</strong> format is DER encoded CRL
+structure. <strong>PEM</strong> (the default) is a base64 encoded version of
+the DER form with header and footer lines.</p>
+</dd>
+<dt><strong><a name="outform_der_pem" class="item"><strong>-outform DER|PEM</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the output format, the options have the same meaning and default
+as the <strong>-inform</strong> option.</p>
+</dd>
+<dt><strong><a name="in_filename" class="item"><strong>-in filename</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the input filename to read from or standard input if this
+option is not specified.</p>
+</dd>
+<dt><strong><a name="out_filename" class="item"><strong>-out filename</strong></a></strong></dt>
+
+<dd>
+<p>Specifies the output filename to write to or standard output by
+default.</p>
+</dd>
+<dt><strong><a name="text" class="item"><strong>-text</strong></a></strong></dt>
+
+<dd>
+<p>Print out the CRL in text form.</p>
+</dd>
+<dt><strong><a name="nameopt_option" class="item"><strong>-nameopt option</strong></a></strong></dt>
+
+<dd>
+<p>Option which determines how the subject or issuer names are displayed. See
+the description of <strong>-nameopt</strong> in <em>x509(1)</em>.</p>
+</dd>
+<dt><strong><a name="noout" class="item"><strong>-noout</strong></a></strong></dt>
+
+<dd>
+<p>Don't output the encoded version of the CRL.</p>
+</dd>
+<dt><strong><a name="hash" class="item"><strong>-hash</strong></a></strong></dt>
+
+<dd>
+<p>Output a hash of the issuer name. This can be use to lookup CRLs in
+a directory by issuer name.</p>
+</dd>
+<dt><strong><a name="hash_old" class="item"><strong>-hash_old</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the &quot;hash&quot; of the CRL issuer name using the older algorithm
+as used by OpenSSL before version 1.0.0.</p>
+</dd>
+<dt><strong><a name="issuer" class="item"><strong>-issuer</strong></a></strong></dt>
+
+<dd>
+<p>Output the issuer name.</p>
+</dd>
+<dt><strong><a name="lastupdate" class="item"><strong>-lastupdate</strong></a></strong></dt>
+
+<dd>
+<p>Output the lastUpdate field.</p>
+</dd>
+<dt><strong><a name="nextupdate" class="item"><strong>-nextupdate</strong></a></strong></dt>
+
+<dd>
+<p>Output the nextUpdate field.</p>
+</dd>
+<dt><strong><a name="cafile_file" class="item"><strong>-CAfile file</strong></a></strong></dt>
+
+<dd>
+<p>Verify the signature on a CRL by looking up the issuing certificate in
+<strong>file</strong>.</p>
+</dd>
+<dt><strong><a name="capath_dir" class="item"><strong>-CApath dir</strong></a></strong></dt>
+
+<dd>
+<p>Verify the signature on a CRL by looking up the issuing certificate in
+<strong>dir</strong>. This directory must be a standard certificate directory: that
+is a hash of each subject name (using <strong>x509 -hash</strong>) should be linked
+to each certificate.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The PEM CRL format uses the header and footer lines:</p>
+<pre>
+ -----BEGIN X509 CRL-----
+ -----END X509 CRL-----</pre>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>Convert a CRL file from PEM to DER:</p>
+<pre>
+ openssl crl -in crl.pem -outform DER -out crl.der</pre>
+<p>Output the text form of a DER encoded certificate:</p>
+<pre>
+ openssl crl -in crl.der -inform DER -text -noout</pre>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>Ideally it should be possible to create a CRL using appropriate options
+and files too.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>crl2pkcs7(1)</em>, <em>ca(1)</em>, <em>x509(1)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

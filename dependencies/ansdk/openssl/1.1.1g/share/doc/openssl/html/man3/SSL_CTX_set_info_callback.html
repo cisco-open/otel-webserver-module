@@ -1,0 +1,204 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_set_info_callback</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_set_info_callback,
+SSL_CTX_get_info_callback,
+SSL_set_info_callback,
+SSL_get_info_callback
+- handle information callback for SSL connections</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ void SSL_CTX_set_info_callback(SSL_CTX *ctx, void (*callback)());
+ void (*SSL_CTX_get_info_callback(const SSL_CTX *ctx))();</pre>
+<pre>
+ void SSL_set_info_callback(SSL *ssl, void (*callback)());
+ void (*SSL_get_info_callback(const SSL *ssl))();</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_set_info_callback()</code> sets the <strong>callback</strong> function, that can be used to
+obtain state information for SSL objects created from <strong>ctx</strong> during connection
+setup and use. The setting for <strong>ctx</strong> is overridden from the setting for
+a specific SSL object, if specified.
+When <strong>callback</strong> is NULL, no callback function is used.</p>
+<p><code>SSL_set_info_callback()</code> sets the <strong>callback</strong> function, that can be used to
+obtain state information for <strong>ssl</strong> during connection setup and use.
+When <strong>callback</strong> is NULL, the callback setting currently valid for
+<strong>ctx</strong> is used.</p>
+<p><code>SSL_CTX_get_info_callback()</code> returns a pointer to the currently set information
+callback function for <strong>ctx</strong>.</p>
+<p><code>SSL_get_info_callback()</code> returns a pointer to the currently set information
+callback function for <strong>ssl</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>When setting up a connection and during use, it is possible to obtain state
+information from the SSL/TLS engine. When set, an information callback function
+is called whenever a significant event occurs such as: the state changes,
+an alert appears, or an error occurs.</p>
+<p>The callback function is called as <strong>callback(SSL *ssl, int where, int ret)</strong>.
+The <strong>where</strong> argument specifies information about where (in which context)
+the callback function was called. If <strong>ret</strong> is 0, an error condition occurred.
+If an alert is handled, SSL_CB_ALERT is set and <strong>ret</strong> specifies the alert
+information.</p>
+<p><strong>where</strong> is a bitmask made up of the following bits:</p>
+<dl>
+<dt><strong><a name="ssl_cb_loop" class="item">SSL_CB_LOOP</a></strong></dt>
+
+<dd>
+<p>Callback has been called to indicate state change or some other significant
+state machine event. This may mean that the callback gets invoked more than once
+per state in some situations.</p>
+</dd>
+<dt><strong><a name="ssl_cb_exit" class="item">SSL_CB_EXIT</a></strong></dt>
+
+<dd>
+<p>Callback has been called to indicate exit of a handshake function. This will
+happen after the end of a handshake, but may happen at other times too such as
+on error or when IO might otherwise block and non-blocking is being used.</p>
+</dd>
+<dt><strong><a name="ssl_cb_read" class="item">SSL_CB_READ</a></strong></dt>
+
+<dd>
+<p>Callback has been called during read operation.</p>
+</dd>
+<dt><strong><a name="ssl_cb_write" class="item">SSL_CB_WRITE</a></strong></dt>
+
+<dd>
+<p>Callback has been called during write operation.</p>
+</dd>
+<dt><strong><a name="ssl_cb_alert" class="item">SSL_CB_ALERT</a></strong></dt>
+
+<dd>
+<p>Callback has been called due to an alert being sent or received.</p>
+</dd>
+<dt><strong><a name="ssl_cb_read_alert" class="item">SSL_CB_READ_ALERT               (SSL_CB_ALERT|SSL_CB_READ)</a></strong></dt>
+
+<dt><strong><a name="ssl_cb_write_alert" class="item">SSL_CB_WRITE_ALERT              (SSL_CB_ALERT|SSL_CB_WRITE)</a></strong></dt>
+
+<dt><strong><a name="ssl_cb_accept_loop" class="item">SSL_CB_ACCEPT_LOOP              (SSL_ST_ACCEPT|SSL_CB_LOOP)</a></strong></dt>
+
+<dt><strong><a name="ssl_cb_accept_exit" class="item">SSL_CB_ACCEPT_EXIT              (SSL_ST_ACCEPT|SSL_CB_EXIT)</a></strong></dt>
+
+<dt><strong><a name="ssl_cb_connect_loop" class="item">SSL_CB_CONNECT_LOOP             (SSL_ST_CONNECT|SSL_CB_LOOP)</a></strong></dt>
+
+<dt><strong><a name="ssl_cb_connect_exit" class="item">SSL_CB_CONNECT_EXIT             (SSL_ST_CONNECT|SSL_CB_EXIT)</a></strong></dt>
+
+<dt><strong><a name="ssl_cb_handshake_start" class="item">SSL_CB_HANDSHAKE_START</a></strong></dt>
+
+<dd>
+<p>Callback has been called because a new handshake is started. It also occurs when
+resuming a handshake following a pause to handle early data.</p>
+</dd>
+<dt><strong><a name="ssl_cb_handshake_done" class="item">SSL_CB_HANDSHAKE_DONE</a></strong></dt>
+
+<dd>
+<p>Callback has been called because a handshake is finished.  It also occurs if the
+handshake is paused to allow the exchange of early data.</p>
+</dd>
+</dl>
+<p>The current state information can be obtained using the
+<em>SSL_state_string(3)</em> family of functions.</p>
+<p>The <strong>ret</strong> information can be evaluated using the
+<em>SSL_alert_type_string(3)</em> family of functions.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_set_info_callback()</code> does not provide diagnostic information.</p>
+<p><code>SSL_get_info_callback()</code> returns the current setting.</p>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>The following example callback function prints state strings, information
+about alerts being handled and error messages to the <strong>bio_err</strong> BIO.</p>
+<pre>
+ void apps_ssl_info_callback(SSL *s, int where, int ret)
+ {
+     const char *str;
+     int w = where &amp; ~SSL_ST_MASK;</pre>
+<pre>
+     if (w &amp; SSL_ST_CONNECT)
+         str = &quot;SSL_connect&quot;;
+     else if (w &amp; SSL_ST_ACCEPT)
+         str = &quot;SSL_accept&quot;;
+     else
+         str = &quot;undefined&quot;;</pre>
+<pre>
+     if (where &amp; SSL_CB_LOOP) {
+         BIO_printf(bio_err, &quot;%s:%s\n&quot;, str, SSL_state_string_long(s));
+     } else if (where &amp; SSL_CB_ALERT) {
+         str = (where &amp; SSL_CB_READ) ? &quot;read&quot; : &quot;write&quot;;
+         BIO_printf(bio_err, &quot;SSL3 alert %s:%s:%s\n&quot;, str,
+                    SSL_alert_type_string_long(ret),
+                    SSL_alert_desc_string_long(ret));
+     } else if (where &amp; SSL_CB_EXIT) {
+         if (ret == 0) {
+             BIO_printf(bio_err, &quot;%s:failed in %s\n&quot;,
+                        str, SSL_state_string_long(s));
+         } else if (ret &lt; 0) {
+             BIO_printf(bio_err, &quot;%s:error in %s\n&quot;,
+                        str, SSL_state_string_long(s));
+         }
+     }
+ }</pre>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>, <em>SSL_state_string(3)</em>,
+<em>SSL_alert_type_string(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2001-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

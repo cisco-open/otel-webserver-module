@@ -1,0 +1,87 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_set_keylog_callback</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_set_keylog_callback, SSL_CTX_get_keylog_callback,
+SSL_CTX_keylog_cb_func - logging TLS key material</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ typedef void (*SSL_CTX_keylog_cb_func)(const SSL *ssl, const char *line);</pre>
+<pre>
+ void SSL_CTX_set_keylog_callback(SSL_CTX *ctx, SSL_CTX_keylog_cb_func cb);
+ SSL_CTX_keylog_cb_func SSL_CTX_get_keylog_callback(const SSL_CTX *ctx);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_set_keylog_callback()</code> sets the TLS key logging callback. This callback
+is called whenever TLS key material is generated or received, in order to allow
+applications to store this keying material for debugging purposes.</p>
+<p><code>SSL_CTX_get_keylog_callback()</code> retrieves the previously set TLS key logging
+callback. If no callback has been set, this will return NULL. When there is no
+key logging callback, or if SSL_CTX_set_keylog_callback is called with NULL as
+the value of cb, no logging of key material will be done.</p>
+<p>The key logging callback is called with two items: the <strong>ssl</strong> object associated
+with the connection, and <strong>line</strong>, a string containing the key material in the
+format used by NSS for its <strong>SSLKEYLOGFILE</strong> debugging output. To recreate that
+file, the key logging callback should log <strong>line</strong>, followed by a newline.
+<strong>line</strong> will always be a NULL-terminated string.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_CTX_get_keylog_callback()</code> returns a pointer to <strong>SSL_CTX_keylog_cb_func</strong> or
+NULL if the callback is not set.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2016-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,132 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_COMP_add_compression_method</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_COMP_add_compression_method, SSL_COMP_get_compression_methods,
+SSL_COMP_get0_name, SSL_COMP_get_id, SSL_COMP_free_compression_methods
+- handle SSL/TLS integrated compression methods</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_COMP_add_compression_method(int id, COMP_METHOD *cm);
+ STACK_OF(SSL_COMP) *SSL_COMP_get_compression_methods(void);
+ const char *SSL_COMP_get0_name(const SSL_COMP *comp);
+ int SSL_COMP_get_id(const SSL_COMP *comp);</pre>
+<p>Deprecated:</p>
+<pre>
+ #if OPENSSL_API_COMPAT &lt; 0x10100000L
+ void SSL_COMP_free_compression_methods(void)
+ #endif</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_COMP_add_compression_method()</code> adds the compression method <strong>cm</strong> with
+the identifier <strong>id</strong> to the list of available compression methods. This
+list is globally maintained for all SSL operations within this application.
+It cannot be set for specific SSL_CTX or SSL objects.</p>
+<p><code>SSL_COMP_get_compression_methods()</code> returns a stack of all of the available
+compression methods or NULL on error.</p>
+<p>SSL_COMP_get0_name() returns the name of the compression method <strong>comp</strong>.</p>
+<p><code>SSL_COMP_get_id()</code> returns the id of the compression method <strong>comp</strong>.</p>
+<p><code>SSL_COMP_free_compression_methods()</code> releases any resources acquired to
+maintain the internal table of compression methods.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The TLS standard (or SSLv3) allows the integration of compression methods
+into the communication. The TLS RFC does however not specify compression
+methods or their corresponding identifiers, so there is currently no compatible
+way to integrate compression with unknown peers. It is therefore currently not
+recommended to integrate compression into applications. Applications for
+non-public use may agree on certain compression methods. Using different
+compression methods with the same identifier will lead to connection failure.</p>
+<p>An OpenSSL client speaking a protocol that allows compression (SSLv3, TLSv1)
+will unconditionally send the list of all compression methods enabled with
+<code>SSL_COMP_add_compression_method()</code> to the server during the handshake.
+Unlike the mechanisms to set a cipher list, there is no method available to
+restrict the list of compression method on a per connection basis.</p>
+<p>An OpenSSL server will match the identifiers listed by a client against
+its own compression methods and will unconditionally activate compression
+when a matching identifier is found. There is no way to restrict the list
+of compression methods supported on a per connection basis.</p>
+<p>If enabled during compilation, the OpenSSL library will have the
+<code>COMP_zlib()</code> compression method available.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_COMP_add_compression_method()</code> may return the following values:</p>
+<ol>
+<li>
+<p>The operation succeeded.</p>
+</li>
+<li>
+<p>The operation failed. Check the error queue to find out the reason.</p>
+</li>
+</ol>
+<p><code>SSL_COMP_get_compression_methods()</code> returns the stack of compressions methods or
+NULL on error.</p>
+<p>SSL_COMP_get0_name() returns the name of the compression method or NULL on error.</p>
+<p><code>SSL_COMP_get_id()</code> returns the name of the compression method or -1 on error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The <code>SSL_COMP_free_compression_methods()</code> function was deprecated in OpenSSL 1.1.0.
+The SSL_COMP_get0_name() and <code>SSL_comp_get_id()</code> functions were added in OpenSSL 1.1.0d.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2001-2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

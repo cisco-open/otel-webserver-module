@@ -1,0 +1,111 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>BIO_parse_hostserv</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>BIO_hostserv_priorities,
+BIO_parse_hostserv
+- utility routines to parse a standard host and service string</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/bio.h&gt;</pre>
+<pre>
+ enum BIO_hostserv_priorities {
+     BIO_PARSE_PRIO_HOST, BIO_PARSE_PRIO_SERV
+ };
+ int BIO_parse_hostserv(const char *hostserv, char **host, char **service,
+                        enum BIO_hostserv_priorities hostserv_prio);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>BIO_parse_hostserv()</code> will parse the information given in <strong>hostserv</strong>,
+create strings with the host name and service name and give those
+back via <strong>host</strong> and <strong>service</strong>.  Those will need to be freed after
+they are used.  <strong>hostserv_prio</strong> helps determine if <strong>hostserv</strong> shall
+be interpreted primarily as a host name or a service name in ambiguous
+cases.</p>
+<p>The syntax the <code>BIO_parse_hostserv()</code> recognises is:</p>
+<pre>
+ host + ':' + service
+ host + ':' + '*'
+ host + ':'
+        ':' + service
+ '*'  + ':' + service
+ host
+ service</pre>
+<p>The host part can be a name or an IP address.  If it's a IPv6
+address, it MUST be enclosed in brackets, such as '[::1]'.</p>
+<p>The service part can  be a service name or its port number.</p>
+<p>The returned values will depend on the given <strong>hostserv</strong> string
+and <strong>hostserv_prio</strong>, as follows:</p>
+<pre>
+ host + ':' + service  =&gt; *host = &quot;host&quot;, *service = &quot;service&quot;
+ host + ':' + '*'      =&gt; *host = &quot;host&quot;, *service = NULL
+ host + ':'            =&gt; *host = &quot;host&quot;, *service = NULL
+        ':' + service  =&gt; *host = NULL, *service = &quot;service&quot;
+  '*' + ':' + service  =&gt; *host = NULL, *service = &quot;service&quot;</pre>
+<pre>
+ in case no ':' is present in the string, the result depends on
+ hostserv_prio, as follows:</pre>
+<pre>
+ when hostserv_prio == BIO_PARSE_PRIO_HOST
+ host                 =&gt; *host = &quot;host&quot;, *service untouched</pre>
+<pre>
+ when hostserv_prio == BIO_PARSE_PRIO_SERV
+ service              =&gt; *host untouched, *service = &quot;service&quot;</pre>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>BIO_parse_hostserv()</code> returns 1 on success or 0 on error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>BIO_ADDRINFO(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2016-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

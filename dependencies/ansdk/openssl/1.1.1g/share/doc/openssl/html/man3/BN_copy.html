@@ -1,0 +1,100 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>BN_copy</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>BN_copy, BN_dup, BN_with_flags - copy BIGNUMs</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/bn.h&gt;</pre>
+<pre>
+ BIGNUM *BN_copy(BIGNUM *to, const BIGNUM *from);</pre>
+<pre>
+ BIGNUM *BN_dup(const BIGNUM *from);</pre>
+<pre>
+ void BN_with_flags(BIGNUM *dest, const BIGNUM *b, int flags);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>BN_copy()</code> copies <strong>from</strong> to <strong>to</strong>. <code>BN_dup()</code> creates a new <strong>BIGNUM</strong>
+containing the value <strong>from</strong>.</p>
+<p>BN_with_flags creates a <strong>temporary</strong> shallow copy of <strong>b</strong> in <strong>dest</strong>. It places
+significant restrictions on the copied data. Applications that do no adhere to
+these restrictions may encounter unexpected side effects or crashes. For that
+reason use of this function is discouraged. Any flags provided in <strong>flags</strong> will
+be set in <strong>dest</strong> in addition to any flags already set in <strong>b</strong>. For example this
+might commonly be used to create a temporary copy of a BIGNUM with the
+<strong>BN_FLG_CONSTTIME</strong> flag set for constant time operations. The temporary copy in
+<strong>dest</strong> will share some internal state with <strong>b</strong>. For this reason the following
+restrictions apply to the use of <strong>dest</strong>:</p>
+<ul>
+<li>
+<p><strong>dest</strong> should be a newly allocated BIGNUM obtained via a call to <code>BN_new()</code>. It
+should not have been used for other purposes or initialised in any way.</p>
+</li>
+<li>
+<p><strong>dest</strong> must only be used in &quot;read-only&quot; operations, i.e. typically those
+functions where the relevant parameter is declared &quot;const&quot;.</p>
+</li>
+<li>
+<p><strong>dest</strong> must be used and freed before any further subsequent use of <strong>b</strong></p>
+</li>
+</ul>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>BN_copy()</code> returns <strong>to</strong> on success, NULL on error. <code>BN_dup()</code> returns
+the new <strong>BIGNUM</strong>, and NULL on error. The error codes can be obtained
+by <em>ERR_get_error(3)</em>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ERR_get_error(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2017 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,111 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>ERR_put_error</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<ul>
+
+		<li><a href="#reporting_errors">Reporting errors</a></li>
+	</ul>
+
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>ERR_put_error, ERR_add_error_data, ERR_add_error_vdata - record an error</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/err.h&gt;</pre>
+<pre>
+ void ERR_put_error(int lib, int func, int reason, const char *file, int line);</pre>
+<pre>
+ void ERR_add_error_data(int num, ...);
+ void ERR_add_error_vdata(int num, va_list arg);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>ERR_put_error()</code> adds an error code to the thread's error queue. It
+signals that the error of reason code <strong>reason</strong> occurred in function
+<strong>func</strong> of library <strong>lib</strong>, in line number <strong>line</strong> of <strong>file</strong>.
+This function is usually called by a macro.</p>
+<p><code>ERR_add_error_data()</code> associates the concatenation of its <strong>num</strong> string
+arguments with the error code added last.
+<code>ERR_add_error_vdata()</code> is similar except the argument is a <strong>va_list</strong>.</p>
+<p><em>ERR_load_strings(3)</em> can be used to register
+error strings so that the application can a generate human-readable
+error messages for the error code.</p>
+<p>
+</p>
+<h2><a name="reporting_errors">Reporting errors</a></h2>
+<p>Each sub-library has a specific macro <code>XXXerr()</code> that is used to report
+errors. Its first argument is a function code <strong>XXX_F_...</strong>, the second
+argument is a reason code <strong>XXX_R_...</strong>. Function codes are derived
+from the function names; reason codes consist of textual error
+descriptions. For example, the function ssl3_read_bytes() reports a
+&quot;handshake failure&quot; as follows:</p>
+<pre>
+ SSLerr(SSL_F_SSL3_READ_BYTES, SSL_R_SSL_HANDSHAKE_FAILURE);</pre>
+<p>Function and reason codes should consist of upper case characters,
+numbers and underscores only. The error file generation script translates
+function codes into function names by looking in the header files
+for an appropriate function name, if none is found it just uses
+the capitalized form such as &quot;SSL3_READ_BYTES&quot; in the above example.</p>
+<p>The trailing section of a reason code (after the &quot;_R_&quot;) is translated
+into lower case and underscores changed to spaces.</p>
+<p>Although a library will normally report errors using its own specific
+XXXerr macro, another library's macro can be used. This is normally
+only done when a library wants to include ASN1 code which must use
+the ASN1err() macro.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>ERR_put_error()</code> and <code>ERR_add_error_data()</code> return
+no values.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ERR_load_strings(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2017 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

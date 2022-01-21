@@ -1,0 +1,115 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Ed25519</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>Ed25519,
+Ed448
+- EVP_PKEY Ed25519 and Ed448 support</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The <strong>Ed25519</strong> and <strong>Ed448</strong> EVP_PKEY implementation supports key generation,
+one-shot digest sign and digest verify using PureEdDSA and <strong>Ed25519</strong> or <strong>Ed448</strong>
+(see <a href="http://www.ietf.org/rfc/rfc8032.txt" class="rfc">RFC8032</a>). It has associated private and public key formats compatible with
+<a href="http://www.ietf.org/rfc/rfc8410.txt" class="rfc">RFC 8410</a>.</p>
+<p>No additional parameters can be set during key generation, one-shot signing or
+verification. In particular, because PureEdDSA is used, a digest must <strong>NOT</strong> be
+specified when signing or verifying.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The PureEdDSA algorithm does not support the streaming mechanism
+of other signature algorithms using, for example, <code>EVP_DigestUpdate()</code>.
+The message to sign or verify must be passed using the one-shot
+<code>EVP_DigestSign()</code> and <code>EVP_DigestVerify()</code> functions.</p>
+<p>When calling <code>EVP_DigestSignInit()</code> or <code>EVP_DigestVerifyInit()</code>, the
+digest <strong>type</strong> parameter <strong>MUST</strong> be set to <strong>NULL</strong>.</p>
+<p>Applications wishing to sign certificates (or other structures such as
+CRLs or certificate requests) using Ed25519 or Ed448 can either use X509_sign()
+or X509_sign_ctx() in the usual way.</p>
+<p>A context for the <strong>Ed25519</strong> algorithm can be obtained by calling:</p>
+<pre>
+ EVP_PKEY_CTX *pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_ED25519, NULL);</pre>
+<p>For the <strong>Ed448</strong> algorithm a context can be obtained by calling:</p>
+<pre>
+ EVP_PKEY_CTX *pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_ED448, NULL);</pre>
+<p>Ed25519 or Ed448 private keys can be set directly using
+<em>EVP_PKEY_new_raw_private_key(3)</em> or loaded from a PKCS#8 private key file
+using <em>PEM_read_bio_PrivateKey(3)</em> (or similar function). Completely new keys
+can also be generated (see the example below). Setting a private key also sets
+the associated public key.</p>
+<p>Ed25519 or Ed448 public keys can be set directly using
+<em>EVP_PKEY_new_raw_public_key(3)</em> or loaded from a SubjectPublicKeyInfo
+structure in a PEM file using <em>PEM_read_bio_PUBKEY(3)</em> (or similar function).</p>
+<p>Ed25519 and Ed448 can be tested within <em>speed(1)</em> application since version 1.1.1.
+Valid algorithm names are <strong>ed25519</strong>, <strong>ed448</strong> and <strong>eddsa</strong>. If <strong>eddsa</strong> is
+specified, then both Ed25519 and Ed448 are benchmarked.</p>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>This example generates an <strong>ED25519</strong> private key and writes it to standard
+output in PEM format:</p>
+<pre>
+ #include &lt;openssl/evp.h&gt;
+ #include &lt;openssl/pem.h&gt;
+ ...
+ EVP_PKEY *pkey = NULL;
+ EVP_PKEY_CTX *pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_ED25519, NULL);
+ EVP_PKEY_keygen_init(pctx);
+ EVP_PKEY_keygen(pctx, &amp;pkey);
+ EVP_PKEY_CTX_free(pctx);
+ PEM_write_PrivateKey(stdout, pkey, NULL, NULL, 0, NULL, NULL);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>EVP_PKEY_CTX_new(3)</em>,
+<em>EVP_PKEY_keygen(3)</em>,
+<em>EVP_DigestSignInit(3)</em>,
+<em>EVP_DigestVerifyInit(3)</em>,</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2017-2020 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

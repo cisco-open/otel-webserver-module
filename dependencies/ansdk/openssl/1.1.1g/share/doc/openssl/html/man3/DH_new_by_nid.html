@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>DH_new_by_nid</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>DH_new_by_nid, DH_get_nid - get or find DH named parameters</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/dh.h&gt;
+ DH *DH_new_by_nid(int nid);
+ int *DH_get_nid(const DH *dh);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>DH_new_by_nid()</code> creates and returns a DH structure containing named parameters
+<strong>nid</strong>. Currently <strong>nid</strong> must be <strong>NID_ffdhe2048</strong>, <strong>NID_ffdhe3072</strong>,
+<strong>NID_ffdhe4096</strong>, <strong>NID_ffdhe6144</strong> or <strong>NID_ffdhe8192</strong>.</p>
+<p><code>DH_get_nid()</code> determines if the parameters contained in <strong>dh</strong> match
+any named set. It returns the NID corresponding to the matching parameters or
+<strong>NID_undef</strong> if there is no match.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>DH_new_by_nid()</code> returns a set of DH parameters or <strong>NULL</strong> if an error occurred.</p>
+<p><code>DH_get_nid()</code> returns the NID of the matching set of parameters or
+<strong>NID_undef</strong> if there is no match.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2017 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

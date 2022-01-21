@@ -1,0 +1,305 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>dgst</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#options">OPTIONS</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>openssl-dgst,
+dgst - perform digest operations</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p><strong>openssl dgst</strong>
+[<strong>-<em>digest</em></strong>]
+[<strong>-help</strong>]
+[<strong>-c</strong>]
+[<strong>-d</strong>]
+[<strong>-list</strong>]
+[<strong>-hex</strong>]
+[<strong>-binary</strong>]
+[<strong>-r</strong>]
+[<strong>-out filename</strong>]
+[<strong>-sign filename</strong>]
+[<strong>-keyform arg</strong>]
+[<strong>-passin arg</strong>]
+[<strong>-verify filename</strong>]
+[<strong>-prverify filename</strong>]
+[<strong>-signature filename</strong>]
+[<strong>-sigopt nm:v</strong>]
+[<strong>-hmac key</strong>]
+[<strong>-fips-fingerprint</strong>]
+[<strong>-rand file...</strong>]
+[<strong>-engine id</strong>]
+[<strong>-engine_impl</strong>]
+[<strong>file...</strong>]</p>
+<p><strong>openssl</strong> <em>digest</em> [<strong>...</strong>]</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The digest functions output the message digest of a supplied file or files
+in hexadecimal.  The digest functions also generate and verify digital
+signatures using message digests.</p>
+<p>The generic name, <strong>dgst</strong>, may be used with an option specifying the
+algorithm to be used.
+The default digest is <em>sha256</em>.
+A supported <em>digest</em> name may also be used as the command name.
+To see the list of supported algorithms, use the <em>list --digest-commands</em>
+command.</p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<dl>
+<dt><strong><a name="help" class="item"><strong>-help</strong></a></strong></dt>
+
+<dd>
+<p>Print out a usage message.</p>
+</dd>
+<dt><strong><a name="digest" class="item"><strong>-<em>digest</em></strong></a></strong></dt>
+
+<dd>
+<p>Specifies name of a supported digest to be used. To see the list of
+supported digests, use the command <em>list --digest-commands</em>.</p>
+</dd>
+<dt><strong><a name="c" class="item"><strong>-c</strong></a></strong></dt>
+
+<dd>
+<p>Print out the digest in two digit groups separated by colons, only relevant if
+<strong>hex</strong> format output is used.</p>
+</dd>
+<dt><strong><a name="d" class="item"><strong>-d</strong></a></strong></dt>
+
+<dd>
+<p>Print out BIO debugging information.</p>
+</dd>
+<dt><strong><a name="list" class="item"><strong>-list</strong></a></strong></dt>
+
+<dd>
+<p>Prints out a list of supported message digests.</p>
+</dd>
+<dt><strong><a name="hex" class="item"><strong>-hex</strong></a></strong></dt>
+
+<dd>
+<p>Digest is to be output as a hex dump. This is the default case for a &quot;normal&quot;
+digest as opposed to a digital signature.  See NOTES below for digital
+signatures using <strong>-hex</strong>.</p>
+</dd>
+<dt><strong><a name="binary" class="item"><strong>-binary</strong></a></strong></dt>
+
+<dd>
+<p>Output the digest or signature in binary form.</p>
+</dd>
+<dt><strong><a name="r" class="item"><strong>-r</strong></a></strong></dt>
+
+<dd>
+<p>Output the digest in the &quot;coreutils&quot; format, including newlines.
+Used by programs like <strong>sha1sum</strong>.</p>
+</dd>
+<dt><strong><a name="out_filename" class="item"><strong>-out filename</strong></a></strong></dt>
+
+<dd>
+<p>Filename to output to, or standard output by default.</p>
+</dd>
+<dt><strong><a name="sign_filename" class="item"><strong>-sign filename</strong></a></strong></dt>
+
+<dd>
+<p>Digitally sign the digest using the private key in &quot;filename&quot;. Note this option
+does not support Ed25519 or Ed448 private keys. Use the <strong>pkeyutl</strong> command
+instead for this.</p>
+</dd>
+<dt><strong><a name="keyform_arg" class="item"><strong>-keyform arg</strong></a></strong></dt>
+
+<dd>
+<p>Specifies the key format to sign digest with. The DER, PEM, P12,
+and ENGINE formats are supported.</p>
+</dd>
+<dt><strong><a name="sigopt_nm_v" class="item"><strong>-sigopt nm:v</strong></a></strong></dt>
+
+<dd>
+<p>Pass options to the signature algorithm during sign or verify operations.
+Names and values of these options are algorithm-specific.</p>
+</dd>
+<dt><strong><a name="passin_arg" class="item"><strong>-passin arg</strong></a></strong></dt>
+
+<dd>
+<p>The private key password source. For more information about the format of <strong>arg</strong>
+see the <strong>PASS PHRASE ARGUMENTS</strong> section in <em>openssl(1)</em>.</p>
+</dd>
+<dt><strong><a name="verify_filename" class="item"><strong>-verify filename</strong></a></strong></dt>
+
+<dd>
+<p>Verify the signature using the public key in &quot;filename&quot;.
+The output is either &quot;Verification OK&quot; or &quot;Verification Failure&quot;.</p>
+</dd>
+<dt><strong><a name="prverify_filename" class="item"><strong>-prverify filename</strong></a></strong></dt>
+
+<dd>
+<p>Verify the signature using the private key in &quot;filename&quot;.</p>
+</dd>
+<dt><strong><a name="signature_filename" class="item"><strong>-signature filename</strong></a></strong></dt>
+
+<dd>
+<p>The actual signature to verify.</p>
+</dd>
+<dt><strong><a name="hmac_key" class="item"><strong>-hmac key</strong></a></strong></dt>
+
+<dd>
+<p>Create a hashed MAC using &quot;key&quot;.</p>
+</dd>
+<dt><strong><a name="mac_alg" class="item"><strong>-mac alg</strong></a></strong></dt>
+
+<dd>
+<p>Create MAC (keyed Message Authentication Code). The most popular MAC
+algorithm is HMAC (hash-based MAC), but there are other MAC algorithms
+which are not based on hash, for instance <strong>gost-mac</strong> algorithm,
+supported by <strong>ccgost</strong> engine. MAC keys and other options should be set
+via <strong>-macopt</strong> parameter.</p>
+</dd>
+<dt><strong><a name="macopt_nm_v" class="item"><strong>-macopt nm:v</strong></a></strong></dt>
+
+<dd>
+<p>Passes options to MAC algorithm, specified by <strong>-mac</strong> key.
+Following options are supported by both by <strong>HMAC</strong> and <strong>gost-mac</strong>:</p>
+<dl>
+<dt><strong><a name="key_string" class="item"><strong>key:string</strong></a></strong></dt>
+
+<dd>
+<p>Specifies MAC key as alphanumeric string (use if key contain printable
+characters only). String length must conform to any restrictions of
+the MAC algorithm for example exactly 32 chars for gost-mac.</p>
+</dd>
+<dt><strong><a name="hexkey_string" class="item"><strong>hexkey:string</strong></a></strong></dt>
+
+<dd>
+<p>Specifies MAC key in hexadecimal form (two hex digits per byte).
+Key length must conform to any restrictions of the MAC algorithm
+for example exactly 32 chars for gost-mac.</p>
+</dd>
+</dl>
+</dd>
+<dt><strong><a name="rand_file" class="item"><strong>-rand file...</strong></a></strong></dt>
+
+<dd>
+<p>A file or files containing random data used to seed the random number
+generator.
+Multiple files can be specified separated by an OS-dependent character.
+The separator is <strong>;</strong> for MS-Windows, <strong>,</strong> for OpenVMS, and <strong>:</strong> for
+all others.</p>
+</dd>
+<dt><strong><a name="writerand_file" class="item">[<strong>-writerand file</strong>]</a></strong></dt>
+
+<dd>
+<p>Writes random data to the specified <em>file</em> upon exit.
+This can be used with a subsequent <strong>-rand</strong> flag.</p>
+</dd>
+<dt><strong><a name="fips_fingerprint" class="item"><strong>-fips-fingerprint</strong></a></strong></dt>
+
+<dd>
+<p>Compute HMAC using a specific key for certain OpenSSL-FIPS operations.</p>
+</dd>
+<dt><strong><a name="engine_id" class="item"><strong>-engine id</strong></a></strong></dt>
+
+<dd>
+<p>Use engine <strong>id</strong> for operations (including private key storage).
+This engine is not used as source for digest algorithms, unless it is
+also specified in the configuration file or <strong>-engine_impl</strong> is also
+specified.</p>
+</dd>
+<dt><strong><a name="engine_impl" class="item"><strong>-engine_impl</strong></a></strong></dt>
+
+<dd>
+<p>When used with the <strong>-engine</strong> option, it specifies to also use
+engine <strong>id</strong> for digest operations.</p>
+</dd>
+<dt><strong><a name="file" class="item"><strong>file...</strong></a></strong></dt>
+
+<dd>
+<p>File or files to digest. If no files are specified then standard input is
+used.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>To create a hex-encoded message digest of a file:
+ openssl dgst -md5 -hex file.txt</p>
+<p>To sign a file using SHA-256 with binary file output:
+ openssl dgst -sha256 -sign privatekey.pem -out signature.sign file.txt</p>
+<p>To verify a signature:
+ openssl dgst -sha256 -verify publickey.pem \
+ -signature signature.sign \
+ file.txt</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The digest mechanisms that are available will depend on the options
+used when building OpenSSL.
+The <strong>list digest-commands</strong> command can be used to list them.</p>
+<p>New or agile applications should use probably use SHA-256. Other digests,
+particularly SHA-1 and MD5, are still widely used for interoperating
+with existing formats and protocols.</p>
+<p>When signing a file, <strong>dgst</strong> will automatically determine the algorithm
+(RSA, ECC, etc) to use for signing based on the private key's ASN.1 info.
+When verifying signatures, it only handles the RSA, DSA, or ECDSA signature
+itself, not the related data to identify the signer and algorithm used in
+formats such as x.509, CMS, and S/MIME.</p>
+<p>A source of random numbers is required for certain signing algorithms, in
+particular ECDSA and DSA.</p>
+<p>The signing and verify options should only be used if a single file is
+being signed or verified.</p>
+<p>Hex signatures cannot be verified using <strong>openssl</strong>.  Instead, use &quot;xxd -r&quot;
+or similar program to transform the hex signature into a binary signature
+prior to verification.</p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The default digest was changed from MD5 to SHA256 in OpenSSL 1.1.0.
+The FIPS-related options were removed in OpenSSL 1.1.0.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

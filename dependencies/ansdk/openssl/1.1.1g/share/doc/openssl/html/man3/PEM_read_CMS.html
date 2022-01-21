@@ -1,0 +1,135 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>PEM_read_CMS</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>DECLARE_PEM_rw,
+PEM_read_CMS,
+PEM_read_bio_CMS,
+PEM_write_CMS,
+PEM_write_bio_CMS,
+PEM_write_DHxparams,
+PEM_write_bio_DHxparams,
+PEM_read_ECPKParameters,
+PEM_read_bio_ECPKParameters,
+PEM_write_ECPKParameters,
+PEM_write_bio_ECPKParameters,
+PEM_read_ECPrivateKey,
+PEM_write_ECPrivateKey,
+PEM_write_bio_ECPrivateKey,
+PEM_read_EC_PUBKEY,
+PEM_read_bio_EC_PUBKEY,
+PEM_write_EC_PUBKEY,
+PEM_write_bio_EC_PUBKEY,
+PEM_read_NETSCAPE_CERT_SEQUENCE,
+PEM_read_bio_NETSCAPE_CERT_SEQUENCE,
+PEM_write_NETSCAPE_CERT_SEQUENCE,
+PEM_write_bio_NETSCAPE_CERT_SEQUENCE,
+PEM_read_PKCS8,
+PEM_read_bio_PKCS8,
+PEM_write_PKCS8,
+PEM_write_bio_PKCS8,
+PEM_write_PKCS8_PRIV_KEY_INFO,
+PEM_read_bio_PKCS8_PRIV_KEY_INFO,
+PEM_read_PKCS8_PRIV_KEY_INFO,
+PEM_write_bio_PKCS8_PRIV_KEY_INFO,
+PEM_read_SSL_SESSION,
+PEM_read_bio_SSL_SESSION,
+PEM_write_SSL_SESSION,
+PEM_write_bio_SSL_SESSION
+- PEM object encoding routines</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/pem.h&gt;</pre>
+<pre>
+ DECLARE_PEM_rw(name, TYPE)</pre>
+<pre>
+ TYPE *PEM_read_TYPE(FILE *fp, TYPE **a, pem_password_cb *cb, void *u);
+ TYPE *PEM_read_bio_TYPE(BIO *bp, TYPE **a, pem_password_cb *cb, void *u);
+ int PEM_write_TYPE(FILE *fp, const TYPE *a);
+ int PEM_write_bio_TYPE(BIO *bp, const TYPE *a);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>In the description below, <em>TYPE</em> is used
+as a placeholder for any of the OpenSSL datatypes, such as <em>X509</em>.
+The macro <strong>DECLARE_PEM_rw</strong> expands to the set of declarations shown in
+the next four lines of the synopsis.</p>
+<p>These routines convert between local instances of ASN1 datatypes and
+the PEM encoding.  For more information on the templates, see
+<em>ASN1_ITEM(3)</em>.  For more information on the lower-level routines used
+by the functions here, see <em>PEM_read(3)</em>.</p>
+<p><code>PEM_read_TYPE()</code> reads a PEM-encoded object of <em>TYPE</em> from the file <strong>fp</strong>
+and returns it.  The <strong>cb</strong> and <strong>u</strong> parameters are as described in
+<em>pem_password_cb(3)</em>.</p>
+<p><code>PEM_read_bio_TYPE()</code> is similar to <code>PEM_read_TYPE()</code> but reads from the BIO <strong>bp</strong>.</p>
+<p><code>PEM_write_TYPE()</code> writes the PEM encoding of the object <strong>a</strong> to the file <strong>fp</strong>.</p>
+<p><code>PEM_write_bio_TYPE()</code> similarly writes to the BIO <strong>bp</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>These functions make no assumption regarding the pass phrase received from the
+password callback.
+It will simply be treated as a byte sequence.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>PEM_read_TYPE()</code> and <code>PEM_read_bio_TYPE()</code> return a pointer to an allocated
+object, which should be released by calling <code>TYPE_free()</code>, or NULL on error.</p>
+<p><code>PEM_write_TYPE()</code> and <code>PEM_write_bio_TYPE()</code> return the number of bytes written
+or zero on error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>PEM_read(3)</em>,
+<em>passphrase-encoding(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 1998-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

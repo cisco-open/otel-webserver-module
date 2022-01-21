@@ -1,0 +1,165 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>X509_LOOKUP_hash_dir</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<ul>
+
+		<li><a href="#file_method">File Method</a></li>
+		<li><a href="#hashed_directory_method">Hashed Directory Method</a></li>
+	</ul>
+
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>X509_LOOKUP_hash_dir, X509_LOOKUP_file,
+X509_load_cert_file,
+X509_load_crl_file,
+X509_load_cert_crl_file - Default OpenSSL certificate
+lookup methods</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/x509_vfy.h&gt;</pre>
+<pre>
+ X509_LOOKUP_METHOD *X509_LOOKUP_hash_dir(void);
+ X509_LOOKUP_METHOD *X509_LOOKUP_file(void);</pre>
+<pre>
+ int X509_load_cert_file(X509_LOOKUP *ctx, const char *file, int type);
+ int X509_load_crl_file(X509_LOOKUP *ctx, const char *file, int type);
+ int X509_load_cert_crl_file(X509_LOOKUP *ctx, const char *file, int type);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><strong>X509_LOOKUP_hash_dir</strong> and <strong>X509_LOOKUP_file</strong> are two certificate
+lookup methods to use with <strong>X509_STORE</strong>, provided by OpenSSL library.</p>
+<p>Users of the library typically do not need to create instances of these
+methods manually, they would be created automatically by
+<em>X509_STORE_load_locations(3)</em> or
+<em>SSL_CTX_load_verify_locations(3)</em>
+functions.</p>
+<p>Internally loading of certificates and CRLs is implemented via functions
+<strong>X509_load_cert_crl_file</strong>, <strong>X509_load_cert_file</strong> and
+<strong>X509_load_crl_file</strong>. These functions support parameter <em>type</em>, which
+can be one of constants <strong>FILETYPE_PEM</strong>, <strong>FILETYPE_ASN1</strong> and
+<strong>FILETYPE_DEFAULT</strong>. They load certificates and/or CRLs from specified
+file into memory cache of <strong>X509_STORE</strong> objects which given <strong>ctx</strong>
+parameter is associated with.</p>
+<p>Functions <strong>X509_load_cert_file</strong> and
+<strong>X509_load_crl_file</strong> can load both PEM and DER formats depending of
+type value. Because DER format cannot contain more than one certificate
+or CRL object (while PEM can contain several concatenated PEM objects)
+<strong>X509_load_cert_crl_file</strong> with <strong>FILETYPE_ASN1</strong> is equivalent to
+<strong>X509_load_cert_file</strong>.</p>
+<p>Constant <strong>FILETYPE_DEFAULT</strong> with NULL filename causes these functions
+to load default certificate store file (see
+<em>X509_STORE_set_default_paths(3)</em>.</p>
+<p>Functions return number of objects loaded from file or 0 in case of
+error.</p>
+<p>Both methods support adding several certificate locations into one
+<strong>X509_STORE</strong>.</p>
+<p>This page documents certificate store formats used by these methods and
+caching policy.</p>
+<p>
+</p>
+<h2><a name="file_method">File Method</a></h2>
+<p>The <strong>X509_LOOKUP_file</strong> method loads all the certificates or CRLs
+present in a file into memory at the time the file is added as a
+lookup source.</p>
+<p>File format is ASCII text which contains concatenated PEM certificates
+and CRLs.</p>
+<p>This method should be used by applications which work with a small
+set of CAs.</p>
+<p>
+</p>
+<h2><a name="hashed_directory_method">Hashed Directory Method</a></h2>
+<p><strong>X509_LOOKUP_hash_dir</strong> is a more advanced method, which loads
+certificates and CRLs on demand, and caches them in memory once
+they are loaded. As of OpenSSL 1.0.0, it also checks for newer CRLs
+upon each lookup, so that newer CRLs are as soon as they appear in
+the directory.</p>
+<p>The directory should contain one certificate or CRL per file in PEM format,
+with a file name of the form <em>hash</em>.<em>N</em> for a certificate, or
+<em>hash</em>.<strong>r</strong><em>N</em> for a CRL.
+The <em>hash</em> is the value returned by the <em>X509_NAME_hash(3)</em> function applied
+to the subject name for certificates or issuer name for CRLs.
+The hash can also be obtained via the <strong>-hash</strong> option of the <em>x509(1)</em> or
+<em>crl(1)</em> commands.</p>
+<p>The .<em>N</em> or .<strong>r</strong><em>N</em> suffix is a sequence number that starts at zero, and is
+incremented consecutively for each certificate or CRL with the same <em>hash</em>
+value.
+Gaps in the sequence numbers are not supported, it is assumed that there are no
+more objects with the same hash beyond the first missing number in the
+sequence.</p>
+<p>Sequence numbers make it possible for the directory to contain multiple
+certificates with same subject name hash value.
+For example, it is possible to have in the store several certificates with same
+subject or several CRLs with same issuer (and, for example, different validity
+period).</p>
+<p>When checking for new CRLs once one CRL for given hash value is
+loaded, hash_dir lookup method checks only for certificates with
+sequence number greater than that of the already cached CRL.</p>
+<p>Note that the hash algorithm used for subject name hashing changed in OpenSSL
+1.0.0, and all certificate stores have to be rehashed when moving from OpenSSL
+0.9.8 to 1.0.0.</p>
+<p>OpenSSL includes a <em>rehash(1)</em> utility which creates symlinks with correct
+hashed names for all files with .pem suffix in a given directory.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>X509_LOOKUP_hash_dir() and X509_LOOKUP_file() always return a valid
+<strong>X509_LOOKUP_METHOD</strong> structure.</p>
+<p>X509_load_cert_file(), X509_load_crl_file() and X509_load_cert_crl_file() return
+the number of loaded objects or 0 on error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>PEM_read_PrivateKey(3)</em>,
+<em>X509_STORE_load_locations(3)</em>,
+<em>X509_store_add_lookup(3)</em>,
+<em>SSL_CTX_load_verify_locations(3)</em>,
+<em>X509_LOOKUP_meth_new(3)</em>,</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

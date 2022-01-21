@@ -1,0 +1,105 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_set_quiet_shutdown</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_set_quiet_shutdown, SSL_CTX_get_quiet_shutdown, SSL_set_quiet_shutdown, SSL_get_quiet_shutdown - manipulate shutdown behaviour</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ void SSL_CTX_set_quiet_shutdown(SSL_CTX *ctx, int mode);
+ int SSL_CTX_get_quiet_shutdown(const SSL_CTX *ctx);</pre>
+<pre>
+ void SSL_set_quiet_shutdown(SSL *ssl, int mode);
+ int SSL_get_quiet_shutdown(const SSL *ssl);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_set_quiet_shutdown()</code> sets the &quot;quiet shutdown&quot; flag for <strong>ctx</strong> to be
+<strong>mode</strong>. SSL objects created from <strong>ctx</strong> inherit the <strong>mode</strong> valid at the time
+<em>SSL_new(3)</em> is called. <strong>mode</strong> may be 0 or 1.</p>
+<p><code>SSL_CTX_get_quiet_shutdown()</code> returns the &quot;quiet shutdown&quot; setting of <strong>ctx</strong>.</p>
+<p><code>SSL_set_quiet_shutdown()</code> sets the &quot;quiet shutdown&quot; flag for <strong>ssl</strong> to be
+<strong>mode</strong>. The setting stays valid until <strong>ssl</strong> is removed with
+<em>SSL_free(3)</em> or <code>SSL_set_quiet_shutdown()</code> is called again.
+It is not changed when <em>SSL_clear(3)</em> is called.
+<strong>mode</strong> may be 0 or 1.</p>
+<p><code>SSL_get_quiet_shutdown()</code> returns the &quot;quiet shutdown&quot; setting of <strong>ssl</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>Normally when a SSL connection is finished, the parties must send out
+close_notify alert messages using <em>SSL_shutdown(3)</em>
+for a clean shutdown.</p>
+<p>When setting the &quot;quiet shutdown&quot; flag to 1, <em>SSL_shutdown(3)</em>
+will set the internal flags to SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN.
+(<em>SSL_shutdown(3)</em> then behaves like
+<em>SSL_set_shutdown(3)</em> called with
+SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN.)
+The session is thus considered to be shutdown, but no close_notify alert
+is sent to the peer. This behaviour violates the TLS standard.</p>
+<p>The default is normal shutdown behaviour as described by the TLS standard.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_CTX_set_quiet_shutdown()</code> and <code>SSL_set_quiet_shutdown()</code> do not return
+diagnostic information.</p>
+<p><code>SSL_CTX_get_quiet_shutdown()</code> and SSL_get_quiet_shutdown return the current
+setting.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>, <em>SSL_shutdown(3)</em>,
+<em>SSL_set_shutdown(3)</em>, <em>SSL_new(3)</em>,
+<em>SSL_clear(3)</em>, <em>SSL_free(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2001-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

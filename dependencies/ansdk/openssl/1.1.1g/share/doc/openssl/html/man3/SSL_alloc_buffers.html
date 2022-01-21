@@ -1,0 +1,100 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_alloc_buffers</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_free_buffers, SSL_alloc_buffers - manage SSL structure buffers</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_free_buffers(SSL *ssl);
+ int SSL_alloc_buffers(SSL *ssl);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_free_buffers()</code> frees the read and write buffers of the given <strong>ssl</strong>.
+<code>SSL_alloc_buffers()</code> allocates the read and write buffers of the given <strong>ssl</strong>.</p>
+<p>The <strong>SSL_MODE_RELEASE_BUFFERS</strong> mode releases read or write buffers whenever
+the buffers have been drained. These functions allow applications to manually
+control when buffers are freed and allocated.</p>
+<p>After freeing the buffers, the buffers are automatically reallocated upon a
+new read or write. The <code>SSL_alloc_buffers()</code> does not need to be called, but
+can be used to make sure the buffers are pre-allocated. This can be used to
+avoid allocation during data processing or with <code>CRYPTO_set_mem_functions()</code>
+to control where and how buffers are allocated.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>The following return values can occur:</p>
+<ol>
+<li><strong><a name="failure" class="item">(Failure)</a></strong>
+
+<p>The <code>SSL_free_buffers()</code> function returns 0 when there is pending data to be
+read or written. The <code>SSL_alloc_buffers()</code> function returns 0 when there is
+an allocation failure.</p>
+</li>
+<li><strong><a name="success" class="item">(Success)</a></strong>
+
+<p>The <code>SSL_free_buffers()</code> function returns 1 if the buffers have been freed. This
+value is also returned if the buffers had been freed before calling
+<code>SSL_free_buffers()</code>.
+The <code>SSL_alloc_buffers()</code> function returns 1 if the buffers have been allocated.
+This value is also returned if the buffers had been allocated before calling
+<code>SSL_alloc_buffers()</code>.</p>
+</li>
+</ol>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>SSL_free(3)</em>, <em>SSL_clear(3)</em>,
+<em>SSL_new(3)</em>, <em>SSL_CTX_set_mode(3)</em>,
+<em>CRYPTO_set_mem_functions</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2017 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,146 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>DSA_get0_pqg</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>DSA_get0_pqg, DSA_set0_pqg, DSA_get0_key, DSA_set0_key,
+DSA_get0_p, DSA_get0_q, DSA_get0_g,
+DSA_get0_pub_key, DSA_get0_priv_key,
+DSA_clear_flags, DSA_test_flags, DSA_set_flags,
+DSA_get0_engine - Routines for getting and
+setting data in a DSA object</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/dsa.h&gt;</pre>
+<pre>
+ void DSA_get0_pqg(const DSA *d,
+                   const BIGNUM **p, const BIGNUM **q, const BIGNUM **g);
+ int DSA_set0_pqg(DSA *d, BIGNUM *p, BIGNUM *q, BIGNUM *g);
+ void DSA_get0_key(const DSA *d,
+                   const BIGNUM **pub_key, const BIGNUM **priv_key);
+ int DSA_set0_key(DSA *d, BIGNUM *pub_key, BIGNUM *priv_key);
+ const BIGNUM *DSA_get0_p(const DSA *d);
+ const BIGNUM *DSA_get0_q(const DSA *d);
+ const BIGNUM *DSA_get0_g(const DSA *d);
+ const BIGNUM *DSA_get0_pub_key(const DSA *d);
+ const BIGNUM *DSA_get0_priv_key(const DSA *d);
+ void DSA_clear_flags(DSA *d, int flags);
+ int DSA_test_flags(const DSA *d, int flags);
+ void DSA_set_flags(DSA *d, int flags);
+ ENGINE *DSA_get0_engine(DSA *d);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>A DSA object contains the parameters <strong>p</strong>, <strong>q</strong> and <strong>g</strong>. It also contains a
+public key (<strong>pub_key</strong>) and (optionally) a private key (<strong>priv_key</strong>).</p>
+<p>The <strong>p</strong>, <strong>q</strong> and <strong>g</strong> parameters can be obtained by calling DSA_get0_pqg().
+If the parameters have not yet been set then <strong>*p</strong>, <strong>*q</strong> and <strong>*g</strong> will be set
+to NULL. Otherwise they are set to pointers to their respective values. These
+point directly to the internal representations of the values and therefore
+should not be freed directly.</p>
+<p>The <strong>p</strong>, <strong>q</strong> and <strong>g</strong> values can be set by calling DSA_set0_pqg() and passing
+the new values for <strong>p</strong>, <strong>q</strong> and <strong>g</strong> as parameters to the function. Calling
+this function transfers the memory management of the values to the DSA object,
+and therefore the values that have been passed in should not be freed directly
+after this function has been called.</p>
+<p>To get the public and private key values use the DSA_get0_key() function. A
+pointer to the public key will be stored in <strong>*pub_key</strong>, and a pointer to the
+private key will be stored in <strong>*priv_key</strong>. Either may be NULL if they have not
+been set yet, although if the private key has been set then the public key must
+be. The values point to the internal representation of the public key and
+private key values. This memory should not be freed directly.</p>
+<p>The public and private key values can be set using DSA_set0_key(). The public
+key must be non-NULL the first time this function is called on a given DSA
+object. The private key may be NULL.  On subsequent calls, either may be NULL,
+which means the corresponding DSA field is left untouched. As for DSA_set0_pqg()
+this function transfers the memory management of the key values to the DSA
+object, and therefore they should not be freed directly after this function has
+been called.</p>
+<p>Any of the values <strong>p</strong>, <strong>q</strong>, <strong>g</strong>, <strong>priv_key</strong>, and <strong>pub_key</strong> can also be
+retrieved separately by the corresponding function DSA_get0_p(), DSA_get0_q(),
+DSA_get0_g(), DSA_get0_priv_key(), and DSA_get0_pub_key(), respectively.</p>
+<p><code>DSA_set_flags()</code> sets the flags in the <strong>flags</strong> parameter on the DSA object.
+Multiple flags can be passed in one go (bitwise ORed together). Any flags that
+are already set are left set. <code>DSA_test_flags()</code> tests to see whether the flags
+passed in the <strong>flags</strong> parameter are currently set in the DSA object. Multiple
+flags can be tested in one go. All flags that are currently set are returned, or
+zero if none of the flags are set. <code>DSA_clear_flags()</code> clears the specified flags
+within the DSA object.</p>
+<p>DSA_get0_engine() returns a handle to the ENGINE that has been set for this DSA
+object, or NULL if no such ENGINE has been set.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>Values retrieved with DSA_get0_key() are owned by the DSA object used
+in the call and may therefore <em>not</em> be passed to DSA_set0_key().  If
+needed, duplicate the received value using <code>BN_dup()</code> and pass the
+duplicate.  The same applies to DSA_get0_pqg() and DSA_set0_pqg().</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>DSA_set0_pqg() and DSA_set0_key() return 1 on success or 0 on failure.</p>
+<p><code>DSA_test_flags()</code> returns the current state of the flags in the DSA object.</p>
+<p>DSA_get0_engine() returns the ENGINE set for the DSA object or NULL if no ENGINE
+has been set.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>DSA_new(3)</em>, <em>DSA_new(3)</em>, <em>DSA_generate_parameters(3)</em>, <em>DSA_generate_key(3)</em>,
+<em>DSA_dup_DH(3)</em>, <em>DSA_do_sign(3)</em>, <em>DSA_set_method(3)</em>, <em>DSA_SIG_new(3)</em>,
+<em>DSA_sign(3)</em>, <em>DSA_size(3)</em>, <em>DSA_meth_new(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The functions described here were added in OpenSSL 1.1.0.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2016-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

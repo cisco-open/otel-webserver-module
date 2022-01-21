@@ -1,0 +1,162 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>X509_get0_signature</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>X509_get0_signature, X509_get_signature_nid, X509_get0_tbs_sigalg,
+X509_REQ_get0_signature, X509_REQ_get_signature_nid, X509_CRL_get0_signature,
+X509_CRL_get_signature_nid, X509_get_signature_info, X509_SIG_INFO_get,
+X509_SIG_INFO_set - signature information</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/x509.h&gt;</pre>
+<pre>
+ void X509_get0_signature(const ASN1_BIT_STRING **psig,
+                          const X509_ALGOR **palg,
+                          const X509 *x);
+ int X509_get_signature_nid(const X509 *x);
+ const X509_ALGOR *X509_get0_tbs_sigalg(const X509 *x);</pre>
+<pre>
+ void X509_REQ_get0_signature(const X509_REQ *crl,
+                              const ASN1_BIT_STRING **psig,
+                              const X509_ALGOR **palg);
+ int X509_REQ_get_signature_nid(const X509_REQ *crl);</pre>
+<pre>
+ void X509_CRL_get0_signature(const X509_CRL *crl,
+                              const ASN1_BIT_STRING **psig,
+                              const X509_ALGOR **palg);
+ int X509_CRL_get_signature_nid(const X509_CRL *crl);</pre>
+<pre>
+ int X509_get_signature_info(X509 *x, int *mdnid, int *pknid, int *secbits,
+                             uint32_t *flags);</pre>
+<pre>
+ int X509_SIG_INFO_get(const X509_SIG_INFO *siginf, int *mdnid, int *pknid,
+                      int *secbits, uint32_t *flags);
+ void X509_SIG_INFO_set(X509_SIG_INFO *siginf, int mdnid, int pknid,
+                        int secbits, uint32_t flags);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>X509_get0_signature() sets <strong>*psig</strong> to the signature of <strong>x</strong> and <strong>*palg</strong>
+to the signature algorithm of <strong>x</strong>. The values returned are internal
+pointers which <strong>MUST NOT</strong> be freed up after the call.</p>
+<p>X509_get0_tbs_sigalg() returns the signature algorithm in the signed
+portion of <strong>x</strong>.</p>
+<p>X509_get_signature_nid() returns the NID corresponding to the signature
+algorithm of <strong>x</strong>.</p>
+<p>X509_REQ_get0_signature(), X509_REQ_get_signature_nid()
+X509_CRL_get0_signature() and X509_CRL_get_signature_nid() perform the
+same function for certificate requests and CRLs.</p>
+<p>X509_get_signature_info() retrieves information about the signature of
+certificate <strong>x</strong>. The NID of the signing digest is written to <strong>*mdnid</strong>,
+the public key algorithm to <strong>*pknid</strong>, the effective security bits to
+<strong>*secbits</strong> and flag details to <strong>*flags</strong>. Any of the parameters can
+be set to <strong>NULL</strong> if the information is not required.</p>
+<p>X509_SIG_INFO_get() and X509_SIG_INFO_set() get and set information
+about a signature in an <strong>X509_SIG_INFO</strong> structure. They are only
+used by implementations of algorithms which need to set custom
+signature information: most applications will never need to call
+them.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>These functions provide lower level access to signatures in certificates
+where an application wishes to analyse or generate a signature in a form
+where X509_sign() et al is not appropriate (for example a non standard
+or unsupported format).</p>
+<p>The security bits returned by X509_get_signature_info() refers to information
+available from the certificate signature (such as the signing digest). In some
+cases the actual security of the signature is less because the signing
+key is less secure: for example a certificate signed using SHA-512 and a
+1024 bit RSA key.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>X509_get_signature_nid(), X509_REQ_get_signature_nid() and
+X509_CRL_get_signature_nid() return a NID.</p>
+<p>X509_get0_signature(), X509_REQ_get0_signature() and
+X509_CRL_get0_signature() do not return values.</p>
+<p>X509_get_signature_info() returns 1 if the signature information
+returned is valid or 0 if the information is not available (e.g.
+unknown algorithms or malformed parameters).</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>d2i_X509(3)</em>,
+<em>ERR_get_error(3)</em>,
+<em>X509_CRL_get0_by_serial(3)</em>,
+<em>X509_get_ext_d2i(3)</em>,
+<em>X509_get_extension_flags(3)</em>,
+<em>X509_get_pubkey(3)</em>,
+<em>X509_get_subject_name(3)</em>,
+<em>X509_get_version(3)</em>,
+<em>X509_NAME_add_entry_by_txt(3)</em>,
+<em>X509_NAME_ENTRY_get_object(3)</em>,
+<em>X509_NAME_get_index_by_NID(3)</em>,
+<em>X509_NAME_print_ex(3)</em>,
+<em>X509_new(3)</em>,
+<em>X509_sign(3)</em>,
+<em>X509V3_get_d2i(3)</em>,
+<em>X509_verify_cert(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The
+X509_get0_signature() and X509_get_signature_nid() functions were
+added in OpenSSL 1.0.2.</p>
+<p>The
+X509_REQ_get0_signature(), X509_REQ_get_signature_nid(),
+X509_CRL_get0_signature() and X509_CRL_get_signature_nid() were
+added in OpenSSL 1.1.0.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

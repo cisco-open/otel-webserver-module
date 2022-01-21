@@ -1,0 +1,223 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_set_tlsext_ticket_key_cb</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_set_tlsext_ticket_key_cb - set a callback for session ticket processing</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/tls1.h&gt;</pre>
+<pre>
+ long SSL_CTX_set_tlsext_ticket_key_cb(SSL_CTX sslctx,
+     int (*cb)(SSL *s, unsigned char key_name[16],
+               unsigned char iv[EVP_MAX_IV_LENGTH],
+               EVP_CIPHER_CTX *ctx, HMAC_CTX *hctx, int enc));</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_set_tlsext_ticket_key_cb()</code> sets a callback function <em>cb</em> for handling
+session tickets for the ssl context <em>sslctx</em>. Session tickets, defined in
+<a href="http://www.ietf.org/rfc/rfc5077.txt" class="rfc">RFC5077</a> provide an enhanced session resumption capability where the server
+implementation is not required to maintain per session state. It only applies
+to TLS and there is no SSLv3 implementation.</p>
+<p>The callback function <em>cb</em> will be called for every client instigated TLS
+session when session ticket extension is presented in the TLS hello
+message. It is the responsibility of this function to create or retrieve the
+cryptographic parameters and to maintain their state.</p>
+<p>The OpenSSL library uses your callback function to help implement a common TLS
+ticket construction state according to <a href="http://www.ietf.org/rfc/rfc5077.txt" class="rfc">RFC5077</a> Section 4 such that per session
+state is unnecessary and a small set of cryptographic variables needs to be
+maintained by the callback function implementation.</p>
+<p>In order to reuse a session, a TLS client must send the a session ticket
+extension to the server. The client can only send exactly one session ticket.
+The server, through the callback function, either agrees to reuse the session
+ticket information or it starts a full TLS handshake to create a new session
+ticket.</p>
+<p>Before the callback function is started <em>ctx</em> and <em>hctx</em> have been
+initialised with <em>EVP_CIPHER_CTX_reset(3)</em> and <em>HMAC_CTX_reset(3)</em> respectively.</p>
+<p>For new sessions tickets, when the client doesn't present a session ticket, or
+an attempted retrieval of the ticket failed, or a renew option was indicated,
+the callback function will be called with <em>enc</em> equal to 1. The OpenSSL
+library expects that the function will set an arbitrary <em>name</em>, initialize
+<em>iv</em>, and set the cipher context <em>ctx</em> and the hash context <em>hctx</em>.</p>
+<p>The <em>name</em> is 16 characters long and is used as a key identifier.</p>
+<p>The <em>iv</em> length is the length of the IV of the corresponding cipher. The
+maximum IV length is <strong>EVP_MAX_IV_LENGTH</strong> bytes defined in <strong>evp.h</strong>.</p>
+<p>The initialization vector <em>iv</em> should be a random value. The cipher context
+<em>ctx</em> should use the initialisation vector <em>iv</em>. The cipher context can be
+set using <em>EVP_EncryptInit_ex(3)</em>. The hmac context can be set using
+<em>HMAC_Init_ex(3)</em>.</p>
+<p>When the client presents a session ticket, the callback function with be called
+with <em>enc</em> set to 0 indicating that the <em>cb</em> function should retrieve a set
+of parameters. In this case <em>name</em> and <em>iv</em> have already been parsed out of
+the session ticket. The OpenSSL library expects that the <em>name</em> will be used
+to retrieve a cryptographic parameters and that the cryptographic context
+<em>ctx</em> will be set with the retrieved parameters and the initialization vector
+<em>iv</em>. using a function like <em>EVP_DecryptInit_ex(3)</em>. The <em>hctx</em> needs to be
+set using <em>HMAC_Init_ex(3)</em>.</p>
+<p>If the <em>name</em> is still valid but a renewal of the ticket is required the
+callback function should return 2. The library will call the callback again
+with an argument of enc equal to 1 to set the new ticket.</p>
+<p>The return value of the <em>cb</em> function is used by OpenSSL to determine what
+further processing will occur. The following return values have meaning:</p>
+<ol>
+<li>
+<p>This indicates that the <em>ctx</em> and <em>hctx</em> have been set and the session can
+continue on those parameters. Additionally it indicates that the session
+ticket is in a renewal period and should be replaced. The OpenSSL library will
+call <em>cb</em> again with an enc argument of 1 to set the new ticket (see <a href="http://www.ietf.org/rfc/rfc5077.txt" class="rfc">RFC5077</a>
+3.3 paragraph 2).</p>
+</li>
+<li>
+<p>This indicates that the <em>ctx</em> and <em>hctx</em> have been set and the session can
+continue on those parameters.</p>
+</li>
+<li>
+<p>This indicates that it was not possible to set/retrieve a session ticket and
+the SSL/TLS session will continue by negotiating a set of cryptographic
+parameters or using the alternate SSL/TLS resumption mechanism, session ids.</p>
+<p>If called with enc equal to 0 the library will call the <em>cb</em> again to get
+a new set of parameters.</p>
+</dd>
+<dt><strong><a name="less_than_0" class="item">less than 0</a></strong></dt>
+
+<dd>
+<p>This indicates an error.</p>
+</li>
+</ol>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>Session resumption shortcuts the TLS so that the client certificate
+negotiation don't occur. It makes up for this by storing client certificate
+an all other negotiated state information encrypted within the ticket. In a
+resumed session the applications will have all this state information available
+exactly as if a full negotiation had occurred.</p>
+<p>If an attacker can obtain the key used to encrypt a session ticket, they can
+obtain the master secret for any ticket using that key and decrypt any traffic
+using that session: even if the cipher suite supports forward secrecy. As
+a result applications may wish to use multiple keys and avoid using long term
+keys stored in files.</p>
+<p>Applications can use longer keys to maintain a consistent level of security.
+For example if a cipher suite uses 256 bit ciphers but only a 128 bit ticket key
+the overall security is only 128 bits because breaking the ticket key will
+enable an attacker to obtain the session keys.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>returns 0 to indicate the callback function was set.</p>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>Reference Implementation:</p>
+<pre>
+ SSL_CTX_set_tlsext_ticket_key_cb(SSL, ssl_tlsext_ticket_key_cb);
+ ...</pre>
+<pre>
+ static int ssl_tlsext_ticket_key_cb(SSL *s, unsigned char key_name[16],
+                                     unsigned char *iv, EVP_CIPHER_CTX *ctx,
+                                     HMAC_CTX *hctx, int enc)
+ {
+     if (enc) { /* create new session */
+         if (RAND_bytes(iv, EVP_MAX_IV_LENGTH) &lt;= 0)
+             return -1; /* insufficient random */</pre>
+<pre>
+         key = currentkey(); /* something that you need to implement */
+         if (key == NULL) {
+             /* current key doesn't exist or isn't valid */
+             key = createkey(); /*
+                                 * Something that you need to implement.
+                                 * createkey needs to initialise a name,
+                                 * an aes_key, a hmac_key and optionally
+                                 * an expire time.
+                                 */
+             if (key == NULL) /* key couldn't be created */
+                 return 0;
+         }
+         memcpy(key_name, key-&gt;name, 16);</pre>
+<pre>
+         EVP_EncryptInit_ex(&amp;ctx, EVP_aes_128_cbc(), NULL, key-&gt;aes_key, iv);
+         HMAC_Init_ex(&amp;hctx, key-&gt;hmac_key, 16, EVP_sha256(), NULL);</pre>
+<pre>
+         return 1;</pre>
+<pre>
+     } else { /* retrieve session */
+         key = findkey(name);</pre>
+<pre>
+         if (key == NULL || key-&gt;expire &lt; now())
+             return 0;</pre>
+<pre>
+         HMAC_Init_ex(&amp;hctx, key-&gt;hmac_key, 16, EVP_sha256(), NULL);
+         EVP_DecryptInit_ex(&amp;ctx, EVP_aes_128_cbc(), NULL, key-&gt;aes_key, iv);</pre>
+<pre>
+         if (key-&gt;expire &lt; now() - RENEW_TIME) {
+             /*
+              * return 2 - This session will get a new ticket even though the
+              * current one is still valid.
+              */
+             return 2;
+         }
+         return 1;
+     }
+ }</pre>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>, <em>SSL_set_session(3)</em>,
+<em>SSL_session_reused(3)</em>,
+<em>SSL_CTX_add_session(3)</em>,
+<em>SSL_CTX_sess_number(3)</em>,
+<em>SSL_CTX_sess_set_get_cb(3)</em>,
+<em>SSL_CTX_set_session_id_context(3)</em>,</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2014-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

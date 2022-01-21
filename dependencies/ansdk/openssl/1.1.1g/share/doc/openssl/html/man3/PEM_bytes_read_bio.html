@@ -1,0 +1,122 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>PEM_bytes_read_bio</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>PEM_bytes_read_bio, PEM_bytes_read_bio_secmem - read a PEM-encoded data structure from a BIO</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/pem.h&gt;</pre>
+<pre>
+ int PEM_bytes_read_bio(unsigned char **pdata, long *plen, char **pnm,
+                        const char *name, BIO *bp, pem_password_cb *cb,
+                        void *u);
+ int PEM_bytes_read_bio_secmem(unsigned char **pdata, long *plen, char **pnm,
+                               const char *name, BIO *bp, pem_password_cb *cb,
+                               void *u);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>PEM_bytes_read_bio()</code> reads PEM-formatted (IETF <a href="http://www.ietf.org/rfc/rfc1421.txt" class="rfc">RFC 1421</a> and IETF <a href="http://www.ietf.org/rfc/rfc7468.txt" class="rfc">RFC 7468</a>)
+data from the BIO
+<em>bp</em> for the data type given in <em>name</em> (RSA PRIVATE KEY, CERTIFICATE,
+etc.).  If multiple PEM-encoded data structures are present in the same
+stream, <code>PEM_bytes_read_bio()</code> will skip non-matching data types and
+continue reading.  Non-PEM data present in the stream may cause an
+error.</p>
+<p>The PEM header may indicate that the following data is encrypted; if so,
+the data will be decrypted, waiting on user input to supply a passphrase
+if needed.  The password callback <em>cb</em> and rock <em>u</em> are used to obtain
+the decryption passphrase, if applicable.</p>
+<p>Some data types have compatibility aliases, such as a file containing
+X509 CERTIFICATE matching a request for the deprecated type CERTIFICATE.
+The actual type indicated by the file is returned in <em>*pnm</em> if <em>pnm</em> is
+non-NULL.  The caller must free the storage pointed to by <em>*pnm</em>.</p>
+<p>The returned data is the DER-encoded form of the requested type, in
+<em>*pdata</em> with length <em>*plen</em>.  The caller must free the storage pointed
+to by <em>*pdata</em>.</p>
+<p><code>PEM_bytes_read_bio_secmem()</code> is similar to <code>PEM_bytes_read_bio()</code>, but uses
+memory from the secure heap for its temporary buffers and the storage
+returned in <em>*pdata</em> and <em>*pnm</em>.  Accordingly, the caller must use
+<code>OPENSSL_secure_free()</code> to free that storage.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p><code>PEM_bytes_read_bio_secmem()</code> only enforces that the secure heap is used for
+storage allocated within the PEM processing stack.  The BIO stack from
+which input is read may also use temporary buffers, which are not necessarily
+allocated from the secure heap.  In cases where it is desirable to ensure
+that the contents of the PEM file only appears in memory from the secure heap,
+care is needed in generating the BIO passed as <em>bp</em>.  In particular, the
+use of <code>BIO_s_file()</code> indicates the use of the operating system stdio
+functionality, which includes buffering as a feature; <code>BIO_s_fd()</code> is likely
+to be more appropriate in such cases.</p>
+<p>These functions make no assumption regarding the pass phrase received from the
+password callback.
+It will simply be treated as a byte sequence.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>PEM_bytes_read_bio()</code> and <code>PEM_bytes_read_bio_secmem()</code> return 1 for success or
+0 for failure.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>PEM_read_bio_ex(3)</em>,
+<em>passphrase-encoding(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p><code>PEM_bytes_read_bio_secmem()</code> was introduced in OpenSSL 1.1.1</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2017-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

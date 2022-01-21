@@ -1,0 +1,93 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_set_fd</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_set_fd, SSL_set_rfd, SSL_set_wfd - connect the SSL object with a file descriptor</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_set_fd(SSL *ssl, int fd);
+ int SSL_set_rfd(SSL *ssl, int fd);
+ int SSL_set_wfd(SSL *ssl, int fd);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_set_fd()</code> sets the file descriptor <strong>fd</strong> as the input/output facility
+for the TLS/SSL (encrypted) side of <strong>ssl</strong>. <strong>fd</strong> will typically be the
+socket file descriptor of a network connection.</p>
+<p>When performing the operation, a <strong>socket BIO</strong> is automatically created to
+interface between the <strong>ssl</strong> and <strong>fd</strong>. The BIO and hence the SSL engine
+inherit the behaviour of <strong>fd</strong>. If <strong>fd</strong> is non-blocking, the <strong>ssl</strong> will
+also have non-blocking behaviour.</p>
+<p>If there was already a BIO connected to <strong>ssl</strong>, <code>BIO_free()</code> will be called
+(for both the reading and writing side, if different).</p>
+<p><code>SSL_set_rfd()</code> and <code>SSL_set_wfd()</code> perform the respective action, but only
+for the read channel or the write channel, which can be set independently.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>The following return values can occur:</p>
+<ol>
+<li>
+<p>The operation failed. Check the error stack to find out why.</p>
+</li>
+<li>
+<p>The operation succeeded.</p>
+</li>
+</ol>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>SSL_get_fd(3)</em>, <em>SSL_set_bio(3)</em>,
+<em>SSL_connect(3)</em>, <em>SSL_accept(3)</em>,
+<em>SSL_shutdown(3)</em>, <em>ssl(7)</em> , <em>bio(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

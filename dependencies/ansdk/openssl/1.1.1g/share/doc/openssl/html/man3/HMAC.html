@@ -1,0 +1,176 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>HMAC</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#conforming_to">CONFORMING TO</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>HMAC,
+HMAC_CTX_new,
+HMAC_CTX_reset,
+HMAC_CTX_free,
+HMAC_Init,
+HMAC_Init_ex,
+HMAC_Update,
+HMAC_Final,
+HMAC_CTX_copy,
+HMAC_CTX_set_flags,
+HMAC_CTX_get_md,
+HMAC_size
+- HMAC message authentication code</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/hmac.h&gt;</pre>
+<pre>
+ unsigned char *HMAC(const EVP_MD *evp_md, const void *key,
+                     int key_len, const unsigned char *d, int n,
+                     unsigned char *md, unsigned int *md_len);</pre>
+<pre>
+ HMAC_CTX *HMAC_CTX_new(void);
+ int HMAC_CTX_reset(HMAC_CTX *ctx);</pre>
+<pre>
+ int HMAC_Init_ex(HMAC_CTX *ctx, const void *key, int key_len,
+                  const EVP_MD *md, ENGINE *impl);
+ int HMAC_Update(HMAC_CTX *ctx, const unsigned char *data, int len);
+ int HMAC_Final(HMAC_CTX *ctx, unsigned char *md, unsigned int *len);</pre>
+<pre>
+ void HMAC_CTX_free(HMAC_CTX *ctx);</pre>
+<pre>
+ int HMAC_CTX_copy(HMAC_CTX *dctx, HMAC_CTX *sctx);
+ void HMAC_CTX_set_flags(HMAC_CTX *ctx, unsigned long flags);
+ const EVP_MD *HMAC_CTX_get_md(const HMAC_CTX *ctx);</pre>
+<pre>
+ size_t HMAC_size(const HMAC_CTX *e);</pre>
+<p>Deprecated:</p>
+<pre>
+ #if OPENSSL_API_COMPAT &lt; 0x10100000L
+ int HMAC_Init(HMAC_CTX *ctx, const void *key, int key_len,
+               const EVP_MD *md);
+ #endif</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>HMAC is a MAC (message authentication code), i.e. a keyed hash
+function used for message authentication, which is based on a hash
+function.</p>
+<p><code>HMAC()</code> computes the message authentication code of the <strong>n</strong> bytes at
+<strong>d</strong> using the hash function <strong>evp_md</strong> and the key <strong>key</strong> which is
+<strong>key_len</strong> bytes long.</p>
+<p>It places the result in <strong>md</strong> (which must have space for the output of
+the hash function, which is no more than <strong>EVP_MAX_MD_SIZE</strong> bytes).
+If <strong>md</strong> is NULL, the digest is placed in a static array.  The size of
+the output is placed in <strong>md_len</strong>, unless it is <strong>NULL</strong>. Note: passing a NULL
+value for <strong>md</strong>  to use the static array is not thread safe.</p>
+<p><strong>evp_md</strong> is a message digest such as EVP_sha1(), EVP_ripemd160() etc. HMAC does
+not support variable output length digests such as EVP_shake128() and
+EVP_shake256().</p>
+<p><code>HMAC_CTX_new()</code> creates a new HMAC_CTX in heap memory.</p>
+<p><code>HMAC_CTX_reset()</code> zeroes an existing <strong>HMAC_CTX</strong> and associated
+resources, making it suitable for new computations as if it was newly
+created with <code>HMAC_CTX_new()</code>.</p>
+<p><code>HMAC_CTX_free()</code> erases the key and other data from the <strong>HMAC_CTX</strong>,
+releases any associated resources and finally frees the <strong>HMAC_CTX</strong>
+itself.</p>
+<p>The following functions may be used if the message is not completely
+stored in memory:</p>
+<p><code>HMAC_Init_ex()</code> initializes or reuses a <strong>HMAC_CTX</strong> structure to use the hash
+function <strong>evp_md</strong> and key <strong>key</strong>. If both are NULL, or if <strong>key</strong> is NULL
+and <strong>evp_md</strong> is the same as the previous call, then the
+existing key is
+reused. <strong>ctx</strong> must have been created with <code>HMAC_CTX_new()</code> before the first use
+of an <strong>HMAC_CTX</strong> in this function.</p>
+<p>If <code>HMAC_Init_ex()</code> is called with <strong>key</strong> NULL and <strong>evp_md</strong> is not the
+same as the previous digest used by <strong>ctx</strong> then an error is returned
+because reuse of an existing key with a different digest is not supported.</p>
+<p><code>HMAC_Init()</code> initializes a <strong>HMAC_CTX</strong> structure to use the hash
+function <strong>evp_md</strong> and the key <strong>key</strong> which is <strong>key_len</strong> bytes
+long.</p>
+<p><code>HMAC_Update()</code> can be called repeatedly with chunks of the message to
+be authenticated (<strong>len</strong> bytes at <strong>data</strong>).</p>
+<p><code>HMAC_Final()</code> places the message authentication code in <strong>md</strong>, which
+must have space for the hash function output.</p>
+<p><code>HMAC_CTX_copy()</code> copies all of the internal state from <strong>sctx</strong> into <strong>dctx</strong>.</p>
+<p><code>HMAC_CTX_set_flags()</code> applies the specified flags to the internal EVP_MD_CTXs.
+These flags have the same meaning as for <em>EVP_MD_CTX_set_flags(3)</em>.</p>
+<p><code>HMAC_CTX_get_md()</code> returns the EVP_MD that has previously been set for the
+supplied HMAC_CTX.</p>
+<p><code>HMAC_size()</code> returns the length in bytes of the underlying hash function output.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>HMAC()</code> returns a pointer to the message authentication code or NULL if
+an error occurred.</p>
+<p><code>HMAC_CTX_new()</code> returns a pointer to a new <strong>HMAC_CTX</strong> on success or
+<strong>NULL</strong> if an error occurred.</p>
+<p><code>HMAC_CTX_reset()</code>, <code>HMAC_Init_ex()</code>, <code>HMAC_Update()</code>, <code>HMAC_Final()</code> and
+<code>HMAC_CTX_copy()</code> return 1 for success or 0 if an error occurred.</p>
+<p><code>HMAC_CTX_get_md()</code> return the EVP_MD previously set for the supplied HMAC_CTX or
+NULL if no EVP_MD has been set.</p>
+<p><code>HMAC_size()</code> returns the length in bytes of the underlying hash function output
+or zero on error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="conforming_to">CONFORMING TO</a></h1>
+<p>RFC 2104</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>SHA1(3)</em>, <em>evp(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p><code>HMAC_CTX_init()</code> was replaced with <code>HMAC_CTX_reset()</code> in OpenSSL 1.1.0.</p>
+<p><code>HMAC_CTX_cleanup()</code> existed in OpenSSL before version 1.1.0.</p>
+<p><code>HMAC_CTX_new()</code>, <code>HMAC_CTX_free()</code> and <code>HMAC_CTX_get_md()</code> are new in OpenSSL 1.1.0.</p>
+<p><code>HMAC_Init_ex()</code>, <code>HMAC_Update()</code> and <code>HMAC_Final()</code> did not return values in
+OpenSSL before version 1.0.0.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

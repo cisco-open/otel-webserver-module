@@ -1,0 +1,146 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>X509_STORE_add_cert</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>X509_STORE,
+X509_STORE_add_cert, X509_STORE_add_crl, X509_STORE_set_depth,
+X509_STORE_set_flags, X509_STORE_set_purpose, X509_STORE_set_trust,
+X509_STORE_add_lookup,
+X509_STORE_load_locations,
+X509_STORE_set_default_paths
+- X509_STORE manipulation</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/x509_vfy.h&gt;</pre>
+<pre>
+ typedef x509_store_st X509_STORE;</pre>
+<pre>
+ int X509_STORE_add_cert(X509_STORE *ctx, X509 *x);
+ int X509_STORE_add_crl(X509_STORE *ctx, X509_CRL *x);
+ int X509_STORE_set_depth(X509_STORE *store, int depth);
+ int X509_STORE_set_flags(X509_STORE *ctx, unsigned long flags);
+ int X509_STORE_set_purpose(X509_STORE *ctx, int purpose);
+ int X509_STORE_set_trust(X509_STORE *ctx, int trust);</pre>
+<pre>
+ X509_LOOKUP *X509_STORE_add_lookup(X509_STORE *store,
+                                    X509_LOOKUP_METHOD *meth);</pre>
+<pre>
+ int X509_STORE_load_locations(X509_STORE *ctx,
+                               const char *file, const char *dir);
+ int X509_STORE_set_default_paths(X509_STORE *ctx);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The <strong>X509_STORE</strong> structure is intended to be a consolidated mechanism for
+holding information about X.509 certificates and CRLs, and constructing
+and validating chains of certificates terminating in trusted roots.
+It admits multiple lookup mechanisms and efficient scaling performance
+with large numbers of certificates, and a great deal of flexibility in
+how validation and policy checks are performed.</p>
+<p><em>X509_STORE_new(3)</em> creates an empty <strong>X509_STORE</strong> structure, which contains
+no information about trusted certificates or where such certificates
+are located on disk, and is generally not usable.  Normally, trusted
+certificates will be added to the <strong>X509_STORE</strong> to prepare it for use,
+via mechanisms such as X509_STORE_add_lookup() and X509_LOOKUP_file(), or
+PEM_read_bio_X509_AUX() and X509_STORE_add_cert().  CRLs can also be added,
+and many behaviors configured as desired.</p>
+<p>Once the <strong>X509_STORE</strong> is suitably configured, X509_STORE_CTX_new() is
+used to instantiate a single-use <strong>X509_STORE_CTX</strong> for each chain-building
+and verification operation.  That process includes providing the end-entity
+certificate to be verified and an additional set of untrusted certificates
+that may be used in chain-building.  As such, it is expected that the
+certificates included in the <strong>X509_STORE</strong> are certificates that represent
+trusted entities such as root certificate authorities (CAs).
+OpenSSL represents these trusted certificates internally as <strong>X509</strong> objects
+with an associated <strong>X509_CERT_AUX</strong>, as are produced by
+PEM_read_bio_X509_AUX() and similar routines that refer to X509_AUX.
+The public interfaces that operate on such trusted certificates still
+operate on pointers to <strong>X509</strong> objects, though.</p>
+<p>X509_STORE_add_cert() and X509_STORE_add_crl() add the respective object
+to the <strong>X509_STORE</strong>'s local storage.  Untrusted objects should not be
+added in this way.  The added object's reference count is incremented by one,
+hence the caller retains ownership of the object and needs to free it when it
+is no longer needed.</p>
+<p>X509_STORE_set_depth(), X509_STORE_set_flags(), X509_STORE_set_purpose(),
+X509_STORE_set_trust(), and X509_STORE_set1_param() set the default values
+for the corresponding values used in certificate chain validation.  Their
+behavior is documented in the corresponding <strong>X509_VERIFY_PARAM</strong> manual
+pages, e.g., <em>X509_VERIFY_PARAM_set_depth(3)</em>.</p>
+<p>X509_STORE_add_lookup() finds or creates a <em>X509_LOOKUP(3)</em> with the
+<em>X509_LOOKUP_METHOD(3)</em> <em>meth</em> and adds it to the <strong>X509_STORE</strong>
+<em>store</em>.  This also associates the <strong>X509_STORE</strong> with the lookup, so
+<strong>X509_LOOKUP</strong> functions can look up objects in that store.</p>
+<p>X509_STORE_load_locations() loads trusted certificate(s) into an
+<strong>X509_STORE</strong> from a given file and/or directory path.  It is permitted
+to specify just a file, just a directory, or both paths.  The certificates
+in the directory must be in hashed form, as documented in
+<em>X509_LOOKUP_hash_dir(3)</em>.</p>
+<p>X509_STORE_set_default_paths() is somewhat misnamed, in that it does not
+set what default paths should be used for loading certificates.  Instead,
+it loads certificates into the <strong>X509_STORE</strong> from the hardcoded default
+paths.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>X509_STORE_add_cert(), X509_STORE_add_crl(), X509_STORE_set_depth(),
+X509_STORE_set_flags(), X509_STORE_set_purpose(),
+X509_STORE_set_trust(), X509_STORE_load_locations(), and
+X509_STORE_set_default_paths() return 1 on success or 0 on failure.</p>
+<p>X509_STORE_add_lookup() returns the found or created
+<em>X509_LOOKUP(3)</em>, or NULL on error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>X509_LOOKUP_hash_dir(3)</em>.
+<em>X509_VERIFY_PARAM_set_depth(3)</em>.
+<em>X509_STORE_new(3)</em>,
+<em>X509_STORE_get0_param(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2017-2020 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

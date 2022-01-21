@@ -1,0 +1,118 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>i2d_re_X509_tbs</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>d2i_X509_AUX, i2d_X509_AUX,
+i2d_re_X509_tbs, i2d_re_X509_CRL_tbs, i2d_re_X509_REQ_tbs
+- X509 encode and decode functions</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/x509.h&gt;</pre>
+<pre>
+ X509 *d2i_X509_AUX(X509 **px, const unsigned char **in, long len);
+ int i2d_X509_AUX(X509 *x, unsigned char **out);
+ int i2d_re_X509_tbs(X509 *x, unsigned char **out);
+ int i2d_re_X509_CRL_tbs(X509_CRL *crl, unsigned char **pp);
+ int i2d_re_X509_REQ_tbs(X509_REQ *req, unsigned char **pp);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The X509 encode and decode routines encode and parse an
+<strong>X509</strong> structure, which represents an X509 certificate.</p>
+<p>d2i_X509_AUX() is similar to <em>d2i_X509(3)</em> but the input is expected to
+consist of an X509 certificate followed by auxiliary trust information.
+This is used by the PEM routines to read &quot;TRUSTED CERTIFICATE&quot; objects.
+This function should not be called on untrusted input.</p>
+<p>i2d_X509_AUX() is similar to <em>i2d_X509(3)</em>, but the encoded output
+contains both the certificate and any auxiliary trust information.
+This is used by the PEM routines to write &quot;TRUSTED CERTIFICATE&quot; objects.
+Note that this is a non-standard OpenSSL-specific data format.</p>
+<p>i2d_re_X509_tbs() is similar to <em>i2d_X509(3)</em> except it encodes only
+the TBSCertificate portion of the certificate.  i2d_re_X509_CRL_tbs()
+and i2d_re_X509_REQ_tbs() are analogous for CRL and certificate request,
+respectively.  The &quot;re&quot; in <strong>i2d_re_X509_tbs</strong> stands for &quot;re-encode&quot;,
+and ensures that a fresh encoding is generated in case the object has been
+modified after creation (see the BUGS section).</p>
+<p>The encoding of the TBSCertificate portion of a certificate is cached
+in the <strong>X509</strong> structure internally to improve encoding performance
+and to ensure certificate signatures are verified correctly in some
+certificates with broken (non-DER) encodings.</p>
+<p>If, after modification, the <strong>X509</strong> object is re-signed with X509_sign(),
+the encoding is automatically renewed. Otherwise, the encoding of the
+TBSCertificate portion of the <strong>X509</strong> can be manually renewed by calling
+i2d_re_X509_tbs().</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>d2i_X509_AUX() returns a valid <strong>X509</strong> structure or NULL if an error occurred.</p>
+<p>i2d_X509_AUX() returns the length of encoded data or -1 on error.</p>
+<p>i2d_re_X509_tbs(), i2d_re_X509_CRL_tbs() and i2d_re_X509_REQ_tbs() return the
+length of encoded data or 0 on error.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ERR_get_error(3)</em>
+<em>X509_CRL_get0_by_serial(3)</em>,
+<em>X509_get0_signature(3)</em>,
+<em>X509_get_ext_d2i(3)</em>,
+<em>X509_get_extension_flags(3)</em>,
+<em>X509_get_pubkey(3)</em>,
+<em>X509_get_subject_name(3)</em>,
+<em>X509_get_version(3)</em>,
+<em>X509_NAME_add_entry_by_txt(3)</em>,
+<em>X509_NAME_ENTRY_get_object(3)</em>,
+<em>X509_NAME_get_index_by_NID(3)</em>,
+<em>X509_NAME_print_ex(3)</em>,
+<em>X509_new(3)</em>,
+<em>X509_sign(3)</em>,
+<em>X509V3_get_d2i(3)</em>,
+<em>X509_verify_cert(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2002-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

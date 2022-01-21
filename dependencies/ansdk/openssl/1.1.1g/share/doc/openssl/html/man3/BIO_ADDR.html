@@ -1,0 +1,153 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>BIO_ADDR</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#raw_addresses">RAW ADDRESSES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>BIO_ADDR, BIO_ADDR_new, BIO_ADDR_clear, BIO_ADDR_free, BIO_ADDR_rawmake,
+BIO_ADDR_family, BIO_ADDR_rawaddress, BIO_ADDR_rawport,
+BIO_ADDR_hostname_string, BIO_ADDR_service_string,
+BIO_ADDR_path_string - BIO_ADDR routines</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;sys/types.h&gt;
+ #include &lt;openssl/bio.h&gt;</pre>
+<pre>
+ typedef union bio_addr_st BIO_ADDR;</pre>
+<pre>
+ BIO_ADDR *BIO_ADDR_new(void);
+ void BIO_ADDR_free(BIO_ADDR *);
+ void BIO_ADDR_clear(BIO_ADDR *ap);
+ int BIO_ADDR_rawmake(BIO_ADDR *ap, int family,
+                      const void *where, size_t wherelen, unsigned short port);
+ int BIO_ADDR_family(const BIO_ADDR *ap);
+ int BIO_ADDR_rawaddress(const BIO_ADDR *ap, void *p, size_t *l);
+ unsigned short BIO_ADDR_rawport(const BIO_ADDR *ap);
+ char *BIO_ADDR_hostname_string(const BIO_ADDR *ap, int numeric);
+ char *BIO_ADDR_service_string(const BIO_ADDR *ap, int numeric);
+ char *BIO_ADDR_path_string(const BIO_ADDR *ap);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The <strong>BIO_ADDR</strong> type is a wrapper around all types of socket
+addresses that OpenSSL deals with, currently transparently
+supporting AF_INET, AF_INET6 and AF_UNIX according to what's
+available on the platform at hand.</p>
+<p><code>BIO_ADDR_new()</code> creates a new unfilled <strong>BIO_ADDR</strong>, to be used
+with routines that will fill it with information, such as
+<code>BIO_accept_ex()</code>.</p>
+<p><code>BIO_ADDR_free()</code> frees a <strong>BIO_ADDR</strong> created with <code>BIO_ADDR_new()</code>.</p>
+<p><code>BIO_ADDR_clear()</code> clears any data held within the provided <strong>BIO_ADDR</strong> and sets
+it back to an uninitialised state.</p>
+<p><code>BIO_ADDR_rawmake()</code> takes a protocol <strong>family</strong>, an byte array of
+size <strong>wherelen</strong> with an address in network byte order pointed at
+by <strong>where</strong> and a port number in network byte order in <strong>port</strong> (except
+for the <strong>AF_UNIX</strong> protocol family, where <strong>port</strong> is meaningless and
+therefore ignored) and populates the given <strong>BIO_ADDR</strong> with them.
+In case this creates a <strong>AF_UNIX</strong> <strong>BIO_ADDR</strong>, <strong>wherelen</strong> is expected
+to be the length of the path string (not including the terminating
+NUL, such as the result of a call to strlen()).
+<em>Read on about the addresses in <a href="#raw_addresses">RAW ADDRESSES</a> below</em>.</p>
+<p><code>BIO_ADDR_family()</code> returns the protocol family of the given
+<strong>BIO_ADDR</strong>.  The possible non-error results are one of the
+constants AF_INET, AF_INET6 and AF_UNIX. It will also return AF_UNSPEC if the
+BIO_ADDR has not been initialised.</p>
+<p><code>BIO_ADDR_rawaddress()</code> will write the raw address of the given
+<strong>BIO_ADDR</strong> in the area pointed at by <strong>p</strong> if <strong>p</strong> is non-NULL,
+and will set <strong>*l</strong> to be the amount of bytes the raw address
+takes up if <strong>l</strong> is non-NULL.
+A technique to only find out the size of the address is a call
+with <strong>p</strong> set to <strong>NULL</strong>.  The raw address will be in network byte
+order, most significant byte first.
+In case this is a <strong>AF_UNIX</strong> <strong>BIO_ADDR</strong>, <strong>l</strong> gets the length of the
+path string (not including the terminating NUL, such as the result of
+a call to strlen()).
+<em>Read on about the addresses in <a href="#raw_addresses">RAW ADDRESSES</a> below</em>.</p>
+<p><code>BIO_ADDR_rawport()</code> returns the raw port of the given <strong>BIO_ADDR</strong>.
+The raw port will be in network byte order.</p>
+<p><code>BIO_ADDR_hostname_string()</code> returns a character string with the
+hostname of the given <strong>BIO_ADDR</strong>.  If <strong>numeric</strong> is 1, the string
+will contain the numerical form of the address.  This only works for
+<strong>BIO_ADDR</strong> of the protocol families AF_INET and AF_INET6.  The
+returned string has been allocated on the heap and must be freed
+with <code>OPENSSL_free()</code>.</p>
+<p><code>BIO_ADDR_service_string()</code> returns a character string with the
+service name of the port of the given <strong>BIO_ADDR</strong>.  If <strong>numeric</strong>
+is 1, the string will contain the port number.  This only works
+for <strong>BIO_ADDR</strong> of the protocol families AF_INET and AF_INET6.  The
+returned string has been allocated on the heap and must be freed
+with <code>OPENSSL_free()</code>.</p>
+<p><code>BIO_ADDR_path_string()</code> returns a character string with the path
+of the given <strong>BIO_ADDR</strong>.  This only works for <strong>BIO_ADDR</strong> of the
+protocol family AF_UNIX.  The returned string has been allocated
+on the heap and must be freed with <code>OPENSSL_free()</code>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="raw_addresses">RAW ADDRESSES</a></h1>
+<p>Both <code>BIO_ADDR_rawmake()</code> and <code>BIO_ADDR_rawaddress()</code> take a pointer to a
+network byte order address of a specific site.  Internally, those are
+treated as a pointer to <strong>struct in_addr</strong> (for <strong>AF_INET</strong>), <strong>struct
+in6_addr</strong> (for <strong>AF_INET6</strong>) or <strong>char *</strong> (for <strong>AF_UNIX</strong>), all
+depending on the protocol family the address is for.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>The string producing functions <code>BIO_ADDR_hostname_string()</code>,
+<code>BIO_ADDR_service_string()</code> and <code>BIO_ADDR_path_string()</code> will
+return <strong>NULL</strong> on error and leave an error indication on the
+OpenSSL error stack.</p>
+<p>All other functions described here return 0 or <strong>NULL</strong> when the
+information they should return isn't available.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>BIO_connect(3)</em>, <em>BIO_s_connect(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

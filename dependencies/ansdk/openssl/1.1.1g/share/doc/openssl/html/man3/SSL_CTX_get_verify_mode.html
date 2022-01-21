@@ -1,0 +1,91 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_get_verify_mode</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_get_verify_mode, SSL_get_verify_mode, SSL_CTX_get_verify_depth, SSL_get_verify_depth, SSL_get_verify_callback, SSL_CTX_get_verify_callback - get currently set verification parameters</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_CTX_get_verify_mode(const SSL_CTX *ctx);
+ int SSL_get_verify_mode(const SSL *ssl);
+ int SSL_CTX_get_verify_depth(const SSL_CTX *ctx);
+ int SSL_get_verify_depth(const SSL *ssl);
+ int (*SSL_CTX_get_verify_callback(const SSL_CTX *ctx))(int, X509_STORE_CTX *);
+ int (*SSL_get_verify_callback(const SSL *ssl))(int, X509_STORE_CTX *);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_get_verify_mode()</code> returns the verification mode currently set in
+<strong>ctx</strong>.</p>
+<p><code>SSL_get_verify_mode()</code> returns the verification mode currently set in
+<strong>ssl</strong>.</p>
+<p><code>SSL_CTX_get_verify_depth()</code> returns the verification depth limit currently set
+in <strong>ctx</strong>. If no limit has been explicitly set, -1 is returned and the
+default value will be used.</p>
+<p><code>SSL_get_verify_depth()</code> returns the verification depth limit currently set
+in <strong>ssl</strong>. If no limit has been explicitly set, -1 is returned and the
+default value will be used.</p>
+<p><code>SSL_CTX_get_verify_callback()</code> returns a function pointer to the verification
+callback currently set in <strong>ctx</strong>. If no callback was explicitly set, the
+NULL pointer is returned and the default callback will be used.</p>
+<p><code>SSL_get_verify_callback()</code> returns a function pointer to the verification
+callback currently set in <strong>ssl</strong>. If no callback was explicitly set, the
+NULL pointer is returned and the default callback will be used.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>See DESCRIPTION</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>, <em>SSL_CTX_set_verify(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

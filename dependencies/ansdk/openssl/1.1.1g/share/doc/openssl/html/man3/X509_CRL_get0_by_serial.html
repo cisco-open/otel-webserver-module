@@ -1,0 +1,142 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>X509_CRL_get0_by_serial</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>X509_CRL_get0_by_serial, X509_CRL_get0_by_cert, X509_CRL_get_REVOKED,
+X509_REVOKED_get0_serialNumber, X509_REVOKED_get0_revocationDate,
+X509_REVOKED_set_serialNumber, X509_REVOKED_set_revocationDate,
+X509_CRL_add0_revoked, X509_CRL_sort - CRL revoked entry utility
+functions</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/x509.h&gt;</pre>
+<pre>
+ int X509_CRL_get0_by_serial(X509_CRL *crl,
+                             X509_REVOKED **ret, ASN1_INTEGER *serial);
+ int X509_CRL_get0_by_cert(X509_CRL *crl, X509_REVOKED **ret, X509 *x);</pre>
+<pre>
+ STACK_OF(X509_REVOKED) *X509_CRL_get_REVOKED(X509_CRL *crl);</pre>
+<pre>
+ const ASN1_INTEGER *X509_REVOKED_get0_serialNumber(const X509_REVOKED *r);
+ const ASN1_TIME *X509_REVOKED_get0_revocationDate(const X509_REVOKED *r);</pre>
+<pre>
+ int X509_REVOKED_set_serialNumber(X509_REVOKED *r, ASN1_INTEGER *serial);
+ int X509_REVOKED_set_revocationDate(X509_REVOKED *r, ASN1_TIME *tm);</pre>
+<pre>
+ int X509_CRL_add0_revoked(X509_CRL *crl, X509_REVOKED *rev);</pre>
+<pre>
+ int X509_CRL_sort(X509_CRL *crl);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>X509_CRL_get0_by_serial() attempts to find a revoked entry in <strong>crl</strong> for
+serial number <strong>serial</strong>. If it is successful it sets <strong>*ret</strong> to the internal
+pointer of the matching entry, as a result <strong>*ret</strong> must not be freed up
+after the call.</p>
+<p>X509_CRL_get0_by_cert() is similar to X509_get0_by_serial() except it
+looks for a revoked entry using the serial number of certificate <strong>x</strong>.</p>
+<p>X509_CRL_get_REVOKED() returns an internal pointer to a stack of all
+revoked entries for <strong>crl</strong>.</p>
+<p>X509_REVOKED_get0_serialNumber() returns an internal pointer to the
+serial number of <strong>r</strong>.</p>
+<p>X509_REVOKED_get0_revocationDate() returns an internal pointer to the
+revocation date of <strong>r</strong>.</p>
+<p>X509_REVOKED_set_serialNumber() sets the serial number of <strong>r</strong> to <strong>serial</strong>.
+The supplied <strong>serial</strong> pointer is not used internally so it should be
+freed up after use.</p>
+<p>X509_REVOKED_set_revocationDate() sets the revocation date of <strong>r</strong> to
+<strong>tm</strong>. The supplied <strong>tm</strong> pointer is not used internally so it should be
+freed up after use.</p>
+<p>X509_CRL_add0_revoked() appends revoked entry <strong>rev</strong> to CRL <strong>crl</strong>. The
+pointer <strong>rev</strong> is used internally so it must not be freed up after the call:
+it is freed when the parent CRL is freed.</p>
+<p>X509_CRL_sort() sorts the revoked entries of <strong>crl</strong> into ascending serial
+number order.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>Applications can determine the number of revoked entries returned by
+X509_CRL_get_revoked() using sk_X509_REVOKED_num() and examine each one
+in turn using sk_X509_REVOKED_value().</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>X509_CRL_get0_by_serial() and X509_CRL_get0_by_cert() return 0 for failure,
+1 on success except if the revoked entry has the reason <code>removeFromCRL</code> (8),
+in which case 2 is returned.</p>
+<p>X509_REVOKED_set_serialNumber(), X509_REVOKED_set_revocationDate(),
+X509_CRL_add0_revoked() and X509_CRL_sort() return 1 for success and 0 for
+failure.</p>
+<p>X509_REVOKED_get0_serialNumber() returns an <strong>ASN1_INTEGER</strong> pointer.</p>
+<p>X509_REVOKED_get0_revocationDate() returns an <strong>ASN1_TIME</strong> value.</p>
+<p>X509_CRL_get_REVOKED() returns a STACK of revoked entries.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>d2i_X509(3)</em>,
+<em>ERR_get_error(3)</em>,
+<em>X509_get0_signature(3)</em>,
+<em>X509_get_ext_d2i(3)</em>,
+<em>X509_get_extension_flags(3)</em>,
+<em>X509_get_pubkey(3)</em>,
+<em>X509_get_subject_name(3)</em>,
+<em>X509_get_version(3)</em>,
+<em>X509_NAME_add_entry_by_txt(3)</em>,
+<em>X509_NAME_ENTRY_get_object(3)</em>,
+<em>X509_NAME_get_index_by_NID(3)</em>,
+<em>X509_NAME_print_ex(3)</em>,
+<em>X509_new(3)</em>,
+<em>X509_sign(3)</em>,
+<em>X509V3_get_d2i(3)</em>,
+<em>X509_verify_cert(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

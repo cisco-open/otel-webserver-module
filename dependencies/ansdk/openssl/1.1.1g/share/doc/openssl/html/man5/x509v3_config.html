@@ -1,0 +1,528 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>x509v3_config</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#standard_extensions">STANDARD EXTENSIONS</a></li>
+	<ul>
+
+		<li><a href="#basic_constraints_">Basic Constraints.</a></li>
+		<li><a href="#key_usage_">Key Usage.</a></li>
+		<li><a href="#extended_key_usage_">Extended Key Usage.</a></li>
+		<li><a href="#subject_key_identifier_">Subject Key Identifier.</a></li>
+		<li><a href="#authority_key_identifier_">Authority Key Identifier.</a></li>
+		<li><a href="#subject_alternative_name_">Subject Alternative Name.</a></li>
+		<li><a href="#issuer_alternative_name_">Issuer Alternative Name.</a></li>
+		<li><a href="#authority_info_access_">Authority Info Access.</a></li>
+		<li><a href="#crl_distribution_points">CRL distribution points</a></li>
+		<li><a href="#issuing_distribution_point">Issuing Distribution Point</a></li>
+		<li><a href="#certificate_policies_">Certificate Policies.</a></li>
+		<li><a href="#policy_constraints">Policy Constraints</a></li>
+		<li><a href="#inhibit_any_policy">Inhibit Any Policy</a></li>
+		<li><a href="#name_constraints">Name Constraints</a></li>
+		<li><a href="#ocsp_no_check">OCSP No Check</a></li>
+		<li><a href="#tls_feature__aka_must_staple_">TLS Feature (aka Must Staple)</a></li>
+	</ul>
+
+	<li><a href="#deprecated_extensions">DEPRECATED EXTENSIONS</a></li>
+	<ul>
+
+		<li><a href="#netscape_string_extensions_">Netscape String extensions.</a></li>
+		<li><a href="#netscape_certificate_type">Netscape Certificate Type</a></li>
+	</ul>
+
+	<li><a href="#arbitrary_extensions">ARBITRARY EXTENSIONS</a></li>
+	<li><a href="#warnings">WARNINGS</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>x509v3_config - X509 V3 certificate extension configuration format</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Several of the OpenSSL utilities can add extensions to a certificate or
+certificate request based on the contents of a configuration file.</p>
+<p>Typically the application will contain an option to point to an extension
+section. Each line of the extension section takes the form:</p>
+<pre>
+ extension_name=[critical,] extension_options</pre>
+<p>If <strong>critical</strong> is present then the extension will be critical.</p>
+<p>The format of <strong>extension_options</strong> depends on the value of <strong>extension_name</strong>.</p>
+<p>There are four main types of extension: <em>string</em> extensions, <em>multi-valued</em>
+extensions, <em>raw</em> and <em>arbitrary</em> extensions.</p>
+<p>String extensions simply have a string which contains either the value itself
+or how it is obtained.</p>
+<p>For example:</p>
+<pre>
+ nsComment=&quot;This is a Comment&quot;</pre>
+<p>Multi-valued extensions have a short form and a long form. The short form
+is a list of names and values:</p>
+<pre>
+ basicConstraints=critical,CA:true,pathlen:1</pre>
+<p>The long form allows the values to be placed in a separate section:</p>
+<pre>
+ basicConstraints=critical,@bs_section</pre>
+<pre>
+ [bs_section]</pre>
+<pre>
+ CA=true
+ pathlen=1</pre>
+<p>Both forms are equivalent.</p>
+<p>The syntax of raw extensions is governed by the extension code: it can
+for example contain data in multiple sections. The correct syntax to
+use is defined by the extension code itself: check out the certificate
+policies extension for an example.</p>
+<p>If an extension type is unsupported then the <em>arbitrary</em> extension syntax
+must be used, see the <a href="#arbitrary_extensions">ARBITRARY EXTENSIONS</a> section for more details.</p>
+<p>
+</p>
+<hr />
+<h1><a name="standard_extensions">STANDARD EXTENSIONS</a></h1>
+<p>The following sections describe each supported extension in detail.</p>
+<p>
+</p>
+<h2><a name="basic_constraints_">Basic Constraints.</a></h2>
+<p>This is a multi valued extension which indicates whether a certificate is
+a CA certificate. The first (mandatory) name is <strong>CA</strong> followed by <strong>TRUE</strong> or
+<strong>FALSE</strong>. If <strong>CA</strong> is <strong>TRUE</strong> then an optional <strong>pathlen</strong> name followed by an
+non-negative value can be included.</p>
+<p>For example:</p>
+<pre>
+ basicConstraints=CA:TRUE</pre>
+<pre>
+ basicConstraints=CA:FALSE</pre>
+<pre>
+ basicConstraints=critical,CA:TRUE, pathlen:0</pre>
+<p>A CA certificate <strong>must</strong> include the basicConstraints value with the CA field
+set to TRUE. An end user certificate must either set CA to FALSE or exclude the
+extension entirely. Some software may require the inclusion of basicConstraints
+with CA set to FALSE for end entity certificates.</p>
+<p>The pathlen parameter indicates the maximum number of CAs that can appear
+below this one in a chain. So if you have a CA with a pathlen of zero it can
+only be used to sign end user certificates and not further CAs.</p>
+<p>
+</p>
+<h2><a name="key_usage_">Key Usage.</a></h2>
+<p>Key usage is a multi valued extension consisting of a list of names of the
+permitted key usages.</p>
+<p>The supported names are: digitalSignature, nonRepudiation, keyEncipherment,
+dataEncipherment, keyAgreement, keyCertSign, cRLSign, encipherOnly
+and decipherOnly.</p>
+<p>Examples:</p>
+<pre>
+ keyUsage=digitalSignature, nonRepudiation</pre>
+<pre>
+ keyUsage=critical, keyCertSign</pre>
+<p>
+</p>
+<h2><a name="extended_key_usage_">Extended Key Usage.</a></h2>
+<p>This extensions consists of a list of usages indicating purposes for which
+the certificate public key can be used for,</p>
+<p>These can either be object short names or the dotted numerical form of OIDs.
+While any OID can be used only certain values make sense. In particular the
+following PKIX, NS and MS values are meaningful:</p>
+<pre>
+ Value                  Meaning
+ -----                  -------
+ serverAuth             SSL/TLS Web Server Authentication.
+ clientAuth             SSL/TLS Web Client Authentication.
+ codeSigning            Code signing.
+ emailProtection        E-mail Protection (S/MIME).
+ timeStamping           Trusted Timestamping
+ OCSPSigning            OCSP Signing
+ ipsecIKE               ipsec Internet Key Exchange
+ msCodeInd              Microsoft Individual Code Signing (authenticode)
+ msCodeCom              Microsoft Commercial Code Signing (authenticode)
+ msCTLSign              Microsoft Trust List Signing
+ msEFS                  Microsoft Encrypted File System</pre>
+<p>Examples:</p>
+<pre>
+ extendedKeyUsage=critical,codeSigning,1.2.3.4
+ extendedKeyUsage=serverAuth,clientAuth</pre>
+<p>
+</p>
+<h2><a name="subject_key_identifier_">Subject Key Identifier.</a></h2>
+<p>This is really a string extension and can take two possible values. Either
+the word <strong>hash</strong> which will automatically follow the guidelines in <a href="http://www.ietf.org/rfc/rfc3280.txt" class="rfc">RFC3280</a>
+or a hex string giving the extension value to include. The use of the hex
+string is strongly discouraged.</p>
+<p>Example:</p>
+<pre>
+ subjectKeyIdentifier=hash</pre>
+<p>
+</p>
+<h2><a name="authority_key_identifier_">Authority Key Identifier.</a></h2>
+<p>The authority key identifier extension permits two options. keyid and issuer:
+both can take the optional value &quot;always&quot;.</p>
+<p>If the keyid option is present an attempt is made to copy the subject key
+identifier from the parent certificate. If the value &quot;always&quot; is present
+then an error is returned if the option fails.</p>
+<p>The issuer option copies the issuer and serial number from the issuer
+certificate. This will only be done if the keyid option fails or
+is not included unless the &quot;always&quot; flag will always include the value.</p>
+<p>Example:</p>
+<pre>
+ authorityKeyIdentifier=keyid,issuer</pre>
+<p>
+</p>
+<h2><a name="subject_alternative_name_">Subject Alternative Name.</a></h2>
+<p>The subject alternative name extension allows various literal values to be
+included in the configuration file. These include <strong>email</strong> (an email address)
+<strong>URI</strong> a uniform resource indicator, <strong>DNS</strong> (a DNS domain name), <strong>RID</strong> (a
+registered ID: OBJECT IDENTIFIER), <strong>IP</strong> (an IP address), <strong>dirName</strong>
+(a distinguished name) and otherName.</p>
+<p>The email option include a special 'copy' value. This will automatically
+include any email addresses contained in the certificate subject name in
+the extension.</p>
+<p>The IP address used in the <strong>IP</strong> options can be in either IPv4 or IPv6 format.</p>
+<p>The value of <strong>dirName</strong> should point to a section containing the distinguished
+name to use as a set of name value pairs. Multi values AVAs can be formed by
+prefacing the name with a <strong>+</strong> character.</p>
+<p>otherName can include arbitrary data associated with an OID: the value
+should be the OID followed by a semicolon and the content in standard
+<em>ASN1_generate_nconf(3)</em> format.</p>
+<p>Examples:</p>
+<pre>
+ subjectAltName=email:copy,email:my@other.address,URI:<a href="http://my.url.here/">http://my.url.here/</a>
+ subjectAltName=IP:192.168.7.1
+ subjectAltName=IP:13::17
+ subjectAltName=email:my@other.address,RID:1.2.3.4
+ subjectAltName=otherName:1.2.3.4;UTF8:some other identifier</pre>
+<pre>
+ subjectAltName=dirName:dir_sect</pre>
+<pre>
+ [dir_sect]
+ C=UK
+ O=My Organization
+ OU=My Unit
+ CN=My Name</pre>
+<p>
+</p>
+<h2><a name="issuer_alternative_name_">Issuer Alternative Name.</a></h2>
+<p>The issuer alternative name option supports all the literal options of
+subject alternative name. It does <strong>not</strong> support the email:copy option because
+that would not make sense. It does support an additional issuer:copy option
+that will copy all the subject alternative name values from the issuer
+certificate (if possible).</p>
+<p>Example:</p>
+<pre>
+ issuerAltName = issuer:copy</pre>
+<p>
+</p>
+<h2><a name="authority_info_access_">Authority Info Access.</a></h2>
+<p>The authority information access extension gives details about how to access
+certain information relating to the CA. Its syntax is accessOID;location
+where <em>location</em> has the same syntax as subject alternative name (except
+that email:copy is not supported). accessOID can be any valid OID but only
+certain values are meaningful, for example OCSP and caIssuers.</p>
+<p>Example:</p>
+<pre>
+ authorityInfoAccess = OCSP;URI:<a href="http://ocsp.my.host/">http://ocsp.my.host/</a>
+ authorityInfoAccess = caIssuers;URI:<a href="http://my.ca/ca.html">http://my.ca/ca.html</a></pre>
+<p>
+</p>
+<h2><a name="crl_distribution_points">CRL distribution points</a></h2>
+<p>This is a multi-valued extension whose options can be either in name:value pair
+using the same form as subject alternative name or a single value representing
+a section name containing all the distribution point fields.</p>
+<p>For a name:value pair a new DistributionPoint with the fullName field set to
+the given value both the cRLissuer and reasons fields are omitted in this case.</p>
+<p>In the single option case the section indicated contains values for each
+field. In this section:</p>
+<p>If the name is &quot;fullname&quot; the value field should contain the full name
+of the distribution point in the same format as subject alternative name.</p>
+<p>If the name is &quot;relativename&quot; then the value field should contain a section
+name whose contents represent a DN fragment to be placed in this field.</p>
+<p>The name &quot;CRLIssuer&quot; if present should contain a value for this field in
+subject alternative name format.</p>
+<p>If the name is &quot;reasons&quot; the value field should consist of a comma
+separated field containing the reasons. Valid reasons are: &quot;keyCompromise&quot;,
+&quot;CACompromise&quot;, &quot;affiliationChanged&quot;, &quot;superseded&quot;, &quot;cessationOfOperation&quot;,
+&quot;certificateHold&quot;, &quot;privilegeWithdrawn&quot; and &quot;AACompromise&quot;.</p>
+<p>Simple examples:</p>
+<pre>
+ crlDistributionPoints=URI:<a href="http://myhost.com/myca.crl">http://myhost.com/myca.crl</a>
+ crlDistributionPoints=URI:<a href="http://my.com/my.crl">http://my.com/my.crl</a>,URI:<a href="http://oth.com/my.crl">http://oth.com/my.crl</a></pre>
+<p>Full distribution point example:</p>
+<pre>
+ crlDistributionPoints=crldp1_section</pre>
+<pre>
+ [crldp1_section]</pre>
+<pre>
+ fullname=URI:<a href="http://myhost.com/myca.crl">http://myhost.com/myca.crl</a>
+ CRLissuer=dirName:issuer_sect
+ reasons=keyCompromise, CACompromise</pre>
+<pre>
+ [issuer_sect]
+ C=UK
+ O=Organisation
+ CN=Some Name</pre>
+<p>
+</p>
+<h2><a name="issuing_distribution_point">Issuing Distribution Point</a></h2>
+<p>This extension should only appear in CRLs. It is a multi valued extension
+whose syntax is similar to the &quot;section&quot; pointed to by the CRL distribution
+points extension with a few differences.</p>
+<p>The names &quot;reasons&quot; and &quot;CRLissuer&quot; are not recognized.</p>
+<p>The name &quot;onlysomereasons&quot; is accepted which sets this field. The value is
+in the same format as the CRL distribution point &quot;reasons&quot; field.</p>
+<p>The names &quot;onlyuser&quot;, &quot;onlyCA&quot;, &quot;onlyAA&quot; and &quot;indirectCRL&quot; are also accepted
+the values should be a boolean value (TRUE or FALSE) to indicate the value of
+the corresponding field.</p>
+<p>Example:</p>
+<pre>
+ issuingDistributionPoint=critical, @idp_section</pre>
+<pre>
+ [idp_section]</pre>
+<pre>
+ fullname=URI:<a href="http://myhost.com/myca.crl">http://myhost.com/myca.crl</a>
+ indirectCRL=TRUE
+ onlysomereasons=keyCompromise, CACompromise</pre>
+<pre>
+ [issuer_sect]
+ C=UK
+ O=Organisation
+ CN=Some Name</pre>
+<p>
+</p>
+<h2><a name="certificate_policies_">Certificate Policies.</a></h2>
+<p>This is a <em>raw</em> extension. All the fields of this extension can be set by
+using the appropriate syntax.</p>
+<p>If you follow the PKIX recommendations and just using one OID then you just
+include the value of that OID. Multiple OIDs can be set separated by commas,
+for example:</p>
+<pre>
+ certificatePolicies= 1.2.4.5, 1.1.3.4</pre>
+<p>If you wish to include qualifiers then the policy OID and qualifiers need to
+be specified in a separate section: this is done by using the @section syntax
+instead of a literal OID value.</p>
+<p>The section referred to must include the policy OID using the name
+policyIdentifier, cPSuri qualifiers can be included using the syntax:</p>
+<pre>
+ CPS.nnn=value</pre>
+<p>userNotice qualifiers can be set using the syntax:</p>
+<pre>
+ userNotice.nnn=@notice</pre>
+<p>The value of the userNotice qualifier is specified in the relevant section.
+This section can include explicitText, organization and noticeNumbers
+options. explicitText and organization are text strings, noticeNumbers is a
+comma separated list of numbers. The organization and noticeNumbers options
+(if included) must BOTH be present. If you use the userNotice option with IE5
+then you need the 'ia5org' option at the top level to modify the encoding:
+otherwise it will not be interpreted properly.</p>
+<p>Example:</p>
+<pre>
+ certificatePolicies=ia5org,1.2.3.4,1.5.6.7.8,@polsect</pre>
+<pre>
+ [polsect]</pre>
+<pre>
+ policyIdentifier = 1.3.5.8
+ CPS.1=&quot;<a href="http://my.host.name/&quot">http://my.host.name/&quot</a>;
+ CPS.2=&quot;<a href="http://my.your.name/&quot">http://my.your.name/&quot</a>;
+ userNotice.1=@notice</pre>
+<pre>
+ [notice]</pre>
+<pre>
+ explicitText=&quot;Explicit Text Here&quot;
+ organization=&quot;Organisation Name&quot;
+ noticeNumbers=1,2,3,4</pre>
+<p>The <strong>ia5org</strong> option changes the type of the <em>organization</em> field. In <a href="http://www.ietf.org/rfc/rfc2459.txt" class="rfc">RFC2459</a>
+it can only be of type DisplayText. In <a href="http://www.ietf.org/rfc/rfc3280.txt" class="rfc">RFC3280</a> IA5String is also permissible.
+Some software (for example some versions of MSIE) may require ia5org.</p>
+<p>ASN1 type of explicitText can be specified by prepending <strong>UTF8</strong>,
+<strong>BMP</strong> or <strong>VISIBLE</strong> prefix followed by colon. For example:</p>
+<pre>
+ [notice]
+ explicitText=&quot;UTF8:Explicit Text Here&quot;</pre>
+<p>
+</p>
+<h2><a name="policy_constraints">Policy Constraints</a></h2>
+<p>This is a multi-valued extension which consisting of the names
+<strong>requireExplicitPolicy</strong> or <strong>inhibitPolicyMapping</strong> and a non negative integer
+value. At least one component must be present.</p>
+<p>Example:</p>
+<pre>
+ policyConstraints = requireExplicitPolicy:3</pre>
+<p>
+</p>
+<h2><a name="inhibit_any_policy">Inhibit Any Policy</a></h2>
+<p>This is a string extension whose value must be a non negative integer.</p>
+<p>Example:</p>
+<pre>
+ inhibitAnyPolicy = 2</pre>
+<p>
+</p>
+<h2><a name="name_constraints">Name Constraints</a></h2>
+<p>The name constraints extension is a multi-valued extension. The name should
+begin with the word <strong>permitted</strong> or <strong>excluded</strong> followed by a <strong>;</strong>. The rest of
+the name and the value follows the syntax of subjectAltName except email:copy
+is not supported and the <strong>IP</strong> form should consist of an IP addresses and
+subnet mask separated by a <strong>/</strong>.</p>
+<p>Examples:</p>
+<pre>
+ nameConstraints=permitted;IP:192.168.0.0/255.255.0.0</pre>
+<pre>
+ nameConstraints=permitted;email:.somedomain.com</pre>
+<pre>
+ nameConstraints=excluded;email:.com</pre>
+<p>
+</p>
+<h2><a name="ocsp_no_check">OCSP No Check</a></h2>
+<p>The OCSP No Check extension is a string extension but its value is ignored.</p>
+<p>Example:</p>
+<pre>
+ noCheck = ignored</pre>
+<p>
+</p>
+<h2><a name="tls_feature__aka_must_staple_">TLS Feature (aka Must Staple)</a></h2>
+<p>This is a multi-valued extension consisting of a list of TLS extension
+identifiers. Each identifier may be a number (0..65535) or a supported name.
+When a TLS client sends a listed extension, the TLS server is expected to
+include that extension in its reply.</p>
+<p>The supported names are: <strong>status_request</strong> and <strong>status_request_v2</strong>.</p>
+<p>Example:</p>
+<pre>
+ tlsfeature = status_request</pre>
+<p>
+</p>
+<hr />
+<h1><a name="deprecated_extensions">DEPRECATED EXTENSIONS</a></h1>
+<p>The following extensions are non standard, Netscape specific and largely
+obsolete. Their use in new applications is discouraged.</p>
+<p>
+</p>
+<h2><a name="netscape_string_extensions_">Netscape String extensions.</a></h2>
+<p>Netscape Comment (<strong>nsComment</strong>) is a string extension containing a comment
+which will be displayed when the certificate is viewed in some browsers.</p>
+<p>Example:</p>
+<pre>
+ nsComment = &quot;Some Random Comment&quot;</pre>
+<p>Other supported extensions in this category are: <strong>nsBaseUrl</strong>,
+<strong>nsRevocationUrl</strong>, <strong>nsCaRevocationUrl</strong>, <strong>nsRenewalUrl</strong>, <strong>nsCaPolicyUrl</strong>
+and <strong>nsSslServerName</strong>.</p>
+<p>
+</p>
+<h2><a name="netscape_certificate_type">Netscape Certificate Type</a></h2>
+<p>This is a multi-valued extensions which consists of a list of flags to be
+included. It was used to indicate the purposes for which a certificate could
+be used. The basicConstraints, keyUsage and extended key usage extensions are
+now used instead.</p>
+<p>Acceptable values for nsCertType are: <strong>client</strong>, <strong>server</strong>, <strong>email</strong>,
+<strong>objsign</strong>, <strong>reserved</strong>, <strong>sslCA</strong>, <strong>emailCA</strong>, <strong>objCA</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="arbitrary_extensions">ARBITRARY EXTENSIONS</a></h1>
+<p>If an extension is not supported by the OpenSSL code then it must be encoded
+using the arbitrary extension format. It is also possible to use the arbitrary
+format for supported extensions. Extreme care should be taken to ensure that
+the data is formatted correctly for the given extension type.</p>
+<p>There are two ways to encode arbitrary extensions.</p>
+<p>The first way is to use the word ASN1 followed by the extension content
+using the same syntax as <em>ASN1_generate_nconf(3)</em>.
+For example:</p>
+<pre>
+ 1.2.3.4=critical,ASN1:UTF8String:Some random data</pre>
+<pre>
+ 1.2.3.4=ASN1:SEQUENCE:seq_sect</pre>
+<pre>
+ [seq_sect]</pre>
+<pre>
+ field1 = UTF8:field1
+ field2 = UTF8:field2</pre>
+<p>It is also possible to use the word DER to include the raw encoded data in any
+extension.</p>
+<pre>
+ 1.2.3.4=critical,DER:01:02:03:04
+ 1.2.3.4=DER:01020304</pre>
+<p>The value following DER is a hex dump of the DER encoding of the extension
+Any extension can be placed in this form to override the default behaviour.
+For example:</p>
+<pre>
+ basicConstraints=critical,DER:00:01:02:03</pre>
+<p>
+</p>
+<hr />
+<h1><a name="warnings">WARNINGS</a></h1>
+<p>There is no guarantee that a specific implementation will process a given
+extension. It may therefore be sometimes possible to use certificates for
+purposes prohibited by their extensions because a specific application does
+not recognize or honour the values of the relevant extensions.</p>
+<p>The DER and ASN1 options should be used with caution. It is possible to create
+totally invalid extensions if they are not used carefully.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>If an extension is multi-value and a field value must contain a comma the long
+form must be used otherwise the comma would be misinterpreted as a field
+separator. For example:</p>
+<pre>
+ subjectAltName=URI:ldap://somehost.com/CN=foo,OU=bar</pre>
+<p>will produce an error but the equivalent form:</p>
+<pre>
+ subjectAltName=@subject_alt_section</pre>
+<pre>
+ [subject_alt_section]
+ subjectAltName=URI:ldap://somehost.com/CN=foo,OU=bar</pre>
+<p>is valid.</p>
+<p>Due to the behaviour of the OpenSSL <strong>conf</strong> library the same field name
+can only occur once in a section. This means that:</p>
+<pre>
+ subjectAltName=@alt_section</pre>
+<pre>
+ [alt_section]</pre>
+<pre>
+ email=steve@here
+ email=steve@there</pre>
+<p>will only recognize the last value. This can be worked around by using the form:</p>
+<pre>
+ [alt_section]</pre>
+<pre>
+ email.1=steve@here
+ email.2=steve@there</pre>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>req(1)</em>, <em>ca(1)</em>, <em>x509(1)</em>,
+<em>ASN1_generate_nconf(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2004-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

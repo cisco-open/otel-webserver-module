@@ -1,0 +1,223 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_set_alpn_select_cb</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_set_alpn_protos, SSL_set_alpn_protos, SSL_CTX_set_alpn_select_cb,
+SSL_CTX_set_next_proto_select_cb, SSL_CTX_set_next_protos_advertised_cb,
+SSL_select_next_proto, SSL_get0_alpn_selected, SSL_get0_next_proto_negotiated
+- handle application layer protocol negotiation (ALPN)</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_CTX_set_alpn_protos(SSL_CTX *ctx, const unsigned char *protos,
+                             unsigned int protos_len);
+ int SSL_set_alpn_protos(SSL *ssl, const unsigned char *protos,
+                         unsigned int protos_len);
+ void SSL_CTX_set_alpn_select_cb(SSL_CTX *ctx,
+                                 int (*cb) (SSL *ssl,
+                                            const unsigned char **out,
+                                            unsigned char *outlen,
+                                            const unsigned char *in,
+                                            unsigned int inlen,
+                                            void *arg), void *arg);
+ void SSL_get0_alpn_selected(const SSL *ssl, const unsigned char **data,
+                             unsigned int *len);</pre>
+<pre>
+ void SSL_CTX_set_next_protos_advertised_cb(SSL_CTX *ctx,
+                                            int (*cb)(SSL *ssl,
+                                                      const unsigned char **out,
+                                                      unsigned int *outlen,
+                                                      void *arg),
+                                            void *arg);
+ void SSL_CTX_set_next_proto_select_cb(SSL_CTX *ctx,
+                               int (*cb)(SSL *s,
+                                         unsigned char **out,
+                                         unsigned char *outlen,
+                                         const unsigned char *in,
+                                         unsigned int inlen,
+                                         void *arg),
+                               void *arg);
+ int SSL_select_next_proto(unsigned char **out, unsigned char *outlen,
+                           const unsigned char *server,
+                           unsigned int server_len,
+                           const unsigned char *client,
+                           unsigned int client_len)
+ void SSL_get0_next_proto_negotiated(const SSL *s, const unsigned char **data,
+                             unsigned *len);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_set_alpn_protos()</code> and <code>SSL_set_alpn_protos()</code> are used by the client to
+set the list of protocols available to be negotiated. The <strong>protos</strong> must be in
+protocol-list format, described below. The length of <strong>protos</strong> is specified in
+<strong>protos_len</strong>.</p>
+<p><code>SSL_CTX_set_alpn_select_cb()</code> sets the application callback <strong>cb</strong> used by a
+server to select which protocol to use for the incoming connection. When <strong>cb</strong>
+is NULL, ALPN is not used. The <strong>arg</strong> value is a pointer which is passed to
+the application callback.</p>
+<p><strong>cb</strong> is the application defined callback. The <strong>in</strong>, <strong>inlen</strong> parameters are a
+vector in protocol-list format. The value of the <strong>out</strong>, <strong>outlen</strong> vector
+should be set to the value of a single protocol selected from the <strong>in</strong>,
+<strong>inlen</strong> vector. The <strong>out</strong> buffer may point directly into <strong>in</strong>, or to a
+buffer that outlives the handshake. The <strong>arg</strong> parameter is the pointer set via
+<code>SSL_CTX_set_alpn_select_cb()</code>.</p>
+<p><code>SSL_select_next_proto()</code> is a helper function used to select protocols. It
+implements the standard protocol selection. It is expected that this function
+is called from the application callback <strong>cb</strong>. The protocol data in <strong>server</strong>,
+<strong>server_len</strong> and <strong>client</strong>, <strong>client_len</strong> must be in the protocol-list format
+described below. The first item in the <strong>server</strong>, <strong>server_len</strong> list that
+matches an item in the <strong>client</strong>, <strong>client_len</strong> list is selected, and returned
+in <strong>out</strong>, <strong>outlen</strong>. The <strong>out</strong> value will point into either <strong>server</strong> or
+<strong>client</strong>, so it should be copied immediately. If no match is found, the first
+item in <strong>client</strong>, <strong>client_len</strong> is returned in <strong>out</strong>, <strong>outlen</strong>. This
+function can also be used in the NPN callback.</p>
+<p><code>SSL_CTX_set_next_proto_select_cb()</code> sets a callback <strong>cb</strong> that is called when a
+client needs to select a protocol from the server's provided list, and a
+user-defined pointer argument <strong>arg</strong> which will be passed to this callback.
+For the callback itself, <strong>out</strong>
+must be set to point to the selected protocol (which may be within <strong>in</strong>).
+The length of the protocol name must be written into <strong>outlen</strong>. The
+server's advertised protocols are provided in <strong>in</strong> and <strong>inlen</strong>. The
+callback can assume that <strong>in</strong> is syntactically valid. The client must
+select a protocol. It is fatal to the connection if this callback returns
+a value other than <strong>SSL_TLSEXT_ERR_OK</strong>. The <strong>arg</strong> parameter is the pointer
+set via <code>SSL_CTX_set_next_proto_select_cb()</code>.</p>
+<p><code>SSL_CTX_set_next_protos_advertised_cb()</code> sets a callback <strong>cb</strong> that is called
+when a TLS server needs a list of supported protocols for Next Protocol
+Negotiation. The returned list must be in protocol-list format, described
+below.  The list is
+returned by setting <strong>out</strong> to point to it and <strong>outlen</strong> to its length. This
+memory will not be modified, but the <strong>SSL</strong> does keep a
+reference to it. The callback should return <strong>SSL_TLSEXT_ERR_OK</strong> if it
+wishes to advertise. Otherwise, no such extension will be included in the
+ServerHello.</p>
+<p>SSL_get0_alpn_selected() returns a pointer to the selected protocol in <strong>data</strong>
+with length <strong>len</strong>. It is not NUL-terminated. <strong>data</strong> is set to NULL and <strong>len</strong>
+is set to 0 if no protocol has been selected. <strong>data</strong> must not be freed.</p>
+<p>SSL_get0_next_proto_negotiated() sets <strong>data</strong> and <strong>len</strong> to point to the
+client's requested protocol for this connection. If the client did not
+request any protocol or NPN is not enabled, then <strong>data</strong> is set to NULL and
+<strong>len</strong> to 0. Note that
+the client can request any protocol it chooses. The value returned from
+this function need not be a member of the list of supported protocols
+provided by the callback.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The protocol-lists must be in wire-format, which is defined as a vector of
+non-empty, 8-bit length-prefixed, byte strings. The length-prefix byte is not
+included in the length. Each string is limited to 255 bytes. A byte-string
+length of 0 is invalid. A truncated byte-string is invalid. The length of the
+vector is not in the vector itself, but in a separate variable.</p>
+<p>Example:</p>
+<pre>
+ unsigned char vector[] = {
+     6, 's', 'p', 'd', 'y', '/', '1',
+     8, 'h', 't', 't', 'p', '/', '1', '.', '1'
+ };
+ unsigned int length = sizeof(vector);</pre>
+<p>The ALPN callback is executed after the servername callback; as that servername
+callback may update the SSL_CTX, and subsequently, the ALPN callback.</p>
+<p>If there is no ALPN proposed in the ClientHello, the ALPN callback is not
+invoked.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_CTX_set_alpn_protos()</code> and <code>SSL_set_alpn_protos()</code> return 0 on success, and
+non-0 on failure. WARNING: these functions reverse the return value convention.</p>
+<p><code>SSL_select_next_proto()</code> returns one of the following:</p>
+<dl>
+<dt><strong><a name="openssl_npn_negotiated" class="item">OPENSSL_NPN_NEGOTIATED</a></strong></dt>
+
+<dd>
+<p>A match was found and is returned in <strong>out</strong>, <strong>outlen</strong>.</p>
+</dd>
+<dt><strong><a name="openssl_npn_no_overlap" class="item">OPENSSL_NPN_NO_OVERLAP</a></strong></dt>
+
+<dd>
+<p>No match was found. The first item in <strong>client</strong>, <strong>client_len</strong> is returned in
+<strong>out</strong>, <strong>outlen</strong>.</p>
+</dd>
+</dl>
+<p>The ALPN select callback <strong>cb</strong>, must return one of the following:</p>
+<dl>
+<dt><strong><a name="ssl_tlsext_err_ok" class="item">SSL_TLSEXT_ERR_OK</a></strong></dt>
+
+<dd>
+<p>ALPN protocol selected.</p>
+</dd>
+<dt><strong><a name="ssl_tlsext_err_alert_fatal" class="item">SSL_TLSEXT_ERR_ALERT_FATAL</a></strong></dt>
+
+<dd>
+<p>There was no overlap between the client's supplied list and the server
+configuration.</p>
+</dd>
+<dt><strong><a name="ssl_tlsext_err_noack" class="item">SSL_TLSEXT_ERR_NOACK</a></strong></dt>
+
+<dd>
+<p>ALPN protocol not selected, e.g., because no ALPN protocols are configured for
+this connection.</p>
+</dd>
+</dl>
+<p>The callback set using <code>SSL_CTX_set_next_proto_select_cb()</code> should return
+<strong>SSL_TLSEXT_ERR_OK</strong> if successful. Any other value is fatal to the connection.</p>
+<p>The callback set using <code>SSL_CTX_set_next_protos_advertised_cb()</code> should return
+<strong>SSL_TLSEXT_ERR_OK</strong> if it wishes to advertise. Otherwise, no such extension
+will be included in the ServerHello.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>, <em>SSL_CTX_set_tlsext_servername_callback(3)</em>,
+<em>SSL_CTX_set_tlsext_servername_arg(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2016-2017 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,133 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>EVP_PKEY_CTX_set_rsa_pss_keygen_md</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<ul>
+
+		<li><a href="#signing_and_verification">Signing and Verification</a></li>
+		<li><a href="#key_generation">Key Generation</a></li>
+	</ul>
+
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>EVP_PKEY_CTX_set_rsa_pss_keygen_md,
+EVP_PKEY_CTX_set_rsa_pss_keygen_mgf1_md,
+EVP_PKEY_CTX_set_rsa_pss_keygen_saltlen
+- EVP_PKEY RSA-PSS algorithm support functions</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/rsa.h&gt;</pre>
+<pre>
+ int EVP_PKEY_CTX_set_rsa_pss_keygen_md(EVP_PKEY_CTX *pctx,
+                                        const EVP_MD *md);
+ int EVP_PKEY_CTX_set_rsa_pss_keygen_mgf1_md(EVP_PKEY_CTX *pctx,
+                                             const EVP_MD *md);
+ int EVP_PKEY_CTX_set_rsa_pss_keygen_saltlen(EVP_PKEY_CTX *pctx,
+                                             int saltlen);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>These are the functions that implement <em>RSA-PSS(7)</em>.</p>
+<p>
+</p>
+<h2><a name="signing_and_verification">Signing and Verification</a></h2>
+<p>The macro <code>EVP_PKEY_CTX_set_rsa_padding()</code> is supported but an error is
+returned if an attempt is made to set the padding mode to anything other
+than <strong>PSS</strong>. It is otherwise similar to the <strong>RSA</strong> version.</p>
+<p>The <code>EVP_PKEY_CTX_set_rsa_pss_saltlen()</code> macro is used to set the salt length.
+If the key has usage restrictions then an error is returned if an attempt is
+made to set the salt length below the minimum value. It is otherwise similar
+to the <strong>RSA</strong> operation except detection of the salt length (using
+RSA_PSS_SALTLEN_AUTO) is not supported for verification if the key has
+usage restrictions.</p>
+<p>The <code>EVP_PKEY_CTX_set_signature_md()</code> and EVP_PKEY_CTX_set_rsa_mgf1_md() macros
+are used to set the digest and MGF1 algorithms respectively. If the key has
+usage restrictions then an error is returned if an attempt is made to set the
+digest to anything other than the restricted value. Otherwise these are
+similar to the <strong>RSA</strong> versions.</p>
+<p>
+</p>
+<h2><a name="key_generation">Key Generation</a></h2>
+<p>As with RSA key generation the <code>EVP_PKEY_CTX_set_rsa_keygen_bits()</code>
+and <code>EVP_PKEY_CTX_set_rsa_keygen_pubexp()</code> macros are supported for RSA-PSS:
+they have exactly the same meaning as for the RSA algorithm.</p>
+<p>Optional parameter restrictions can be specified when generating a PSS key.
+If any restrictions are set (using the macros described below) then <strong>all</strong>
+parameters are restricted. For example, setting a minimum salt length also
+restricts the digest and MGF1 algorithms. If any restrictions are in place
+then they are reflected in the corresponding parameters of the public key
+when (for example) a certificate request is signed.</p>
+<p><code>EVP_PKEY_CTX_set_rsa_pss_keygen_md()</code> restricts the digest algorithm the
+generated key can use to <strong>md</strong>.</p>
+<p>EVP_PKEY_CTX_set_rsa_pss_keygen_mgf1_md() restricts the MGF1 algorithm the
+generated key can use to <strong>md</strong>.</p>
+<p><code>EVP_PKEY_CTX_set_rsa_pss_keygen_saltlen()</code> restricts the minimum salt length
+to <strong>saltlen</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>A context for the <strong>RSA-PSS</strong> algorithm can be obtained by calling:</p>
+<pre>
+ EVP_PKEY_CTX *pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_RSA_PSS, NULL);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>All these functions return 1 for success and 0 or a negative value for failure.
+In particular a return value of -2 indicates the operation is not supported by
+the public key algorithm.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>RSA-PSS(7)</em>,
+<em>EVP_PKEY_CTX_new(3)</em>,
+<em>EVP_PKEY_CTX_ctrl_str(3)</em>,
+<em>EVP_PKEY_derive(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2017-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

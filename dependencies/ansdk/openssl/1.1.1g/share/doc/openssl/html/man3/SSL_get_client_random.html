@@ -1,0 +1,132 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_get_client_random</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_get_client_random,
+SSL_get_server_random,
+SSL_SESSION_get_master_key,
+SSL_SESSION_set1_master_key
+- get internal TLS/SSL random values and get/set master key</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ size_t SSL_get_client_random(const SSL *ssl, unsigned char *out, size_t outlen);
+ size_t SSL_get_server_random(const SSL *ssl, unsigned char *out, size_t outlen);
+ size_t SSL_SESSION_get_master_key(const SSL_SESSION *session,
+                                   unsigned char *out, size_t outlen);
+ int SSL_SESSION_set1_master_key(SSL_SESSION *sess, const unsigned char *in,
+                                 size_t len);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_get_client_random()</code> extracts the random value sent from the client
+to the server during the initial SSL/TLS handshake.  It copies as many
+bytes as it can of this value into the buffer provided in <strong>out</strong>,
+which must have at least <strong>outlen</strong> bytes available. It returns the
+total number of bytes that were actually copied.  If <strong>outlen</strong> is
+zero, <code>SSL_get_client_random()</code> copies nothing, and returns the
+total size of the client_random value.</p>
+<p><code>SSL_get_server_random()</code> behaves the same, but extracts the random value
+sent from the server to the client during the initial SSL/TLS handshake.</p>
+<p><code>SSL_SESSION_get_master_key()</code> behaves the same, but extracts the master
+secret used to guarantee the security of the SSL/TLS session.  This one
+can be dangerous if misused; see NOTES below.</p>
+<p>SSL_SESSION_set1_master_key() sets the master key value associated with the
+SSL_SESSION <strong>sess</strong>. For example, this could be used to set up a session based
+PSK (see <em>SSL_CTX_set_psk_use_session_callback(3)</em>). The master key of length
+<strong>len</strong> should be provided at <strong>in</strong>. The supplied master key is copied by the
+function, so the caller is responsible for freeing and cleaning any memory
+associated with <strong>in</strong>. The caller must ensure that the length of the key is
+suitable for the ciphersuite associated with the SSL_SESSION.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>You probably shouldn't use these functions.</p>
+<p>These functions expose internal values from the TLS handshake, for
+use in low-level protocols.  You probably should not use them, unless
+you are implementing something that needs access to the internal protocol
+details.</p>
+<p>Despite the names of <code>SSL_get_client_random()</code> and <code>SSL_get_server_random()</code>, they
+ARE NOT random number generators.  Instead, they return the mostly-random values that
+were already generated and used in the TLS protocol.  Using them
+in place of <code>RAND_bytes()</code> would be grossly foolish.</p>
+<p>The security of your TLS session depends on keeping the master key secret:
+do not expose it, or any information about it, to anybody.
+If you need to calculate another secret value that depends on the master
+secret, you should probably use <code>SSL_export_keying_material()</code> instead, and
+forget that you ever saw these functions.</p>
+<p>In current versions of the TLS protocols, the length of client_random
+(and also server_random) is always SSL3_RANDOM_SIZE bytes. Support for
+other outlen arguments to the SSL_get_*_random() functions is provided
+in case of the unlikely event that a future version or variant of TLS
+uses some other length there.</p>
+<p>Finally, though the &quot;client_random&quot; and &quot;server_random&quot; values are called
+&quot;random&quot;, many TLS implementations will generate four bytes of those
+values based on their view of the current time.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>SSL_SESSION_set1_master_key() returns 1 on success or 0 on failure.</p>
+<p>For the other functions, if <strong>outlen</strong> is greater than 0 then these functions
+return the number of bytes actually copied, which will be less than or equal to
+<strong>outlen</strong>. If <strong>outlen</strong> is 0 then these functions return the maximum number
+of bytes they would copy -- that is, the length of the underlying field.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>,
+<em>RAND_bytes(3)</em>,
+<em>SSL_export_keying_material(3)</em>,
+<em>SSL_CTX_set_psk_use_session_callback(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2017 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,763 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>req</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#options">OPTIONS</a></li>
+	<li><a href="#configuration_file_format">CONFIGURATION FILE FORMAT</a></li>
+	<li><a href="#distinguished_name_and_attribute_section_format">DISTINGUISHED NAME AND ATTRIBUTE SECTION FORMAT</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#diagnostics">DIAGNOSTICS</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>openssl-req,
+req - PKCS#10 certificate request and certificate generating utility</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p><strong>openssl</strong> <strong>req</strong>
+[<strong>-help</strong>]
+[<strong>-inform PEM|DER</strong>]
+[<strong>-outform PEM|DER</strong>]
+[<strong>-in filename</strong>]
+[<strong>-passin arg</strong>]
+[<strong>-out filename</strong>]
+[<strong>-passout arg</strong>]
+[<strong>-text</strong>]
+[<strong>-pubkey</strong>]
+[<strong>-noout</strong>]
+[<strong>-verify</strong>]
+[<strong>-modulus</strong>]
+[<strong>-new</strong>]
+[<strong>-rand file...</strong>]
+[<strong>-writerand file</strong>]
+[<strong>-newkey rsa:bits</strong>]
+[<strong>-newkey alg:file</strong>]
+[<strong>-nodes</strong>]
+[<strong>-key filename</strong>]
+[<strong>-keyform PEM|DER</strong>]
+[<strong>-keyout filename</strong>]
+[<strong>-keygen_engine id</strong>]
+[<strong>-<em>digest</em></strong>]
+[<strong>-config filename</strong>]
+[<strong>-multivalue-rdn</strong>]
+[<strong>-x509</strong>]
+[<strong>-days n</strong>]
+[<strong>-set_serial n</strong>]
+[<strong>-newhdr</strong>]
+[<strong>-addext ext</strong>]
+[<strong>-extensions section</strong>]
+[<strong>-reqexts section</strong>]
+[<strong>-precert</strong>]
+[<strong>-utf8</strong>]
+[<strong>-nameopt</strong>]
+[<strong>-reqopt</strong>]
+[<strong>-subject</strong>]
+[<strong>-subj arg</strong>]
+[<strong>-sigopt nm:v</strong>]
+[<strong>-batch</strong>]
+[<strong>-verbose</strong>]
+[<strong>-engine id</strong>]</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The <strong>req</strong> command primarily creates and processes certificate requests
+in PKCS#10 format. It can additionally create self signed certificates
+for use as root CAs for example.</p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<dl>
+<dt><strong><a name="help" class="item"><strong>-help</strong></a></strong></dt>
+
+<dd>
+<p>Print out a usage message.</p>
+</dd>
+<dt><strong><a name="inform_der_pem" class="item"><strong>-inform DER|PEM</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the input format. The <strong>DER</strong> option uses an ASN1 DER encoded
+form compatible with the PKCS#10. The <strong>PEM</strong> form is the default format: it
+consists of the <strong>DER</strong> format base64 encoded with additional header and
+footer lines.</p>
+</dd>
+<dt><strong><a name="outform_der_pem" class="item"><strong>-outform DER|PEM</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the output format, the options have the same meaning and default
+as the <strong>-inform</strong> option.</p>
+</dd>
+<dt><strong><a name="in_filename" class="item"><strong>-in filename</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the input filename to read a request from or standard input
+if this option is not specified. A request is only read if the creation
+options (<strong>-new</strong> and <strong>-newkey</strong>) are not specified.</p>
+</dd>
+<dt><strong><a name="sigopt_nm_v" class="item"><strong>-sigopt nm:v</strong></a></strong></dt>
+
+<dd>
+<p>Pass options to the signature algorithm during sign or verify operations.
+Names and values of these options are algorithm-specific.</p>
+</dd>
+<dt><strong><a name="passin_arg" class="item"><strong>-passin arg</strong></a></strong></dt>
+
+<dd>
+<p>The input file password source. For more information about the format of <strong>arg</strong>
+see the <strong>PASS PHRASE ARGUMENTS</strong> section in <em>openssl(1)</em>.</p>
+</dd>
+<dt><strong><a name="out_filename" class="item"><strong>-out filename</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the output filename to write to or standard output by
+default.</p>
+</dd>
+<dt><strong><a name="passout_arg" class="item"><strong>-passout arg</strong></a></strong></dt>
+
+<dd>
+<p>The output file password source. For more information about the format of <strong>arg</strong>
+see the <strong>PASS PHRASE ARGUMENTS</strong> section in <em>openssl(1)</em>.</p>
+</dd>
+<dt><strong><a name="text" class="item"><strong>-text</strong></a></strong></dt>
+
+<dd>
+<p>Prints out the certificate request in text form.</p>
+</dd>
+<dt><strong><a name="subject" class="item"><strong>-subject</strong></a></strong></dt>
+
+<dd>
+<p>Prints out the request subject (or certificate subject if <strong>-x509</strong> is
+specified)</p>
+</dd>
+<dt><strong><a name="pubkey" class="item"><strong>-pubkey</strong></a></strong></dt>
+
+<dd>
+<p>Outputs the public key.</p>
+</dd>
+<dt><strong><a name="noout" class="item"><strong>-noout</strong></a></strong></dt>
+
+<dd>
+<p>This option prevents output of the encoded version of the request.</p>
+</dd>
+<dt><strong><a name="modulus" class="item"><strong>-modulus</strong></a></strong></dt>
+
+<dd>
+<p>This option prints out the value of the modulus of the public key
+contained in the request.</p>
+</dd>
+<dt><strong><a name="verify" class="item"><strong>-verify</strong></a></strong></dt>
+
+<dd>
+<p>Verifies the signature on the request.</p>
+</dd>
+<dt><strong><a name="new" class="item"><strong>-new</strong></a></strong></dt>
+
+<dd>
+<p>This option generates a new certificate request. It will prompt
+the user for the relevant field values. The actual fields
+prompted for and their maximum and minimum sizes are specified
+in the configuration file and any requested extensions.</p>
+<p>If the <strong>-key</strong> option is not used it will generate a new RSA private
+key using information specified in the configuration file.</p>
+</dd>
+<dt><strong><a name="rand_file" class="item"><strong>-rand file...</strong></a></strong></dt>
+
+<dd>
+<p>A file or files containing random data used to seed the random number
+generator.
+Multiple files can be specified separated by an OS-dependent character.
+The separator is <strong>;</strong> for MS-Windows, <strong>,</strong> for OpenVMS, and <strong>:</strong> for
+all others.</p>
+</dd>
+<dt><strong><a name="writerand_file" class="item">[<strong>-writerand file</strong>]</a></strong></dt>
+
+<dd>
+<p>Writes random data to the specified <em>file</em> upon exit.
+This can be used with a subsequent <strong>-rand</strong> flag.</p>
+</dd>
+<dt><strong><a name="newkey_arg" class="item"><strong>-newkey arg</strong></a></strong></dt>
+
+<dd>
+<p>This option creates a new certificate request and a new private
+key. The argument takes one of several forms. <strong>rsa:nbits</strong>, where
+<strong>nbits</strong> is the number of bits, generates an RSA key <strong>nbits</strong>
+in size. If <strong>nbits</strong> is omitted, i.e. <strong>-newkey rsa</strong> specified,
+the default key size, specified in the configuration file is used.</p>
+<p>All other algorithms support the <strong>-newkey alg:file</strong> form, where file may be
+an algorithm parameter file, created by the <strong>genpkey -genparam</strong> command
+or and X.509 certificate for a key with appropriate algorithm.</p>
+<p><strong>param:file</strong> generates a key using the parameter file or certificate <strong>file</strong>,
+the algorithm is determined by the parameters. <strong>algname:file</strong> use algorithm
+<strong>algname</strong> and parameter file <strong>file</strong>: the two algorithms must match or an
+error occurs. <strong>algname</strong> just uses algorithm <strong>algname</strong>, and parameters,
+if necessary should be specified via <strong>-pkeyopt</strong> parameter.</p>
+<p><strong>dsa:filename</strong> generates a DSA key using the parameters
+in the file <strong>filename</strong>. <strong>ec:filename</strong> generates EC key (usable both with
+ECDSA or ECDH algorithms), <strong>gost2001:filename</strong> generates GOST R
+34.10-2001 key (requires <strong>ccgost</strong> engine configured in the configuration
+file). If just <strong>gost2001</strong> is specified a parameter set should be
+specified by <strong>-pkeyopt paramset:X</strong></p>
+</dd>
+<dt><strong><a name="pkeyopt_opt_value" class="item"><strong>-pkeyopt opt:value</strong></a></strong></dt>
+
+<dd>
+<p>Set the public key algorithm option <strong>opt</strong> to <strong>value</strong>. The precise set of
+options supported depends on the public key algorithm used and its
+implementation. See <strong>KEY GENERATION OPTIONS</strong> in the <strong>genpkey</strong> manual page
+for more details.</p>
+</dd>
+<dt><strong><a name="key_filename" class="item"><strong>-key filename</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the file to read the private key from. It also
+accepts PKCS#8 format private keys for PEM format files.</p>
+</dd>
+<dt><strong><a name="keyform_pem_der" class="item"><strong>-keyform PEM|DER</strong></a></strong></dt>
+
+<dd>
+<p>The format of the private key file specified in the <strong>-key</strong>
+argument. PEM is the default.</p>
+</dd>
+<dt><strong><a name="keyout_filename" class="item"><strong>-keyout filename</strong></a></strong></dt>
+
+<dd>
+<p>This gives the filename to write the newly created private key to.
+If this option is not specified then the filename present in the
+configuration file is used.</p>
+</dd>
+<dt><strong><a name="nodes" class="item"><strong>-nodes</strong></a></strong></dt>
+
+<dd>
+<p>If this option is specified then if a private key is created it
+will not be encrypted.</p>
+</dd>
+<dt><strong><a name="digest" class="item"><strong>-<em>digest</em></strong></a></strong></dt>
+
+<dd>
+<p>This specifies the message digest to sign the request.
+Any digest supported by the OpenSSL <strong>dgst</strong> command can be used.
+This overrides the digest algorithm specified in
+the configuration file.</p>
+<p>Some public key algorithms may override this choice. For instance, DSA
+signatures always use SHA1, GOST R 34.10 signatures always use
+GOST R 34.11-94 (<strong>-md_gost94</strong>), Ed25519 and Ed448 never use any digest.</p>
+</dd>
+<dt><strong><a name="config_filename" class="item"><strong>-config filename</strong></a></strong></dt>
+
+<dd>
+<p>This allows an alternative configuration file to be specified.
+Optional; for a description of the default value,
+see <em>openssl(1)/COMMAND SUMMARY</em>.</p>
+</dd>
+<dt><strong><a name="subj_arg" class="item"><strong>-subj arg</strong></a></strong></dt>
+
+<dd>
+<p>Sets subject name for new request or supersedes the subject name
+when processing a request.
+The arg must be formatted as <em>/type0=value0/type1=value1/type2=...</em>.
+Keyword characters may be escaped by \ (backslash), and whitespace is retained.
+Empty values are permitted, but the corresponding type will not be included
+in the request.</p>
+</dd>
+<dt><strong><a name="multivalue_rdn" class="item"><strong>-multivalue-rdn</strong></a></strong></dt>
+
+<dd>
+<p>This option causes the -subj argument to be interpreted with full
+support for multivalued RDNs. Example:</p>
+<p><em>/DC=org/DC=OpenSSL/DC=users/UID=123456+CN=John Doe</em></p>
+<p>If -multi-rdn is not used then the UID value is <em>123456+CN=John Doe</em>.</p>
+</dd>
+<dt><strong><a name="x509" class="item"><strong>-x509</strong></a></strong></dt>
+
+<dd>
+<p>This option outputs a self signed certificate instead of a certificate
+request. This is typically used to generate a test certificate or
+a self signed root CA. The extensions added to the certificate
+(if any) are specified in the configuration file. Unless specified
+using the <strong>set_serial</strong> option, a large random number will be used for
+the serial number.</p>
+<p>If existing request is specified with the <strong>-in</strong> option, it is converted
+to the self signed certificate otherwise new request is created.</p>
+</dd>
+<dt><strong><a name="days_n" class="item"><strong>-days n</strong></a></strong></dt>
+
+<dd>
+<p>When the <strong>-x509</strong> option is being used this specifies the number of
+days to certify the certificate for, otherwise it is ignored. <strong>n</strong> should
+be a positive integer. The default is 30 days.</p>
+</dd>
+<dt><strong><a name="set_serial_n" class="item"><strong>-set_serial n</strong></a></strong></dt>
+
+<dd>
+<p>Serial number to use when outputting a self signed certificate. This
+may be specified as a decimal value or a hex value if preceded by <strong>0x</strong>.</p>
+</dd>
+<dt><strong><a name="addext_ext" class="item"><strong>-addext ext</strong></a></strong></dt>
+
+<dd>
+<p>Add a specific extension to the certificate (if the <strong>-x509</strong> option is
+present) or certificate request.  The argument must have the form of
+a key=value pair as it would appear in a config file.</p>
+<p>This option can be given multiple times.</p>
+</dd>
+<dt><strong><a name="extensions_section" class="item"><strong>-extensions section</strong></a></strong></dt>
+
+<dt><strong><a name="reqexts_section" class="item"><strong>-reqexts section</strong></a></strong></dt>
+
+<dd>
+<p>These options specify alternative sections to include certificate
+extensions (if the <strong>-x509</strong> option is present) or certificate
+request extensions. This allows several different sections to
+be used in the same configuration file to specify requests for
+a variety of purposes.</p>
+</dd>
+<dt><strong><a name="precert" class="item"><strong>-precert</strong></a></strong></dt>
+
+<dd>
+<p>A poison extension will be added to the certificate, making it a
+&quot;pre-certificate&quot; (see <a href="http://www.ietf.org/rfc/rfc6962.txt" class="rfc">RFC6962</a>). This can be submitted to Certificate
+Transparency logs in order to obtain signed certificate timestamps (SCTs).
+These SCTs can then be embedded into the pre-certificate as an extension, before
+removing the poison and signing the certificate.</p>
+<p>This implies the <strong>-new</strong> flag.</p>
+</dd>
+<dt><strong><a name="utf8" class="item"><strong>-utf8</strong></a></strong></dt>
+
+<dd>
+<p>This option causes field values to be interpreted as UTF8 strings, by
+default they are interpreted as ASCII. This means that the field
+values, whether prompted from a terminal or obtained from a
+configuration file, must be valid UTF8 strings.</p>
+</dd>
+<dt><strong><a name="nameopt_option" class="item"><strong>-nameopt option</strong></a></strong></dt>
+
+<dd>
+<p>Option which determines how the subject or issuer names are displayed. The
+<strong>option</strong> argument can be a single option or multiple options separated by
+commas.  Alternatively the <strong>-nameopt</strong> switch may be used more than once to
+set multiple options. See the <a href="#x509">x509(1)</a> manual page for details.</p>
+</dd>
+<dt><strong><a name="reqopt" class="item"><strong>-reqopt</strong></a></strong></dt>
+
+<dd>
+<p>Customise the output format used with <strong>-text</strong>. The <strong>option</strong> argument can be
+a single option or multiple options separated by commas.</p>
+<p>See discussion of the  <strong>-certopt</strong> parameter in the <a href="#x509">x509(1)</a>
+command.</p>
+</dd>
+<dt><strong><a name="newhdr" class="item"><strong>-newhdr</strong></a></strong></dt>
+
+<dd>
+<p>Adds the word <strong>NEW</strong> to the PEM file header and footer lines on the outputted
+request. Some software (Netscape certificate server) and some CAs need this.</p>
+</dd>
+<dt><strong><a name="batch" class="item"><strong>-batch</strong></a></strong></dt>
+
+<dd>
+<p>Non-interactive mode.</p>
+</dd>
+<dt><strong><a name="verbose" class="item"><strong>-verbose</strong></a></strong></dt>
+
+<dd>
+<p>Print extra details about the operations being performed.</p>
+</dd>
+<dt><strong><a name="engine_id" class="item"><strong>-engine id</strong></a></strong></dt>
+
+<dd>
+<p>Specifying an engine (by its unique <strong>id</strong> string) will cause <strong>req</strong>
+to attempt to obtain a functional reference to the specified engine,
+thus initialising it if needed. The engine will then be set as the default
+for all available algorithms.</p>
+</dd>
+<dt><strong><a name="keygen_engine_id" class="item"><strong>-keygen_engine id</strong></a></strong></dt>
+
+<dd>
+<p>Specifies an engine (by its unique <strong>id</strong> string) which would be used
+for key generation operations.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="configuration_file_format">CONFIGURATION FILE FORMAT</a></h1>
+<p>The configuration options are specified in the <strong>req</strong> section of
+the configuration file. As with all configuration files if no
+value is specified in the specific section (i.e. <strong>req</strong>) then
+the initial unnamed or <strong>default</strong> section is searched too.</p>
+<p>The options available are described in detail below.</p>
+<dl>
+<dt><strong><a name="input_password_output_password" class="item"><strong>input_password output_password</strong></a></strong></dt>
+
+<dd>
+<p>The passwords for the input private key file (if present) and
+the output private key file (if one will be created). The
+command line options <strong>passin</strong> and <strong>passout</strong> override the
+configuration file values.</p>
+</dd>
+<dt><strong><a name="default_bits" class="item"><strong>default_bits</strong></a></strong></dt>
+
+<dd>
+<p>Specifies the default key size in bits.</p>
+<p>This option is used in conjunction with the <strong>-new</strong> option to generate
+a new key. It can be overridden by specifying an explicit key size in
+the <strong>-newkey</strong> option. The smallest accepted key size is 512 bits. If
+no key size is specified then 2048 bits is used.</p>
+</dd>
+<dt><strong><a name="default_keyfile" class="item"><strong>default_keyfile</strong></a></strong></dt>
+
+<dd>
+<p>This is the default filename to write a private key to. If not
+specified the key is written to standard output. This can be
+overridden by the <strong>-keyout</strong> option.</p>
+</dd>
+<dt><strong><a name="oid_file" class="item"><strong>oid_file</strong></a></strong></dt>
+
+<dd>
+<p>This specifies a file containing additional <strong>OBJECT IDENTIFIERS</strong>.
+Each line of the file should consist of the numerical form of the
+object identifier followed by white space then the short name followed
+by white space and finally the long name.</p>
+</dd>
+<dt><strong><a name="oid_section" class="item"><strong>oid_section</strong></a></strong></dt>
+
+<dd>
+<p>This specifies a section in the configuration file containing extra
+object identifiers. Each line should consist of the short name of the
+object identifier followed by <strong>=</strong> and the numerical form. The short
+and long names are the same when this option is used.</p>
+</dd>
+<dt><strong><a name="randfile" class="item"><strong>RANDFILE</strong></a></strong></dt>
+
+<dd>
+<p>At startup the specified file is loaded into the random number generator,
+and at exit 256 bytes will be written to it.
+It is used for private key generation.</p>
+</dd>
+<dt><strong><a name="encrypt_key" class="item"><strong>encrypt_key</strong></a></strong></dt>
+
+<dd>
+<p>If this is set to <strong>no</strong> then if a private key is generated it is
+<strong>not</strong> encrypted. This is equivalent to the <strong>-nodes</strong> command line
+option. For compatibility <strong>encrypt_rsa_key</strong> is an equivalent option.</p>
+</dd>
+<dt><strong><a name="default_md" class="item"><strong>default_md</strong></a></strong></dt>
+
+<dd>
+<p>This option specifies the digest algorithm to use. Any digest supported by the
+OpenSSL <strong>dgst</strong> command can be used. This option can be overridden on the
+command line. Certain signing algorithms (i.e. Ed25519 and Ed448) will ignore
+any digest that has been set.</p>
+</dd>
+<dt><strong><a name="string_mask" class="item"><strong>string_mask</strong></a></strong></dt>
+
+<dd>
+<p>This option masks out the use of certain string types in certain
+fields. Most users will not need to change this option.</p>
+<p>It can be set to several values <strong>default</strong> which is also the default
+option uses PrintableStrings, T61Strings and BMPStrings if the
+<strong>pkix</strong> value is used then only PrintableStrings and BMPStrings will
+be used. This follows the PKIX recommendation in <a href="http://www.ietf.org/rfc/rfc2459.txt" class="rfc">RFC2459</a>. If the
+<strong>utf8only</strong> option is used then only UTF8Strings will be used: this
+is the PKIX recommendation in <a href="http://www.ietf.org/rfc/rfc2459.txt" class="rfc">RFC2459</a> after 2003. Finally the <strong>nombstr</strong>
+option just uses PrintableStrings and T61Strings: certain software has
+problems with BMPStrings and UTF8Strings: in particular Netscape.</p>
+</dd>
+<dt><strong><a name="req_extensions" class="item"><strong>req_extensions</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the configuration file section containing a list of
+extensions to add to the certificate request. It can be overridden
+by the <strong>-reqexts</strong> command line switch. See the
+<em>x509v3_config(5)</em> manual page for details of the
+extension section format.</p>
+</dd>
+<dt><strong><a name="x509_extensions" class="item"><strong>x509_extensions</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the configuration file section containing a list of
+extensions to add to certificate generated when the <strong>-x509</strong> switch
+is used. It can be overridden by the <strong>-extensions</strong> command line switch.</p>
+</dd>
+<dt><strong><a name="prompt" class="item"><strong>prompt</strong></a></strong></dt>
+
+<dd>
+<p>If set to the value <strong>no</strong> this disables prompting of certificate fields
+and just takes values from the config file directly. It also changes the
+expected format of the <strong>distinguished_name</strong> and <strong>attributes</strong> sections.</p>
+</dd>
+<dt><strong><strong>utf8</strong></strong></dt>
+
+<dd>
+<p>If set to the value <strong>yes</strong> then field values to be interpreted as UTF8
+strings, by default they are interpreted as ASCII. This means that
+the field values, whether prompted from a terminal or obtained from a
+configuration file, must be valid UTF8 strings.</p>
+</dd>
+<dt><strong><a name="attributes" class="item"><strong>attributes</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the section containing any request attributes: its format
+is the same as <strong>distinguished_name</strong>. Typically these may contain the
+challengePassword or unstructuredName types. They are currently ignored
+by OpenSSL's request signing utilities but some CAs might want them.</p>
+</dd>
+<dt><strong><a name="distinguished_name" class="item"><strong>distinguished_name</strong></a></strong></dt>
+
+<dd>
+<p>This specifies the section containing the distinguished name fields to
+prompt for when generating a certificate or certificate request. The format
+is described in the next section.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="distinguished_name_and_attribute_section_format">DISTINGUISHED NAME AND ATTRIBUTE SECTION FORMAT</a></h1>
+<p>There are two separate formats for the distinguished name and attribute
+sections. If the <strong>prompt</strong> option is set to <strong>no</strong> then these sections
+just consist of field names and values: for example,</p>
+<pre>
+ CN=My Name
+ OU=My Organization
+ emailAddress=someone@somewhere.org</pre>
+<p>This allows external programs (e.g. GUI based) to generate a template file
+with all the field names and values and just pass it to <strong>req</strong>. An example
+of this kind of configuration file is contained in the <strong>EXAMPLES</strong> section.</p>
+<p>Alternatively if the <strong>prompt</strong> option is absent or not set to <strong>no</strong> then the
+file contains field prompting information. It consists of lines of the form:</p>
+<pre>
+ fieldName=&quot;prompt&quot;
+ fieldName_default=&quot;default field value&quot;
+ fieldName_min= 2
+ fieldName_max= 4</pre>
+<p>&quot;fieldName&quot; is the field name being used, for example commonName (or CN).
+The &quot;prompt&quot; string is used to ask the user to enter the relevant
+details. If the user enters nothing then the default value is used if no
+default value is present then the field is omitted. A field can
+still be omitted if a default value is present if the user just
+enters the '.' character.</p>
+<p>The number of characters entered must be between the fieldName_min and
+fieldName_max limits: there may be additional restrictions based
+on the field being used (for example countryName can only ever be
+two characters long and must fit in a PrintableString).</p>
+<p>Some fields (such as organizationName) can be used more than once
+in a DN. This presents a problem because configuration files will
+not recognize the same name occurring twice. To avoid this problem
+if the fieldName contains some characters followed by a full stop
+they will be ignored. So for example a second organizationName can
+be input by calling it &quot;1.organizationName&quot;.</p>
+<p>The actual permitted field names are any object identifier short or
+long names. These are compiled into OpenSSL and include the usual
+values such as commonName, countryName, localityName, organizationName,
+organizationalUnitName, stateOrProvinceName. Additionally emailAddress
+is included as well as name, surname, givenName, initials, and dnQualifier.</p>
+<p>Additional object identifiers can be defined with the <strong>oid_file</strong> or
+<strong>oid_section</strong> options in the configuration file. Any additional fields
+will be treated as though they were a DirectoryString.</p>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>Examine and verify certificate request:</p>
+<pre>
+ openssl req -in req.pem -text -verify -noout</pre>
+<p>Create a private key and then generate a certificate request from it:</p>
+<pre>
+ openssl genrsa -out key.pem 2048
+ openssl req -new -key key.pem -out req.pem</pre>
+<p>The same but just using req:</p>
+<pre>
+ openssl req -newkey rsa:2048 -keyout key.pem -out req.pem</pre>
+<p>Generate a self signed root certificate:</p>
+<pre>
+ openssl req -x509 -newkey rsa:2048 -keyout key.pem -out req.pem</pre>
+<p>Example of a file pointed to by the <strong>oid_file</strong> option:</p>
+<pre>
+ 1.2.3.4        shortName       A longer Name
+ 1.2.3.6        otherName       Other longer Name</pre>
+<p>Example of a section pointed to by <strong>oid_section</strong> making use of variable
+expansion:</p>
+<pre>
+ testoid1=1.2.3.5
+ testoid2=${testoid1}.6</pre>
+<p>Sample configuration file prompting for field values:</p>
+<pre>
+ [ req ]
+ default_bits           = 2048
+ default_keyfile        = privkey.pem
+ distinguished_name     = req_distinguished_name
+ attributes             = req_attributes
+ req_extensions         = v3_ca</pre>
+<pre>
+ dirstring_type = nobmp</pre>
+<pre>
+ [ req_distinguished_name ]
+ countryName                    = Country Name (2 letter code)
+ countryName_default            = AU
+ countryName_min                = 2
+ countryName_max                = 2</pre>
+<pre>
+ localityName                   = Locality Name (eg, city)</pre>
+<pre>
+ organizationalUnitName         = Organizational Unit Name (eg, section)</pre>
+<pre>
+ commonName                     = Common Name (eg, YOUR name)
+ commonName_max                 = 64</pre>
+<pre>
+ emailAddress                   = Email Address
+ emailAddress_max               = 40</pre>
+<pre>
+ [ req_attributes ]
+ challengePassword              = A challenge password
+ challengePassword_min          = 4
+ challengePassword_max          = 20</pre>
+<pre>
+ [ v3_ca ]</pre>
+<pre>
+ subjectKeyIdentifier=hash
+ authorityKeyIdentifier=keyid:always,issuer:always
+ basicConstraints = critical, CA:true</pre>
+<p>Sample configuration containing all field values:</p>
+<pre>
+ RANDFILE               = $ENV::HOME/.rnd</pre>
+<pre>
+ [ req ]
+ default_bits           = 2048
+ default_keyfile        = keyfile.pem
+ distinguished_name     = req_distinguished_name
+ attributes             = req_attributes
+ prompt                 = no
+ output_password        = mypass</pre>
+<pre>
+ [ req_distinguished_name ]
+ C                      = GB
+ ST                     = Test State or Province
+ L                      = Test Locality
+ O                      = Organization Name
+ OU                     = Organizational Unit Name
+ CN                     = Common Name
+ emailAddress           = test@email.address</pre>
+<pre>
+ [ req_attributes ]
+ challengePassword              = A challenge password</pre>
+<p>Example of giving the most common attributes (subject and extensions)
+on the command line:</p>
+<pre>
+ openssl req -new -subj &quot;/C=GB/CN=foo&quot; \
+                  -addext &quot;subjectAltName = DNS:foo.co.uk&quot; \
+                  -addext &quot;certificatePolicies = 1.2.3.4&quot; \
+                  -newkey rsa:2048 -keyout key.pem -out req.pem</pre>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>The header and footer lines in the <strong>PEM</strong> format are normally:</p>
+<pre>
+ -----BEGIN CERTIFICATE REQUEST-----
+ -----END CERTIFICATE REQUEST-----</pre>
+<p>some software (some versions of Netscape certificate server) instead needs:</p>
+<pre>
+ -----BEGIN NEW CERTIFICATE REQUEST-----
+ -----END NEW CERTIFICATE REQUEST-----</pre>
+<p>which is produced with the <strong>-newhdr</strong> option but is otherwise compatible.
+Either form is accepted transparently on input.</p>
+<p>The certificate requests generated by <strong>Xenroll</strong> with MSIE have extensions
+added. It includes the <strong>keyUsage</strong> extension which determines the type of
+key (signature only or general purpose) and any additional OIDs entered
+by the script in an extendedKeyUsage extension.</p>
+<p>
+</p>
+<hr />
+<h1><a name="diagnostics">DIAGNOSTICS</a></h1>
+<p>The following messages are frequently asked about:</p>
+<pre>
+        Using configuration from /some/path/openssl.cnf
+        Unable to load config info</pre>
+<p>This is followed some time later by...</p>
+<pre>
+        unable to find 'distinguished_name' in config
+        problems making Certificate Request</pre>
+<p>The first error message is the clue: it can't find the configuration
+file! Certain operations (like examining a certificate request) don't
+need a configuration file so its use isn't enforced. Generation of
+certificates or requests however does need a configuration file. This
+could be regarded as a bug.</p>
+<p>Another puzzling message is this:</p>
+<pre>
+        Attributes:
+            a0:00</pre>
+<p>this is displayed when no attributes are present and the request includes
+the correct empty <strong>SET OF</strong> structure (the DER encoding of which is 0xa0
+0x00). If you just see:</p>
+<pre>
+        Attributes:</pre>
+<p>then the <strong>SET OF</strong> is missing and the encoding is technically invalid (but
+it is tolerated). See the description of the command line option <strong>-asn1-kludge</strong>
+for more information.</p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>OpenSSL's handling of T61Strings (aka TeletexStrings) is broken: it effectively
+treats them as ISO-8859-1 (Latin 1), Netscape and MSIE have similar behaviour.
+This can cause problems if you need characters that aren't available in
+PrintableStrings and you don't want to or can't use BMPStrings.</p>
+<p>As a consequence of the T61String handling the only correct way to represent
+accented characters in OpenSSL is to use a BMPString: unfortunately Netscape
+currently chokes on these. If you have to use accented characters with Netscape
+and MSIE then you currently need to use the invalid T61String form.</p>
+<p>The current prompting is not very friendly. It doesn't allow you to confirm what
+you've just entered. Other things like extensions in certificate requests are
+statically defined in the configuration file. Some of these: like an email
+address in subjectAltName should be input by the user.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><a href="#x509">x509(1)</a>, <em>ca(1)</em>, <em>genrsa(1)</em>,
+<em>gendsa(1)</em>, <em>config(5)</em>,
+<em>x509v3_config(5)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

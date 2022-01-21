@@ -1,0 +1,163 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_write</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#warnings">WARNINGS</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_write_ex, SSL_write - write bytes to a TLS/SSL connection</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_write_ex(SSL *s, const void *buf, size_t num, size_t *written);
+ int SSL_write(SSL *ssl, const void *buf, int num);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_write_ex()</code> and <code>SSL_write()</code> write <strong>num</strong> bytes from the buffer <strong>buf</strong> into
+the specified <strong>ssl</strong> connection. On success <code>SSL_write_ex()</code> will store the number
+of bytes written in <strong>*written</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>In the paragraphs below a &quot;write function&quot; is defined as one of either
+<code>SSL_write_ex()</code>, or <code>SSL_write()</code>.</p>
+<p>If necessary, a write function will negotiate a TLS/SSL session, if not already
+explicitly performed by <em>SSL_connect(3)</em> or <em>SSL_accept(3)</em>. If the peer
+requests a re-negotiation, it will be performed transparently during
+the write function operation. The behaviour of the write functions depends on the
+underlying BIO.</p>
+<p>For the transparent negotiation to succeed, the <strong>ssl</strong> must have been
+initialized to client or server mode. This is being done by calling
+<em>SSL_set_connect_state(3)</em> or <code>SSL_set_accept_state()</code>
+before the first call to a write function.</p>
+<p>If the underlying BIO is <strong>blocking</strong>, the write functions will only return, once
+the write operation has been finished or an error occurred.</p>
+<p>If the underlying BIO is <strong>non-blocking</strong> the write functions will also return
+when the underlying BIO could not satisfy the needs of the function to continue
+the operation. In this case a call to <em>SSL_get_error(3)</em> with the
+return value of the write function will yield <strong>SSL_ERROR_WANT_READ</strong>
+or <strong>SSL_ERROR_WANT_WRITE</strong>. As at any time a re-negotiation is possible, a
+call to a write function can also cause read operations! The calling process
+then must repeat the call after taking appropriate action to satisfy the needs
+of the write function. The action depends on the underlying BIO. When using a
+non-blocking socket, nothing is to be done, but <code>select()</code> can be used to check
+for the required condition. When using a buffering BIO, like a BIO pair, data
+must be written into or retrieved out of the BIO before being able to continue.</p>
+<p>The write functions will only return with success when the complete contents of
+<strong>buf</strong> of length <strong>num</strong> has been written. This default behaviour can be changed
+with the SSL_MODE_ENABLE_PARTIAL_WRITE option of <em>SSL_CTX_set_mode(3)</em>. When
+this flag is set the write functions will also return with success when a
+partial write has been successfully completed. In this case the write function
+operation is considered completed. The bytes are sent and a new write call with
+a new buffer (with the already sent bytes removed) must be started. A partial
+write is performed with the size of a message block, which is 16kB.</p>
+<p>
+</p>
+<hr />
+<h1><a name="warnings">WARNINGS</a></h1>
+<p>When a write function call has to be repeated because <em>SSL_get_error(3)</em>
+returned <strong>SSL_ERROR_WANT_READ</strong> or <strong>SSL_ERROR_WANT_WRITE</strong>, it must be repeated
+with the same arguments.
+The data that was passed might have been partially processed.
+When <strong>SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER</strong> was set using <em>SSL_CTX_set_mode(3)</em>
+the pointer can be different, but the data and length should still be the same.</p>
+<p>You should not call <code>SSL_write()</code> with num=0, it will return an error.
+<code>SSL_write_ex()</code> can be called with num=0, but will not send application data to
+the peer.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_write_ex()</code> will return 1 for success or 0 for failure. Success means that
+all requested application data bytes have been written to the SSL connection or,
+if SSL_MODE_ENABLE_PARTIAL_WRITE is in use, at least 1 application data byte has
+been written to the SSL connection. Failure means that not all the requested
+bytes have been written yet (if SSL_MODE_ENABLE_PARTIAL_WRITE is not in use) or
+no bytes could be written to the SSL connection (if
+SSL_MODE_ENABLE_PARTIAL_WRITE is in use). Failures can be retryable (e.g. the
+network write buffer has temporarily filled up) or non-retryable (e.g. a fatal
+network error). In the event of a failure call <em>SSL_get_error(3)</em> to find out
+the reason which indicates whether the call is retryable or not.</p>
+<p>For <code>SSL_write()</code> the following return values can occur:</p>
+<dl>
+<dt><strong><a name="__0" class="item">&gt; 0</a></strong></dt>
+
+<dd>
+<p>The write operation was successful, the return value is the number of
+bytes actually written to the TLS/SSL connection.</p>
+</dd>
+<dt><strong><a name="___0" class="item">&lt;= 0</a></strong></dt>
+
+<dd>
+<p>The write operation was not successful, because either the connection was
+closed, an error occurred or action must be taken by the calling process.
+Call <code>SSL_get_error()</code> with the return value <strong>ret</strong> to find out the reason.</p>
+<p>Old documentation indicated a difference between 0 and -1, and that -1 was
+retryable.
+You should instead call <code>SSL_get_error()</code> to find out if it's retryable.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>SSL_get_error(3)</em>, <em>SSL_read_ex(3)</em>, <em>SSL_read(3)</em>
+<em>SSL_CTX_set_mode(3)</em>, <em>SSL_CTX_new(3)</em>,
+<em>SSL_connect(3)</em>, <em>SSL_accept(3)</em>
+<em>SSL_set_connect_state(3)</em>,
+<em>ssl(7)</em>, <em>bio(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The <code>SSL_write_ex()</code> function was added in OpenSSL 1.1.1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

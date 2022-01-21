@@ -1,0 +1,298 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_alert_type_string</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_alert_type_string, SSL_alert_type_string_long, SSL_alert_desc_string, SSL_alert_desc_string_long - get textual description of alert information</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ const char *SSL_alert_type_string(int value);
+ const char *SSL_alert_type_string_long(int value);</pre>
+<pre>
+ const char *SSL_alert_desc_string(int value);
+ const char *SSL_alert_desc_string_long(int value);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_alert_type_string()</code> returns a one letter string indicating the
+type of the alert specified by <strong>value</strong>.</p>
+<p><code>SSL_alert_type_string_long()</code> returns a string indicating the type of the alert
+specified by <strong>value</strong>.</p>
+<p><code>SSL_alert_desc_string()</code> returns a two letter string as a short form
+describing the reason of the alert specified by <strong>value</strong>.</p>
+<p><code>SSL_alert_desc_string_long()</code> returns a string describing the reason
+of the alert specified by <strong>value</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>When one side of an SSL/TLS communication wants to inform the peer about
+a special situation, it sends an alert. The alert is sent as a special message
+and does not influence the normal data stream (unless its contents results
+in the communication being canceled).</p>
+<p>A warning alert is sent, when a non-fatal error condition occurs. The
+&quot;close notify&quot; alert is sent as a warning alert. Other examples for
+non-fatal errors are certificate errors (&quot;certificate expired&quot;,
+&quot;unsupported certificate&quot;), for which a warning alert may be sent.
+(The sending party may however decide to send a fatal error.) The
+receiving side may cancel the connection on reception of a warning
+alert on it discretion.</p>
+<p>Several alert messages must be sent as fatal alert messages as specified
+by the TLS RFC. A fatal alert always leads to a connection abort.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>The following strings can occur for <code>SSL_alert_type_string()</code> or
+SSL_alert_type_string_long():</p>
+<dl>
+<dt><strong><a name="w_warning" class="item">&quot;W&quot;/&quot;warning&quot;</a></strong></dt>
+
+<dt><strong><a name="f_fatal" class="item">&quot;F&quot;/&quot;fatal&quot;</a></strong></dt>
+
+<dt><strong><a name="u_unknown" class="item">&quot;U&quot;/&quot;unknown&quot;</a></strong></dt>
+
+<dd>
+<p>This indicates that no support is available for this alert type.
+Probably <strong>value</strong> does not contain a correct alert message.</p>
+</dd>
+</dl>
+<p>The following strings can occur for <code>SSL_alert_desc_string()</code> or
+SSL_alert_desc_string_long():</p>
+<dl>
+<dt><strong><a name="cn_close_notify" class="item">&quot;CN&quot;/&quot;close notify&quot;</a></strong></dt>
+
+<dd>
+<p>The connection shall be closed. This is a warning alert.</p>
+</dd>
+<dt><strong><a name="um_unexpected_message" class="item">&quot;UM&quot;/&quot;unexpected message&quot;</a></strong></dt>
+
+<dd>
+<p>An inappropriate message was received. This alert is always fatal
+and should never be observed in communication between proper
+implementations.</p>
+</dd>
+<dt><strong><a name="bm_bad_record_mac" class="item">&quot;BM&quot;/&quot;bad record mac&quot;</a></strong></dt>
+
+<dd>
+<p>This alert is returned if a record is received with an incorrect
+MAC. This message is always fatal.</p>
+</dd>
+<dt><strong><a name="df_decompression_failure" class="item">&quot;DF&quot;/&quot;decompression failure&quot;</a></strong></dt>
+
+<dd>
+<p>The decompression function received improper input (e.g. data
+that would expand to excessive length). This message is always
+fatal.</p>
+</dd>
+<dt><strong><a name="hf_handshake_failure" class="item">&quot;HF&quot;/&quot;handshake failure&quot;</a></strong></dt>
+
+<dd>
+<p>Reception of a handshake_failure alert message indicates that the
+sender was unable to negotiate an acceptable set of security
+parameters given the options available. This is a fatal error.</p>
+</dd>
+<dt><strong><a name="nc_no_certificate" class="item">&quot;NC&quot;/&quot;no certificate&quot;</a></strong></dt>
+
+<dd>
+<p>A client, that was asked to send a certificate, does not send a certificate
+(SSLv3 only).</p>
+</dd>
+<dt><strong><a name="bc_bad_certificate" class="item">&quot;BC&quot;/&quot;bad certificate&quot;</a></strong></dt>
+
+<dd>
+<p>A certificate was corrupt, contained signatures that did not
+verify correctly, etc</p>
+</dd>
+<dt><strong><a name="uc_unsupported_certificate" class="item">&quot;UC&quot;/&quot;unsupported certificate&quot;</a></strong></dt>
+
+<dd>
+<p>A certificate was of an unsupported type.</p>
+</dd>
+<dt><strong><a name="cr_certificate_revoked" class="item">&quot;CR&quot;/&quot;certificate revoked&quot;</a></strong></dt>
+
+<dd>
+<p>A certificate was revoked by its signer.</p>
+</dd>
+<dt><strong><a name="ce_certificate_expired" class="item">&quot;CE&quot;/&quot;certificate expired&quot;</a></strong></dt>
+
+<dd>
+<p>A certificate has expired or is not currently valid.</p>
+</dd>
+<dt><strong><a name="cu_certificate_unknown" class="item">&quot;CU&quot;/&quot;certificate unknown&quot;</a></strong></dt>
+
+<dd>
+<p>Some other (unspecified) issue arose in processing the
+certificate, rendering it unacceptable.</p>
+</dd>
+<dt><strong><a name="ip_illegal_parameter" class="item">&quot;IP&quot;/&quot;illegal parameter&quot;</a></strong></dt>
+
+<dd>
+<p>A field in the handshake was out of range or inconsistent with
+other fields. This is always fatal.</p>
+</dd>
+<dt><strong><a name="dc_decryption_failed" class="item">&quot;DC&quot;/&quot;decryption failed&quot;</a></strong></dt>
+
+<dd>
+<p>A TLSCiphertext decrypted in an invalid way: either it wasn't an
+even multiple of the block length or its padding values, when
+checked, weren't correct. This message is always fatal.</p>
+</dd>
+<dt><strong><a name="ro_record_overflow" class="item">&quot;RO&quot;/&quot;record overflow&quot;</a></strong></dt>
+
+<dd>
+<p>A TLSCiphertext record was received which had a length more than
+2^14+2048 bytes, or a record decrypted to a TLSCompressed record
+with more than 2^14+1024 bytes. This message is always fatal.</p>
+</dd>
+<dt><strong><a name="ca_unknown_ca" class="item">&quot;CA&quot;/&quot;unknown CA&quot;</a></strong></dt>
+
+<dd>
+<p>A valid certificate chain or partial chain was received, but the
+certificate was not accepted because the CA certificate could not
+be located or couldn't be matched with a known, trusted CA.  This
+message is always fatal.</p>
+</dd>
+<dt><strong><a name="ad_access_denied" class="item">&quot;AD&quot;/&quot;access denied&quot;</a></strong></dt>
+
+<dd>
+<p>A valid certificate was received, but when access control was
+applied, the sender decided not to proceed with negotiation.
+This message is always fatal.</p>
+</dd>
+<dt><strong><a name="de_decode_error" class="item">&quot;DE&quot;/&quot;decode error&quot;</a></strong></dt>
+
+<dd>
+<p>A message could not be decoded because some field was out of the
+specified range or the length of the message was incorrect. This
+message is always fatal.</p>
+</dd>
+<dt><strong><a name="cy_decrypt_error" class="item">&quot;CY&quot;/&quot;decrypt error&quot;</a></strong></dt>
+
+<dd>
+<p>A handshake cryptographic operation failed, including being
+unable to correctly verify a signature, decrypt a key exchange,
+or validate a finished message.</p>
+</dd>
+<dt><strong><a name="er_export_restriction" class="item">&quot;ER&quot;/&quot;export restriction&quot;</a></strong></dt>
+
+<dd>
+<p>A negotiation not in compliance with export restrictions was
+detected; for example, attempting to transfer a 1024 bit
+ephemeral RSA key for the RSA_EXPORT handshake method. This
+message is always fatal.</p>
+</dd>
+<dt><strong><a name="pv_protocol_version" class="item">&quot;PV&quot;/&quot;protocol version&quot;</a></strong></dt>
+
+<dd>
+<p>The protocol version the client has attempted to negotiate is
+recognized, but not supported. (For example, old protocol
+versions might be avoided for security reasons). This message is
+always fatal.</p>
+</dd>
+<dt><strong><a name="is_insufficient_security" class="item">&quot;IS&quot;/&quot;insufficient security&quot;</a></strong></dt>
+
+<dd>
+<p>Returned instead of handshake_failure when a negotiation has
+failed specifically because the server requires ciphers more
+secure than those supported by the client. This message is always
+fatal.</p>
+</dd>
+<dt><strong><a name="ie_internal_error" class="item">&quot;IE&quot;/&quot;internal error&quot;</a></strong></dt>
+
+<dd>
+<p>An internal error unrelated to the peer or the correctness of the
+protocol makes it impossible to continue (such as a memory
+allocation failure). This message is always fatal.</p>
+</dd>
+<dt><strong><a name="us_user_canceled" class="item">&quot;US&quot;/&quot;user canceled&quot;</a></strong></dt>
+
+<dd>
+<p>This handshake is being canceled for some reason unrelated to a
+protocol failure. If the user cancels an operation after the
+handshake is complete, just closing the connection by sending a
+close_notify is more appropriate. This alert should be followed
+by a close_notify. This message is generally a warning.</p>
+</dd>
+<dt><strong><a name="nr_no_renegotiation" class="item">&quot;NR&quot;/&quot;no renegotiation&quot;</a></strong></dt>
+
+<dd>
+<p>Sent by the client in response to a hello request or by the
+server in response to a client hello after initial handshaking.
+Either of these would normally lead to renegotiation; when that
+is not appropriate, the recipient should respond with this alert;
+at that point, the original requester can decide whether to
+proceed with the connection. One case where this would be
+appropriate would be where a server has spawned a process to
+satisfy a request; the process might receive security parameters
+(key length, authentication, etc.) at startup and it might be
+difficult to communicate changes to these parameters after that
+point. This message is always a warning.</p>
+</dd>
+<dt><strong><a name="up_unknown_psk_identity" class="item">&quot;UP&quot;/&quot;unknown PSK identity&quot;</a></strong></dt>
+
+<dd>
+<p>Sent by the server to indicate that it does not recognize a PSK
+identity or an SRP identity.</p>
+</dd>
+<dt><strong><a name="uk_unknown" class="item">&quot;UK&quot;/&quot;unknown&quot;</a></strong></dt>
+
+<dd>
+<p>This indicates that no description is available for this alert type.
+Probably <strong>value</strong> does not contain a correct alert message.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>, <em>SSL_CTX_set_info_callback(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2001-2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

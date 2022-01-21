@@ -1,0 +1,109 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_add_session</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_add_session, SSL_CTX_remove_session - manipulate session cache</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_CTX_add_session(SSL_CTX *ctx, SSL_SESSION *c);</pre>
+<pre>
+ int SSL_CTX_remove_session(SSL_CTX *ctx, SSL_SESSION *c);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_add_session()</code> adds the session <strong>c</strong> to the context <strong>ctx</strong>. The
+reference count for session <strong>c</strong> is incremented by 1. If a session with
+the same session id already exists, the old session is removed by calling
+<em>SSL_SESSION_free(3)</em>.</p>
+<p><code>SSL_CTX_remove_session()</code> removes the session <strong>c</strong> from the context <strong>ctx</strong> and
+marks it as non-resumable. <em>SSL_SESSION_free(3)</em> is called once for <strong>c</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>When adding a new session to the internal session cache, it is examined
+whether a session with the same session id already exists. In this case
+it is assumed that both sessions are identical. If the same session is
+stored in a different SSL_SESSION object, The old session is
+removed and replaced by the new session. If the session is actually
+identical (the SSL_SESSION object is identical), <code>SSL_CTX_add_session()</code>
+is a no-op, and the return value is 0.</p>
+<p>If a server SSL_CTX is configured with the SSL_SESS_CACHE_NO_INTERNAL_STORE
+flag then the internal cache will not be populated automatically by new
+sessions negotiated by the SSL/TLS implementation, even though the internal
+cache will be searched automatically for session-resume requests (the
+latter can be suppressed by SSL_SESS_CACHE_NO_INTERNAL_LOOKUP). So the
+application can use <code>SSL_CTX_add_session()</code> directly to have full control
+over the sessions that can be resumed if desired.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>The following values are returned by all functions:</p>
+<ol>
+<li>
+<p>The operation failed. In case of the add operation, it was tried to add
+the same (identical) session twice. In case of the remove operation, the
+session was not found in the cache.</p>
+</li>
+<li>
+<p>The operation succeeded.</p>
+</li>
+</ol>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>,
+<em>SSL_CTX_set_session_cache_mode(3)</em>,
+<em>SSL_SESSION_free(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2001-2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

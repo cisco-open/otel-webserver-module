@@ -1,0 +1,989 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>s_server</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#options">OPTIONS</a></li>
+	<li><a href="#connected_commands">CONNECTED COMMANDS</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>openssl-s_server,
+s_server - SSL/TLS server program</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p><strong>openssl</strong> <strong>s_server</strong>
+[<strong>-help</strong>]
+[<strong>-port +int</strong>]
+[<strong>-accept val</strong>]
+[<strong>-unix val</strong>]
+[<strong>-4</strong>]
+[<strong>-6</strong>]
+[<strong>-unlink</strong>]
+[<strong>-context val</strong>]
+[<strong>-verify int</strong>]
+[<strong>-Verify int</strong>]
+[<strong>-cert infile</strong>]
+[<strong>-nameopt val</strong>]
+[<strong>-naccept +int</strong>]
+[<strong>-serverinfo val</strong>]
+[<strong>-certform PEM|DER</strong>]
+[<strong>-key infile</strong>]
+[<strong>-keyform format</strong>]
+[<strong>-pass val</strong>]
+[<strong>-dcert infile</strong>]
+[<strong>-dcertform PEM|DER</strong>]
+[<strong>-dkey infile</strong>]
+[<strong>-dkeyform PEM|DER</strong>]
+[<strong>-dpass val</strong>]
+[<strong>-nbio_test</strong>]
+[<strong>-crlf</strong>]
+[<strong>-debug</strong>]
+[<strong>-msg</strong>]
+[<strong>-msgfile outfile</strong>]
+[<strong>-state</strong>]
+[<strong>-CAfile infile</strong>]
+[<strong>-CApath dir</strong>]
+[<strong>-no-CAfile</strong>]
+[<strong>-no-CApath</strong>]
+[<strong>-nocert</strong>]
+[<strong>-quiet</strong>]
+[<strong>-no_resume_ephemeral</strong>]
+[<strong>-www</strong>]
+[<strong>-WWW</strong>]
+[<strong>-servername</strong>]
+[<strong>-servername_fatal</strong>]
+[<strong>-cert2 infile</strong>]
+[<strong>-key2 infile</strong>]
+[<strong>-tlsextdebug</strong>]
+[<strong>-HTTP</strong>]
+[<strong>-id_prefix val</strong>]
+[<strong>-rand file...</strong>]
+[<strong>-writerand file</strong>]
+[<strong>-keymatexport val</strong>]
+[<strong>-keymatexportlen +int</strong>]
+[<strong>-CRL infile</strong>]
+[<strong>-crl_download</strong>]
+[<strong>-cert_chain infile</strong>]
+[<strong>-dcert_chain infile</strong>]
+[<strong>-chainCApath dir</strong>]
+[<strong>-verifyCApath dir</strong>]
+[<strong>-no_cache</strong>]
+[<strong>-ext_cache</strong>]
+[<strong>-CRLform PEM|DER</strong>]
+[<strong>-verify_return_error</strong>]
+[<strong>-verify_quiet</strong>]
+[<strong>-build_chain</strong>]
+[<strong>-chainCAfile infile</strong>]
+[<strong>-verifyCAfile infile</strong>]
+[<strong>-ign_eof</strong>]
+[<strong>-no_ign_eof</strong>]
+[<strong>-status</strong>]
+[<strong>-status_verbose</strong>]
+[<strong>-status_timeout int</strong>]
+[<strong>-status_url val</strong>]
+[<strong>-status_file infile</strong>]
+[<strong>-trace</strong>]
+[<strong>-security_debug</strong>]
+[<strong>-security_debug_verbose</strong>]
+[<strong>-brief</strong>]
+[<strong>-rev</strong>]
+[<strong>-async</strong>]
+[<strong>-ssl_config val</strong>]
+[<strong>-max_send_frag +int</strong>]
+[<strong>-split_send_frag +int</strong>]
+[<strong>-max_pipelines +int</strong>]
+[<strong>-read_buf +int</strong>]
+[<strong>-no_ssl3</strong>]
+[<strong>-no_tls1</strong>]
+[<strong>-no_tls1_1</strong>]
+[<strong>-no_tls1_2</strong>]
+[<strong>-no_tls1_3</strong>]
+[<strong>-bugs</strong>]
+[<strong>-no_comp</strong>]
+[<strong>-comp</strong>]
+[<strong>-no_ticket</strong>]
+[<strong>-num_tickets</strong>]
+[<strong>-serverpref</strong>]
+[<strong>-legacy_renegotiation</strong>]
+[<strong>-no_renegotiation</strong>]
+[<strong>-legacy_server_connect</strong>]
+[<strong>-no_resumption_on_reneg</strong>]
+[<strong>-no_legacy_server_connect</strong>]
+[<strong>-allow_no_dhe_kex</strong>]
+[<strong>-prioritize_chacha</strong>]
+[<strong>-strict</strong>]
+[<strong>-sigalgs val</strong>]
+[<strong>-client_sigalgs val</strong>]
+[<strong>-groups val</strong>]
+[<strong>-curves val</strong>]
+[<strong>-named_curve val</strong>]
+[<strong>-cipher val</strong>]
+[<strong>-ciphersuites val</strong>]
+[<strong>-dhparam infile</strong>]
+[<strong>-record_padding val</strong>]
+[<strong>-debug_broken_protocol</strong>]
+[<strong>-policy val</strong>]
+[<strong>-purpose val</strong>]
+[<strong>-verify_name val</strong>]
+[<strong>-verify_depth int</strong>]
+[<strong>-auth_level int</strong>]
+[<strong>-attime intmax</strong>]
+[<strong>-verify_hostname val</strong>]
+[<strong>-verify_email val</strong>]
+[<strong>-verify_ip</strong>]
+[<strong>-ignore_critical</strong>]
+[<strong>-issuer_checks</strong>]
+[<strong>-crl_check</strong>]
+[<strong>-crl_check_all</strong>]
+[<strong>-policy_check</strong>]
+[<strong>-explicit_policy</strong>]
+[<strong>-inhibit_any</strong>]
+[<strong>-inhibit_map</strong>]
+[<strong>-x509_strict</strong>]
+[<strong>-extended_crl</strong>]
+[<strong>-use_deltas</strong>]
+[<strong>-policy_print</strong>]
+[<strong>-check_ss_sig</strong>]
+[<strong>-trusted_first</strong>]
+[<strong>-suiteB_128_only</strong>]
+[<strong>-suiteB_128</strong>]
+[<strong>-suiteB_192</strong>]
+[<strong>-partial_chain</strong>]
+[<strong>-no_alt_chains</strong>]
+[<strong>-no_check_time</strong>]
+[<strong>-allow_proxy_certs</strong>]
+[<strong>-xkey</strong>]
+[<strong>-xcert</strong>]
+[<strong>-xchain</strong>]
+[<strong>-xchain_build</strong>]
+[<strong>-xcertform PEM|DER</strong>]
+[<strong>-xkeyform PEM|DER</strong>]
+[<strong>-nbio</strong>]
+[<strong>-psk_identity val</strong>]
+[<strong>-psk_hint val</strong>]
+[<strong>-psk val</strong>]
+[<strong>-psk_session file</strong>]
+[<strong>-srpvfile infile</strong>]
+[<strong>-srpuserseed val</strong>]
+[<strong>-ssl3</strong>]
+[<strong>-tls1</strong>]
+[<strong>-tls1_1</strong>]
+[<strong>-tls1_2</strong>]
+[<strong>-tls1_3</strong>]
+[<strong>-dtls</strong>]
+[<strong>-timeout</strong>]
+[<strong>-mtu +int</strong>]
+[<strong>-listen</strong>]
+[<strong>-dtls1</strong>]
+[<strong>-dtls1_2</strong>]
+[<strong>-sctp</strong>]
+[<strong>-sctp_label_bug</strong>]
+[<strong>-no_dhe</strong>]
+[<strong>-nextprotoneg val</strong>]
+[<strong>-use_srtp val</strong>]
+[<strong>-alpn val</strong>]
+[<strong>-engine val</strong>]
+[<strong>-keylogfile outfile</strong>]
+[<strong>-max_early_data int</strong>]
+[<strong>-early_data</strong>]
+[<strong>-anti_replay</strong>]
+[<strong>-no_anti_replay</strong>]</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The <strong>s_server</strong> command implements a generic SSL/TLS server which listens
+for connections on a given port using SSL/TLS.</p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<p>In addition to the options below the <strong>s_server</strong> utility also supports the
+common and server only options documented
+in the &quot;Supported Command Line Commands&quot; section of the <em>SSL_CONF_cmd(3)</em>
+manual page.</p>
+<dl>
+<dt><strong><a name="help" class="item"><strong>-help</strong></a></strong></dt>
+
+<dd>
+<p>Print out a usage message.</p>
+</dd>
+<dt><strong><a name="port_int" class="item"><strong>-port +int</strong></a></strong></dt>
+
+<dd>
+<p>The TCP port to listen on for connections. If not specified 4433 is used.</p>
+</dd>
+<dt><strong><a name="accept_val" class="item"><strong>-accept val</strong></a></strong></dt>
+
+<dd>
+<p>The optional TCP host and port to listen on for connections. If not specified, *:4433 is used.</p>
+</dd>
+<dt><strong><a name="unix_val" class="item"><strong>-unix val</strong></a></strong></dt>
+
+<dd>
+<p>Unix domain socket to accept on.</p>
+</dd>
+<dt><strong><a name="4" class="item"><strong>-4</strong></a></strong></dt>
+
+<dd>
+<p>Use IPv4 only.</p>
+</dd>
+<dt><strong><a name="6" class="item"><strong>-6</strong></a></strong></dt>
+
+<dd>
+<p>Use IPv6 only.</p>
+</dd>
+<dt><strong><a name="unlink" class="item"><strong>-unlink</strong></a></strong></dt>
+
+<dd>
+<p>For -unix, unlink any existing socket first.</p>
+</dd>
+<dt><strong><a name="context_val" class="item"><strong>-context val</strong></a></strong></dt>
+
+<dd>
+<p>Sets the SSL context id. It can be given any string value. If this option
+is not present a default value will be used.</p>
+</dd>
+<dt><strong><a name="verify_int_verify_int" class="item"><strong>-verify int</strong>, <strong>-Verify int</strong></a></strong></dt>
+
+<dd>
+<p>The verify depth to use. This specifies the maximum length of the
+client certificate chain and makes the server request a certificate from
+the client. With the <strong>-verify</strong> option a certificate is requested but the
+client does not have to send one, with the <strong>-Verify</strong> option the client
+must supply a certificate or an error occurs.</p>
+<p>If the cipher suite cannot request a client certificate (for example an
+anonymous cipher suite or PSK) this option has no effect.</p>
+</dd>
+<dt><strong><a name="cert_infile" class="item"><strong>-cert infile</strong></a></strong></dt>
+
+<dd>
+<p>The certificate to use, most servers cipher suites require the use of a
+certificate and some require a certificate with a certain public key type:
+for example the DSS cipher suites require a certificate containing a DSS
+(DSA) key. If not specified then the filename &quot;server.pem&quot; will be used.</p>
+</dd>
+<dt><strong><a name="cert_chain" class="item"><strong>-cert_chain</strong></a></strong></dt>
+
+<dd>
+<p>A file containing trusted certificates to use when attempting to build the
+client/server certificate chain related to the certificate specified via the
+<strong>-cert</strong> option.</p>
+</dd>
+<dt><strong><a name="build_chain" class="item"><strong>-build_chain</strong></a></strong></dt>
+
+<dd>
+<p>Specify whether the application should build the certificate chain to be
+provided to the client.</p>
+</dd>
+<dt><strong><a name="nameopt_val" class="item"><strong>-nameopt val</strong></a></strong></dt>
+
+<dd>
+<p>Option which determines how the subject or issuer names are displayed. The
+<strong>val</strong> argument can be a single option or multiple options separated by
+commas.  Alternatively the <strong>-nameopt</strong> switch may be used more than once to
+set multiple options. See the <em>x509(1)</em> manual page for details.</p>
+</dd>
+<dt><strong><a name="naccept_int" class="item"><strong>-naccept +int</strong></a></strong></dt>
+
+<dd>
+<p>The server will exit after receiving the specified number of connections,
+default unlimited.</p>
+</dd>
+<dt><strong><a name="serverinfo_val" class="item"><strong>-serverinfo val</strong></a></strong></dt>
+
+<dd>
+<p>A file containing one or more blocks of PEM data.  Each PEM block
+must encode a TLS ServerHello extension (2 bytes type, 2 bytes length,
+followed by &quot;length&quot; bytes of extension data).  If the client sends
+an empty TLS ClientHello extension matching the type, the corresponding
+ServerHello extension will be returned.</p>
+</dd>
+<dt><strong><a name="certform_pem_der" class="item"><strong>-certform PEM|DER</strong></a></strong></dt>
+
+<dd>
+<p>The certificate format to use: DER or PEM. PEM is the default.</p>
+</dd>
+<dt><strong><a name="key_infile" class="item"><strong>-key infile</strong></a></strong></dt>
+
+<dd>
+<p>The private key to use. If not specified then the certificate file will
+be used.</p>
+</dd>
+<dt><strong><a name="keyform_format" class="item"><strong>-keyform format</strong></a></strong></dt>
+
+<dd>
+<p>The private format to use: DER or PEM. PEM is the default.</p>
+</dd>
+<dt><strong><a name="pass_val" class="item"><strong>-pass val</strong></a></strong></dt>
+
+<dd>
+<p>The private key password source. For more information about the format of <strong>val</strong>
+see the <strong>PASS PHRASE ARGUMENTS</strong> section in <em>openssl(1)</em>.</p>
+</dd>
+<dt><strong><a name="dcert_infile_dkey_infile" class="item"><strong>-dcert infile</strong>, <strong>-dkey infile</strong></a></strong></dt>
+
+<dd>
+<p>Specify an additional certificate and private key, these behave in the
+same manner as the <strong>-cert</strong> and <strong>-key</strong> options except there is no default
+if they are not specified (no additional certificate and key is used). As
+noted above some cipher suites require a certificate containing a key of
+a certain type. Some cipher suites need a certificate carrying an RSA key
+and some a DSS (DSA) key. By using RSA and DSS certificates and keys
+a server can support clients which only support RSA or DSS cipher suites
+by using an appropriate certificate.</p>
+</dd>
+<dt><strong><a name="dcert_chain" class="item"><strong>-dcert_chain</strong></a></strong></dt>
+
+<dd>
+<p>A file containing trusted certificates to use when attempting to build the
+server certificate chain when a certificate specified via the <strong>-dcert</strong> option
+is in use.</p>
+</dd>
+<dt><strong><a name="dcertform_pem_der_dkeyform_pem_der_dpass_val" class="item"><strong>-dcertform PEM|DER</strong>, <strong>-dkeyform PEM|DER</strong>, <strong>-dpass val</strong></a></strong></dt>
+
+<dd>
+<p>Additional certificate and private key format and passphrase respectively.</p>
+</dd>
+<dt><strong><a name="xkey_infile_xcert_infile_xchain" class="item"><strong>-xkey infile</strong>, <strong>-xcert infile</strong>, <strong>-xchain</strong></a></strong></dt>
+
+<dd>
+<p>Specify an extra certificate, private key and certificate chain. These behave
+in the same manner as the <strong>-cert</strong>, <strong>-key</strong> and <strong>-cert_chain</strong> options.  When
+specified, the callback returning the first valid chain will be in use by
+the server.</p>
+</dd>
+<dt><strong><a name="xchain_build" class="item"><strong>-xchain_build</strong></a></strong></dt>
+
+<dd>
+<p>Specify whether the application should build the certificate chain to be
+provided to the client for the extra certificates provided via <strong>-xkey infile</strong>,
+<strong>-xcert infile</strong>, <strong>-xchain</strong> options.</p>
+</dd>
+<dt><strong><a name="xcertform_pem_der_xkeyform_pem_der" class="item"><strong>-xcertform PEM|DER</strong>, <strong>-xkeyform PEM|DER</strong></a></strong></dt>
+
+<dd>
+<p>Extra certificate and private key format respectively.</p>
+</dd>
+<dt><strong><a name="nbio_test" class="item"><strong>-nbio_test</strong></a></strong></dt>
+
+<dd>
+<p>Tests non blocking I/O.</p>
+</dd>
+<dt><strong><a name="crlf" class="item"><strong>-crlf</strong></a></strong></dt>
+
+<dd>
+<p>This option translated a line feed from the terminal into CR+LF.</p>
+</dd>
+<dt><strong><a name="debug" class="item"><strong>-debug</strong></a></strong></dt>
+
+<dd>
+<p>Print extensive debugging information including a hex dump of all traffic.</p>
+</dd>
+<dt><strong><a name="msg" class="item"><strong>-msg</strong></a></strong></dt>
+
+<dd>
+<p>Show all protocol messages with hex dump.</p>
+</dd>
+<dt><strong><a name="msgfile_outfile" class="item"><strong>-msgfile outfile</strong></a></strong></dt>
+
+<dd>
+<p>File to send output of <strong>-msg</strong> or <strong>-trace</strong> to, default standard output.</p>
+</dd>
+<dt><strong><a name="state" class="item"><strong>-state</strong></a></strong></dt>
+
+<dd>
+<p>Prints the SSL session states.</p>
+</dd>
+<dt><strong><a name="cafile_infile" class="item"><strong>-CAfile infile</strong></a></strong></dt>
+
+<dd>
+<p>A file containing trusted certificates to use during client authentication
+and to use when attempting to build the server certificate chain. The list
+is also used in the list of acceptable client CAs passed to the client when
+a certificate is requested.</p>
+</dd>
+<dt><strong><a name="capath_dir" class="item"><strong>-CApath dir</strong></a></strong></dt>
+
+<dd>
+<p>The directory to use for client certificate verification. This directory
+must be in &quot;hash format&quot;, see <em>verify(1)</em> for more information. These are
+also used when building the server certificate chain.</p>
+</dd>
+<dt><strong><a name="chaincapath_dir" class="item"><strong>-chainCApath dir</strong></a></strong></dt>
+
+<dd>
+<p>The directory to use for building the chain provided to the client. This
+directory must be in &quot;hash format&quot;, see <em>verify(1)</em> for more information.</p>
+</dd>
+<dt><strong><a name="chaincafile_file" class="item"><strong>-chainCAfile file</strong></a></strong></dt>
+
+<dd>
+<p>A file containing trusted certificates to use when attempting to build the
+server certificate chain.</p>
+</dd>
+<dt><strong><a name="no_cafile" class="item"><strong>-no-CAfile</strong></a></strong></dt>
+
+<dd>
+<p>Do not load the trusted CA certificates from the default file location.</p>
+</dd>
+<dt><strong><a name="no_capath" class="item"><strong>-no-CApath</strong></a></strong></dt>
+
+<dd>
+<p>Do not load the trusted CA certificates from the default directory location.</p>
+</dd>
+<dt><strong><a name="nocert" class="item"><strong>-nocert</strong></a></strong></dt>
+
+<dd>
+<p>If this option is set then no certificate is used. This restricts the
+cipher suites available to the anonymous ones (currently just anonymous
+DH).</p>
+</dd>
+<dt><strong><a name="quiet" class="item"><strong>-quiet</strong></a></strong></dt>
+
+<dd>
+<p>Inhibit printing of session and certificate information.</p>
+</dd>
+<dt><strong><a name="www" class="item"><strong>-www</strong></a></strong></dt>
+
+<dd>
+<p>Sends a status message back to the client when it connects. This includes
+information about the ciphers used and various session parameters.
+The output is in HTML format so this option will normally be used with a
+web browser. Cannot be used in conjunction with <strong>-early_data</strong>.</p>
+</dd>
+<dt><strong><a name="www" class="item"><strong>-WWW</strong></a></strong></dt>
+
+<dd>
+<p>Emulates a simple web server. Pages will be resolved relative to the
+current directory, for example if the URL <a href="https://myhost/page.html">https://myhost/page.html</a> is
+requested the file ./page.html will be loaded. Cannot be used in conjunction
+with <strong>-early_data</strong>.</p>
+</dd>
+<dt><strong><a name="tlsextdebug" class="item"><strong>-tlsextdebug</strong></a></strong></dt>
+
+<dd>
+<p>Print a hex dump of any TLS extensions received from the server.</p>
+</dd>
+<dt><strong><a name="http" class="item"><strong>-HTTP</strong></a></strong></dt>
+
+<dd>
+<p>Emulates a simple web server. Pages will be resolved relative to the
+current directory, for example if the URL <a href="https://myhost/page.html">https://myhost/page.html</a> is
+requested the file ./page.html will be loaded. The files loaded are
+assumed to contain a complete and correct HTTP response (lines that
+are part of the HTTP response line and headers must end with CRLF). Cannot be
+used in conjunction with <strong>-early_data</strong>.</p>
+</dd>
+<dt><strong><a name="id_prefix_val" class="item"><strong>-id_prefix val</strong></a></strong></dt>
+
+<dd>
+<p>Generate SSL/TLS session IDs prefixed by <strong>val</strong>. This is mostly useful
+for testing any SSL/TLS code (eg. proxies) that wish to deal with multiple
+servers, when each of which might be generating a unique range of session
+IDs (eg. with a certain prefix).</p>
+</dd>
+<dt><strong><a name="rand_file" class="item"><strong>-rand file...</strong></a></strong></dt>
+
+<dd>
+<p>A file or files containing random data used to seed the random number
+generator.
+Multiple files can be specified separated by an OS-dependent character.
+The separator is <strong>;</strong> for MS-Windows, <strong>,</strong> for OpenVMS, and <strong>:</strong> for
+all others.</p>
+</dd>
+<dt><strong><a name="writerand_file" class="item">[<strong>-writerand file</strong>]</a></strong></dt>
+
+<dd>
+<p>Writes random data to the specified <em>file</em> upon exit.
+This can be used with a subsequent <strong>-rand</strong> flag.</p>
+</dd>
+<dt><strong><a name="verify_return_error" class="item"><strong>-verify_return_error</strong></a></strong></dt>
+
+<dd>
+<p>Verification errors normally just print a message but allow the
+connection to continue, for debugging purposes.
+If this option is used, then verification errors close the connection.</p>
+</dd>
+<dt><strong><a name="status" class="item"><strong>-status</strong></a></strong></dt>
+
+<dd>
+<p>Enables certificate status request support (aka OCSP stapling).</p>
+</dd>
+<dt><strong><a name="status_verbose" class="item"><strong>-status_verbose</strong></a></strong></dt>
+
+<dd>
+<p>Enables certificate status request support (aka OCSP stapling) and gives
+a verbose printout of the OCSP response.</p>
+</dd>
+<dt><strong><a name="status_timeout_int" class="item"><strong>-status_timeout int</strong></a></strong></dt>
+
+<dd>
+<p>Sets the timeout for OCSP response to <strong>int</strong> seconds.</p>
+</dd>
+<dt><strong><a name="status_url_val" class="item"><strong>-status_url val</strong></a></strong></dt>
+
+<dd>
+<p>Sets a fallback responder URL to use if no responder URL is present in the
+server certificate. Without this option an error is returned if the server
+certificate does not contain a responder address.</p>
+</dd>
+<dt><strong><a name="status_file_infile" class="item"><strong>-status_file infile</strong></a></strong></dt>
+
+<dd>
+<p>Overrides any OCSP responder URLs from the certificate and always provides the
+OCSP Response stored in the file. The file must be in DER format.</p>
+</dd>
+<dt><strong><a name="trace" class="item"><strong>-trace</strong></a></strong></dt>
+
+<dd>
+<p>Show verbose trace output of protocol messages. OpenSSL needs to be compiled
+with <strong>enable-ssl-trace</strong> for this option to work.</p>
+</dd>
+<dt><strong><a name="brief" class="item"><strong>-brief</strong></a></strong></dt>
+
+<dd>
+<p>Provide a brief summary of connection parameters instead of the normal verbose
+output.</p>
+</dd>
+<dt><strong><a name="rev" class="item"><strong>-rev</strong></a></strong></dt>
+
+<dd>
+<p>Simple test server which just reverses the text received from the client
+and sends it back to the server. Also sets <strong>-brief</strong>. Cannot be used in
+conjunction with <strong>-early_data</strong>.</p>
+</dd>
+<dt><strong><a name="async" class="item"><strong>-async</strong></a></strong></dt>
+
+<dd>
+<p>Switch on asynchronous mode. Cryptographic operations will be performed
+asynchronously. This will only have an effect if an asynchronous capable engine
+is also used via the <strong>-engine</strong> option. For test purposes the dummy async engine
+(dasync) can be used (if available).</p>
+</dd>
+<dt><strong><a name="max_send_frag_int" class="item"><strong>-max_send_frag +int</strong></a></strong></dt>
+
+<dd>
+<p>The maximum size of data fragment to send.
+See <em>SSL_CTX_set_max_send_fragment(3)</em> for further information.</p>
+</dd>
+<dt><strong><a name="split_send_frag_int" class="item"><strong>-split_send_frag +int</strong></a></strong></dt>
+
+<dd>
+<p>The size used to split data for encrypt pipelines. If more data is written in
+one go than this value then it will be split into multiple pipelines, up to the
+maximum number of pipelines defined by max_pipelines. This only has an effect if
+a suitable cipher suite has been negotiated, an engine that supports pipelining
+has been loaded, and max_pipelines is greater than 1. See
+<em>SSL_CTX_set_split_send_fragment(3)</em> for further information.</p>
+</dd>
+<dt><strong><a name="max_pipelines_int" class="item"><strong>-max_pipelines +int</strong></a></strong></dt>
+
+<dd>
+<p>The maximum number of encrypt/decrypt pipelines to be used. This will only have
+an effect if an engine has been loaded that supports pipelining (e.g. the dasync
+engine) and a suitable cipher suite has been negotiated. The default value is 1.
+See <em>SSL_CTX_set_max_pipelines(3)</em> for further information.</p>
+</dd>
+<dt><strong><a name="read_buf_int" class="item"><strong>-read_buf +int</strong></a></strong></dt>
+
+<dd>
+<p>The default read buffer size to be used for connections. This will only have an
+effect if the buffer size is larger than the size that would otherwise be used
+and pipelining is in use (see <em>SSL_CTX_set_default_read_buffer_len(3)</em> for
+further information).</p>
+</dd>
+<dt><strong><a name="ssl2_ssl3_tls1_tls1_1_tls1_2_tls1_3_no_ssl2_no_ssl3_no_tls1_no_tls1_1_no_tls1_2_no_tls1_3" class="item"><strong>-ssl2</strong>, <strong>-ssl3</strong>, <strong>-tls1</strong>, <strong>-tls1_1</strong>, <strong>-tls1_2</strong>, <strong>-tls1_3</strong>, <strong>-no_ssl2</strong>, <strong>-no_ssl3</strong>, <strong>-no_tls1</strong>, <strong>-no_tls1_1</strong>, <strong>-no_tls1_2</strong>, <strong>-no_tls1_3</strong></a></strong></dt>
+
+<dd>
+<p>These options require or disable the use of the specified SSL or TLS protocols.
+By default <strong>s_server</strong> will negotiate the highest mutually supported protocol
+version.
+When a specific TLS version is required, only that version will be accepted
+from the client.
+Note that not all protocols and flags may be available, depending on how
+OpenSSL was built.</p>
+</dd>
+<dt><strong><a name="bugs" class="item"><strong>-bugs</strong></a></strong></dt>
+
+<dd>
+<p>There are several known bugs in SSL and TLS implementations. Adding this
+option enables various workarounds.</p>
+</dd>
+<dt><strong><a name="no_comp" class="item"><strong>-no_comp</strong></a></strong></dt>
+
+<dd>
+<p>Disable negotiation of TLS compression.
+TLS compression is not recommended and is off by default as of
+OpenSSL 1.1.0.</p>
+</dd>
+<dt><strong><a name="comp" class="item"><strong>-comp</strong></a></strong></dt>
+
+<dd>
+<p>Enable negotiation of TLS compression.
+This option was introduced in OpenSSL 1.1.0.
+TLS compression is not recommended and is off by default as of
+OpenSSL 1.1.0.</p>
+</dd>
+<dt><strong><a name="no_ticket" class="item"><strong>-no_ticket</strong></a></strong></dt>
+
+<dd>
+<p>Disable <a href="http://www.ietf.org/rfc/rfc4507.txt" class="rfc">RFC4507</a>bis session ticket support. This option has no effect if TLSv1.3
+is negotiated. See <strong>-num_tickets</strong>.</p>
+</dd>
+<dt><strong><a name="num_tickets" class="item"><strong>-num_tickets</strong></a></strong></dt>
+
+<dd>
+<p>Control the number of tickets that will be sent to the client after a full
+handshake in TLSv1.3. The default number of tickets is 2. This option does not
+affect the number of tickets sent after a resumption handshake.</p>
+</dd>
+<dt><strong><a name="serverpref" class="item"><strong>-serverpref</strong></a></strong></dt>
+
+<dd>
+<p>Use the server's cipher preferences, rather than the client's preferences.</p>
+</dd>
+<dt><strong><a name="prioritize_chacha" class="item"><strong>-prioritize_chacha</strong></a></strong></dt>
+
+<dd>
+<p>Prioritize ChaCha ciphers when preferred by clients. Requires <strong>-serverpref</strong>.</p>
+</dd>
+<dt><strong><a name="no_resumption_on_reneg" class="item"><strong>-no_resumption_on_reneg</strong></a></strong></dt>
+
+<dd>
+<p>Set the <strong>SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION</strong> option.</p>
+</dd>
+<dt><strong><a name="client_sigalgs_val" class="item"><strong>-client_sigalgs val</strong></a></strong></dt>
+
+<dd>
+<p>Signature algorithms to support for client certificate authentication
+(colon-separated list).</p>
+</dd>
+<dt><strong><a name="named_curve_val" class="item"><strong>-named_curve val</strong></a></strong></dt>
+
+<dd>
+<p>Specifies the elliptic curve to use. NOTE: this is single curve, not a list.
+For a list of all possible curves, use:</p>
+<pre>
+    $ openssl ecparam -list_curves</pre>
+</dd>
+<dt><strong><a name="cipher_val" class="item"><strong>-cipher val</strong></a></strong></dt>
+
+<dd>
+<p>This allows the list of TLSv1.2 and below ciphersuites used by the server to be
+modified. This list is combined with any TLSv1.3 ciphersuites that have been
+configured. When the client sends a list of supported ciphers the first client
+cipher also included in the server list is used. Because the client specifies
+the preference order, the order of the server cipherlist is irrelevant. See
+the <strong>ciphers</strong> command for more information.</p>
+</dd>
+<dt><strong><a name="ciphersuites_val" class="item"><strong>-ciphersuites val</strong></a></strong></dt>
+
+<dd>
+<p>This allows the list of TLSv1.3 ciphersuites used by the server to be modified.
+This list is combined with any TLSv1.2 and below ciphersuites that have been
+configured. When the client sends a list of supported ciphers the first client
+cipher also included in the server list is used. Because the client specifies
+the preference order, the order of the server cipherlist is irrelevant. See
+the <strong>ciphers</strong> command for more information. The format for this list is a
+simple colon (&quot;:&quot;) separated list of TLSv1.3 ciphersuite names.</p>
+</dd>
+<dt><strong><a name="dhparam_infile" class="item"><strong>-dhparam infile</strong></a></strong></dt>
+
+<dd>
+<p>The DH parameter file to use. The ephemeral DH cipher suites generate keys
+using a set of DH parameters. If not specified then an attempt is made to
+load the parameters from the server certificate file.
+If this fails then a static set of parameters hard coded into the <strong>s_server</strong>
+program will be used.</p>
+</dd>
+<dt><strong><a name="attime_check_ss_sig_crl_check_crl_check_all_explicit_policy_extended_crl_ignore_critical_inhibit_any_inhibit_map_no_alt_chains_no_check_time_partial_chain_policy_policy_check_policy_print_purpose_suiteb_128_suiteb_128_only_suiteb_192_trusted_first_use_deltas_auth_level_verify_depth_verify_email_verify_hostname_verify_ip_verify_name_x509_strict" class="item"><strong>-attime</strong>, <strong>-check_ss_sig</strong>, <strong>-crl_check</strong>, <strong>-crl_check_all</strong>,
+<strong>-explicit_policy</strong>, <strong>-extended_crl</strong>, <strong>-ignore_critical</strong>, <strong>-inhibit_any</strong>,
+<strong>-inhibit_map</strong>, <strong>-no_alt_chains</strong>, <strong>-no_check_time</strong>, <strong>-partial_chain</strong>, <strong>-policy</strong>,
+<strong>-policy_check</strong>, <strong>-policy_print</strong>, <strong>-purpose</strong>, <strong>-suiteB_128</strong>,
+<strong>-suiteB_128_only</strong>, <strong>-suiteB_192</strong>, <strong>-trusted_first</strong>, <strong>-use_deltas</strong>,
+<strong>-auth_level</strong>, <strong>-verify_depth</strong>, <strong>-verify_email</strong>, <strong>-verify_hostname</strong>,
+<strong>-verify_ip</strong>, <strong>-verify_name</strong>, <strong>-x509_strict</strong></a></strong></dt>
+
+<dd>
+<p>Set different peer certificate verification options.
+See the <em>verify(1)</em> manual page for details.</p>
+</dd>
+<dt><strong><a name="crl_check_crl_check_all" class="item"><strong>-crl_check</strong>, <strong>-crl_check_all</strong></a></strong></dt>
+
+<dd>
+<p>Check the peer certificate has not been revoked by its CA.
+The CRL(s) are appended to the certificate file. With the <strong>-crl_check_all</strong>
+option all CRLs of all CAs in the chain are checked.</p>
+</dd>
+<dt><strong><a name="nbio" class="item"><strong>-nbio</strong></a></strong></dt>
+
+<dd>
+<p>Turns on non blocking I/O.</p>
+</dd>
+<dt><strong><a name="psk_identity_val" class="item"><strong>-psk_identity val</strong></a></strong></dt>
+
+<dd>
+<p>Expect the client to send PSK identity <strong>val</strong> when using a PSK
+cipher suite, and warn if they do not.  By default, the expected PSK
+identity is the string &quot;Client_identity&quot;.</p>
+</dd>
+<dt><strong><a name="psk_hint_val" class="item"><strong>-psk_hint val</strong></a></strong></dt>
+
+<dd>
+<p>Use the PSK identity hint <strong>val</strong> when using a PSK cipher suite.</p>
+</dd>
+<dt><strong><a name="psk_val" class="item"><strong>-psk val</strong></a></strong></dt>
+
+<dd>
+<p>Use the PSK key <strong>val</strong> when using a PSK cipher suite. The key is
+given as a hexadecimal number without leading 0x, for example -psk
+1a2b3c4d.
+This option must be provided in order to use a PSK cipher.</p>
+</dd>
+<dt><strong><a name="psk_session_file" class="item"><strong>-psk_session file</strong></a></strong></dt>
+
+<dd>
+<p>Use the pem encoded SSL_SESSION data stored in <strong>file</strong> as the basis of a PSK.
+Note that this will only work if TLSv1.3 is negotiated.</p>
+</dd>
+<dt><strong><a name="listen" class="item"><strong>-listen</strong></a></strong></dt>
+
+<dd>
+<p>This option can only be used in conjunction with one of the DTLS options above.
+With this option <strong>s_server</strong> will listen on a UDP port for incoming connections.
+Any ClientHellos that arrive will be checked to see if they have a cookie in
+them or not.
+Any without a cookie will be responded to with a HelloVerifyRequest.
+If a ClientHello with a cookie is received then <strong>s_server</strong> will connect to
+that peer and complete the handshake.</p>
+</dd>
+<dt><strong><a name="dtls_dtls1_dtls1_2" class="item"><strong>-dtls</strong>, <strong>-dtls1</strong>, <strong>-dtls1_2</strong></a></strong></dt>
+
+<dd>
+<p>These options make <strong>s_server</strong> use DTLS protocols instead of TLS.
+With <strong>-dtls</strong>, <strong>s_server</strong> will negotiate any supported DTLS protocol version,
+whilst <strong>-dtls1</strong> and <strong>-dtls1_2</strong> will only support DTLSv1.0 and DTLSv1.2
+respectively.</p>
+</dd>
+<dt><strong><a name="sctp" class="item"><strong>-sctp</strong></a></strong></dt>
+
+<dd>
+<p>Use SCTP for the transport protocol instead of UDP in DTLS. Must be used in
+conjunction with <strong>-dtls</strong>, <strong>-dtls1</strong> or <strong>-dtls1_2</strong>. This option is only
+available where OpenSSL has support for SCTP enabled.</p>
+</dd>
+<dt><strong><a name="sctp_label_bug" class="item"><strong>-sctp_label_bug</strong></a></strong></dt>
+
+<dd>
+<p>Use the incorrect behaviour of older OpenSSL implementations when computing
+endpoint-pair shared secrets for DTLS/SCTP. This allows communication with
+older broken implementations but breaks interoperability with correct
+implementations. Must be used in conjunction with <strong>-sctp</strong>. This option is only
+available where OpenSSL has support for SCTP enabled.</p>
+</dd>
+<dt><strong><a name="no_dhe" class="item"><strong>-no_dhe</strong></a></strong></dt>
+
+<dd>
+<p>If this option is set then no DH parameters will be loaded effectively
+disabling the ephemeral DH cipher suites.</p>
+</dd>
+<dt><strong><a name="alpn_val_nextprotoneg_val" class="item"><strong>-alpn val</strong>, <strong>-nextprotoneg val</strong></a></strong></dt>
+
+<dd>
+<p>These flags enable the Enable the Application-Layer Protocol Negotiation
+or Next Protocol Negotiation (NPN) extension, respectively. ALPN is the
+IETF standard and replaces NPN.
+The <strong>val</strong> list is a comma-separated list of supported protocol
+names.  The list should contain the most desirable protocols first.
+Protocol names are printable ASCII strings, for example &quot;http/1.1&quot; or
+&quot;spdy/3&quot;.
+The flag <strong>-nextprotoneg</strong> cannot be specified if <strong>-tls1_3</strong> is used.</p>
+</dd>
+<dt><strong><a name="engine_val" class="item"><strong>-engine val</strong></a></strong></dt>
+
+<dd>
+<p>Specifying an engine (by its unique id string in <strong>val</strong>) will cause <strong>s_server</strong>
+to attempt to obtain a functional reference to the specified engine,
+thus initialising it if needed. The engine will then be set as the default
+for all available algorithms.</p>
+</dd>
+<dt><strong><a name="keylogfile_outfile" class="item"><strong>-keylogfile outfile</strong></a></strong></dt>
+
+<dd>
+<p>Appends TLS secrets to the specified keylog file such that external programs
+(like Wireshark) can decrypt TLS connections.</p>
+</dd>
+<dt><strong><a name="max_early_data_int" class="item"><strong>-max_early_data int</strong></a></strong></dt>
+
+<dd>
+<p>Change the default maximum early data bytes that are specified for new sessions
+and any incoming early data (when used in conjunction with the <strong>-early_data</strong>
+flag). The default value is approximately 16k. The argument must be an integer
+greater than or equal to 0.</p>
+</dd>
+<dt><strong><a name="early_data" class="item"><strong>-early_data</strong></a></strong></dt>
+
+<dd>
+<p>Accept early data where possible. Cannot be used in conjunction with <strong>-www</strong>,
+<strong>-WWW</strong>, <strong>-HTTP</strong> or <strong>-rev</strong>.</p>
+</dd>
+<dt><strong><a name="anti_replay_no_anti_replay" class="item"><strong>-anti_replay</strong>, <strong>-no_anti_replay</strong></a></strong></dt>
+
+<dd>
+<p>Switches replay protection on or off, respectively. Replay protection is on by
+default unless overridden by a configuration file. When it is on, OpenSSL will
+automatically detect if a session ticket has been used more than once, TLSv1.3
+has been negotiated, and early data is enabled on the server. A full handshake
+is forced if a session ticket is used a second or subsequent time. Any early
+data that was sent will be rejected.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="connected_commands">CONNECTED COMMANDS</a></h1>
+<p>If a connection request is established with an SSL client and neither the
+<strong>-www</strong> nor the <strong>-WWW</strong> option has been used then normally any data received
+from the client is displayed and any key presses will be sent to the client.</p>
+<p>Certain commands are also recognized which perform special operations. These
+commands are a letter which must appear at the start of a line. They are listed
+below.</p>
+<dl>
+<dt><strong><a name="q" class="item"><strong>q</strong></a></strong></dt>
+
+<dd>
+<p>End the current SSL connection but still accept new connections.</p>
+</dd>
+<dt><strong><a name="q" class="item"><strong>Q</strong></a></strong></dt>
+
+<dd>
+<p>End the current SSL connection and exit.</p>
+</dd>
+<dt><strong><a name="r" class="item"><strong>r</strong></a></strong></dt>
+
+<dd>
+<p>Renegotiate the SSL session (TLSv1.2 and below only).</p>
+</dd>
+<dt><strong><a name="r" class="item"><strong>R</strong></a></strong></dt>
+
+<dd>
+<p>Renegotiate the SSL session and request a client certificate (TLSv1.2 and below
+only).</p>
+</dd>
+<dt><strong><a name="p" class="item"><strong>P</strong></a></strong></dt>
+
+<dd>
+<p>Send some plain text down the underlying TCP connection: this should
+cause the client to disconnect due to a protocol violation.</p>
+</dd>
+<dt><strong><a name="s" class="item"><strong>S</strong></a></strong></dt>
+
+<dd>
+<p>Print out some session cache status information.</p>
+</dd>
+<dt><strong><a name="b" class="item"><strong>B</strong></a></strong></dt>
+
+<dd>
+<p>Send a heartbeat message to the client (DTLS only)</p>
+</dd>
+<dt><strong><a name="k" class="item"><strong>k</strong></a></strong></dt>
+
+<dd>
+<p>Send a key update message to the client (TLSv1.3 only)</p>
+</dd>
+<dt><strong><a name="k" class="item"><strong>K</strong></a></strong></dt>
+
+<dd>
+<p>Send a key update message to the client and request one back (TLSv1.3 only)</p>
+</dd>
+<dt><strong><a name="c" class="item"><strong>c</strong></a></strong></dt>
+
+<dd>
+<p>Send a certificate request to the client (TLSv1.3 only)</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p><strong>s_server</strong> can be used to debug SSL clients. To accept connections from
+a web browser the command:</p>
+<pre>
+ openssl s_server -accept 443 -www</pre>
+<p>can be used for example.</p>
+<p>Although specifying an empty list of CAs when requesting a client certificate
+is strictly speaking a protocol violation, some SSL clients interpret this to
+mean any CA is acceptable. This is useful for debugging purposes.</p>
+<p>The session parameters can printed out using the <strong>sess_id</strong> program.</p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>Because this program has a lot of options and also because some of the
+techniques used are rather old, the C source of <strong>s_server</strong> is rather hard to
+read and not a model of how things should be done.
+A typical SSL server program would be much simpler.</p>
+<p>The output of common ciphers is wrong: it just gives the list of ciphers that
+OpenSSL recognizes and the client supports.</p>
+<p>There should be a way for the <strong>s_server</strong> program to print out details of any
+unknown cipher suites a client says it supports.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>SSL_CONF_cmd(3)</em>, <em>sess_id(1)</em>, <em>s_client(1)</em>, <em>ciphers(1)</em>
+<em>SSL_CTX_set_max_send_fragment(3)</em>,
+<em>SSL_CTX_set_split_send_fragment(3)</em>,
+<em>SSL_CTX_set_max_pipelines(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The -no_alt_chains option was added in OpenSSL 1.1.0.</p>
+<p>The
+-allow-no-dhe-kex and -prioritize_chacha options were added in OpenSSL 1.1.1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

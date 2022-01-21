@@ -1,0 +1,151 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_set_tlsext_status_cb</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_set_tlsext_status_cb,
+SSL_CTX_get_tlsext_status_cb,
+SSL_CTX_set_tlsext_status_arg,
+SSL_CTX_get_tlsext_status_arg,
+SSL_CTX_set_tlsext_status_type,
+SSL_CTX_get_tlsext_status_type,
+SSL_set_tlsext_status_type,
+SSL_get_tlsext_status_type,
+SSL_get_tlsext_status_ocsp_resp,
+SSL_set_tlsext_status_ocsp_resp
+- OCSP Certificate Status Request functions</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/tls1.h&gt;</pre>
+<pre>
+ long SSL_CTX_set_tlsext_status_cb(SSL_CTX *ctx, int (*callback)(SSL *, void *));
+ long SSL_CTX_get_tlsext_status_cb(SSL_CTX *ctx, int (**callback)(SSL *, void *));</pre>
+<pre>
+ long SSL_CTX_set_tlsext_status_arg(SSL_CTX *ctx, void *arg);
+ long SSL_CTX_get_tlsext_status_arg(SSL_CTX *ctx, void **arg);</pre>
+<pre>
+ long SSL_CTX_set_tlsext_status_type(SSL_CTX *ctx, int type);
+ long SSL_CTX_get_tlsext_status_type(SSL_CTX *ctx);</pre>
+<pre>
+ long SSL_set_tlsext_status_type(SSL *s, int type);
+ long SSL_get_tlsext_status_type(SSL *s);</pre>
+<pre>
+ long SSL_get_tlsext_status_ocsp_resp(ssl, unsigned char **resp);
+ long SSL_set_tlsext_status_ocsp_resp(ssl, unsigned char *resp, int len);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>A client application may request that a server send back an OCSP status response
+(also known as OCSP stapling). To do so the client should call the
+<code>SSL_CTX_set_tlsext_status_type()</code> function prior to the creation of any SSL
+objects. Alternatively an application can call the <code>SSL_set_tlsext_status_type()</code>
+function on an individual SSL object prior to the start of the handshake.
+Currently the only supported type is <strong>TLSEXT_STATUSTYPE_ocsp</strong>. This value
+should be passed in the <strong>type</strong> argument. Calling
+<code>SSL_CTX_get_tlsext_status_type()</code> will return the type <strong>TLSEXT_STATUSTYPE_ocsp</strong>
+previously set via <code>SSL_CTX_set_tlsext_status_type()</code> or -1 if not set.</p>
+<p>The client should additionally provide a callback function to decide what to do
+with the returned OCSP response by calling <code>SSL_CTX_set_tlsext_status_cb()</code>. The
+callback function should determine whether the returned OCSP response is
+acceptable or not. The callback will be passed as an argument the value
+previously set via a call to <code>SSL_CTX_set_tlsext_status_arg()</code>. Note that the
+callback will not be called in the event of a handshake where session resumption
+occurs (because there are no Certificates exchanged in such a handshake).
+The callback previously set via <code>SSL_CTX_set_tlsext_status_cb()</code> can be retrieved
+by calling <code>SSL_CTX_get_tlsext_status_cb()</code>, and the argument by calling
+<code>SSL_CTX_get_tlsext_status_arg()</code>.</p>
+<p>On the client side <code>SSL_get_tlsext_status_type()</code> can be used to determine whether
+the client has previously called <code>SSL_set_tlsext_status_type()</code>. It will return
+<strong>TLSEXT_STATUSTYPE_ocsp</strong> if it has been called or -1 otherwise. On the server
+side <code>SSL_get_tlsext_status_type()</code> can be used to determine whether the client
+requested OCSP stapling. If the client requested it then this function will
+return <strong>TLSEXT_STATUSTYPE_ocsp</strong>, or -1 otherwise.</p>
+<p>The response returned by the server can be obtained via a call to
+<code>SSL_get_tlsext_status_ocsp_resp()</code>. The value <strong>*resp</strong> will be updated to point
+to the OCSP response data and the return value will be the length of that data.
+Typically a callback would obtain an OCSP_RESPONSE object from this data via a
+call to the d2i_OCSP_RESPONSE() function. If the server has not provided any
+response data then <strong>*resp</strong> will be NULL and the return value from
+<code>SSL_get_tlsext_status_ocsp_resp()</code> will be -1.</p>
+<p>A server application must also call the <code>SSL_CTX_set_tlsext_status_cb()</code> function
+if it wants to be able to provide clients with OCSP Certificate Status
+responses. Typically the server callback would obtain the server certificate
+that is being sent back to the client via a call to <code>SSL_get_certificate()</code>;
+obtain the OCSP response to be sent back; and then set that response data by
+calling <code>SSL_set_tlsext_status_ocsp_resp()</code>. A pointer to the response data should
+be provided in the <strong>resp</strong> argument, and the length of that data should be in
+the <strong>len</strong> argument.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>The callback when used on the client side should return a negative value on
+error; 0 if the response is not acceptable (in which case the handshake will
+fail) or a positive value if it is acceptable.</p>
+<p>The callback when used on the server side should return with either
+SSL_TLSEXT_ERR_OK (meaning that the OCSP response that has been set should be
+returned), SSL_TLSEXT_ERR_NOACK (meaning that an OCSP response should not be
+returned) or SSL_TLSEXT_ERR_ALERT_FATAL (meaning that a fatal error has
+occurred).</p>
+<p><code>SSL_CTX_set_tlsext_status_cb()</code>, <code>SSL_CTX_set_tlsext_status_arg()</code>,
+<code>SSL_CTX_set_tlsext_status_type()</code>, <code>SSL_set_tlsext_status_type()</code> and
+<code>SSL_set_tlsext_status_ocsp_resp()</code> return 0 on error or 1 on success.</p>
+<p><code>SSL_CTX_get_tlsext_status_type()</code> returns the value previously set by
+<code>SSL_CTX_set_tlsext_status_type()</code>, or -1 if not set.</p>
+<p><code>SSL_get_tlsext_status_ocsp_resp()</code> returns the length of the OCSP response data
+or -1 if there is no OCSP response data.</p>
+<p><code>SSL_get_tlsext_status_type()</code> returns <strong>TLSEXT_STATUSTYPE_ocsp</strong> on the client
+side if <code>SSL_set_tlsext_status_type()</code> was previously called, or on the server
+side if the client requested OCSP stapling. Otherwise -1 is returned.</p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The <code>SSL_get_tlsext_status_type()</code>, <code>SSL_CTX_get_tlsext_status_type()</code>
+and <code>SSL_CTX_set_tlsext_status_type()</code> functions were added in OpenSSL 1.1.0.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2015-2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

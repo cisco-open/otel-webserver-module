@@ -1,0 +1,183 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_read</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_read_ex, SSL_read, SSL_peek_ex, SSL_peek
+- read bytes from a TLS/SSL connection</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_read_ex(SSL *ssl, void *buf, size_t num, size_t *readbytes);
+ int SSL_read(SSL *ssl, void *buf, int num);</pre>
+<pre>
+ int SSL_peek_ex(SSL *ssl, void *buf, size_t num, size_t *readbytes);
+ int SSL_peek(SSL *ssl, void *buf, int num);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_read_ex()</code> and <code>SSL_read()</code> try to read <strong>num</strong> bytes from the specified <strong>ssl</strong>
+into the buffer <strong>buf</strong>. On success <code>SSL_read_ex()</code> will store the number of bytes
+actually read in <strong>*readbytes</strong>.</p>
+<p><code>SSL_peek_ex()</code> and <code>SSL_peek()</code> are identical to <code>SSL_read_ex()</code> and <code>SSL_read()</code>
+respectively except no bytes are actually removed from the underlying BIO during
+the read, so that a subsequent call to <code>SSL_read_ex()</code> or <code>SSL_read()</code> will yield
+at least the same bytes.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>In the paragraphs below a &quot;read function&quot; is defined as one of <code>SSL_read_ex()</code>,
+<code>SSL_read()</code>, <code>SSL_peek_ex()</code> or <code>SSL_peek()</code>.</p>
+<p>If necessary, a read function will negotiate a TLS/SSL session, if not already
+explicitly performed by <em>SSL_connect(3)</em> or <em>SSL_accept(3)</em>. If the
+peer requests a re-negotiation, it will be performed transparently during
+the read function operation. The behaviour of the read functions depends on the
+underlying BIO.</p>
+<p>For the transparent negotiation to succeed, the <strong>ssl</strong> must have been
+initialized to client or server mode. This is being done by calling
+<em>SSL_set_connect_state(3)</em> or <code>SSL_set_accept_state()</code> before the first
+invocation of a read function.</p>
+<p>The read functions work based on the SSL/TLS records. The data are received in
+records (with a maximum record size of 16kB). Only when a record has been
+completely received, can it be processed (decryption and check of integrity).
+Therefore data that was not retrieved at the last read call can still be
+buffered inside the SSL layer and will be retrieved on the next read
+call. If <strong>num</strong> is higher than the number of bytes buffered then the read
+functions will return with the bytes buffered. If no more bytes are in the
+buffer, the read functions will trigger the processing of the next record.
+Only when the record has been received and processed completely will the read
+functions return reporting success. At most the contents of one record will
+be returned. As the size of an SSL/TLS record may exceed the maximum packet size
+of the underlying transport (e.g. TCP), it may be necessary to read several
+packets from the transport layer before the record is complete and the read call
+can succeed.</p>
+<p>If <strong>SSL_MODE_AUTO_RETRY</strong> has been switched off and a non-application data
+record has been processed, the read function can return and set the error to
+<strong>SSL_ERROR_WANT_READ</strong>.
+In this case there might still be unprocessed data available in the <strong>BIO</strong>.
+If read ahead was set using <em>SSL_CTX_set_read_ahead(3)</em>, there might also still
+be unprocessed data available in the <strong>SSL</strong>.
+This behaviour can be controlled using the <em>SSL_CTX_set_mode(3)</em> call.</p>
+<p>If the underlying BIO is <strong>blocking</strong>, a read function will only return once the
+read operation has been finished or an error occurred, except when a
+non-application data record has been processed and <strong>SSL_MODE_AUTO_RETRY</strong> is
+not set.
+Note that if <strong>SSL_MODE_AUTO_RETRY</strong> is set and only non-application data is
+available the call will hang.</p>
+<p>If the underlying BIO is <strong>non-blocking</strong>, a read function will also return when
+the underlying BIO could not satisfy the needs of the function to continue the
+operation.
+In this case a call to <em>SSL_get_error(3)</em> with the
+return value of the read function will yield <strong>SSL_ERROR_WANT_READ</strong> or
+<strong>SSL_ERROR_WANT_WRITE</strong>.
+As at any time it's possible that non-application data needs to be sent,
+a read function can also cause write operations.
+The calling process then must repeat the call after taking appropriate action
+to satisfy the needs of the read function.
+The action depends on the underlying BIO.
+When using a non-blocking socket, nothing is to be done, but <code>select()</code> can be
+used to check for the required condition.
+When using a buffering BIO, like a BIO pair, data must be written into or
+retrieved out of the BIO before being able to continue.</p>
+<p><em>SSL_pending(3)</em> can be used to find out whether there
+are buffered bytes available for immediate retrieval.
+In this case the read function can be called without blocking or actually
+receiving new data from the underlying socket.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_read_ex()</code> and <code>SSL_peek_ex()</code> will return 1 for success or 0 for failure.
+Success means that 1 or more application data bytes have been read from the SSL
+connection.
+Failure means that no bytes could be read from the SSL connection.
+Failures can be retryable (e.g. we are waiting for more bytes to
+be delivered by the network) or non-retryable (e.g. a fatal network error).
+In the event of a failure call <em>SSL_get_error(3)</em> to find out the reason which
+indicates whether the call is retryable or not.</p>
+<p>For <code>SSL_read()</code> and <code>SSL_peek()</code> the following return values can occur:</p>
+<dl>
+<dt><strong><a name="__0" class="item">&gt; 0</a></strong></dt>
+
+<dd>
+<p>The read operation was successful.
+The return value is the number of bytes actually read from the TLS/SSL
+connection.</p>
+</dd>
+<dt><strong><a name="___0" class="item">&lt;= 0</a></strong></dt>
+
+<dd>
+<p>The read operation was not successful, because either the connection was closed,
+an error occurred or action must be taken by the calling process.
+Call <em>SSL_get_error(3)</em> with the return value <strong>ret</strong> to find out the reason.</p>
+<p>Old documentation indicated a difference between 0 and -1, and that -1 was
+retryable.
+You should instead call <code>SSL_get_error()</code> to find out if it's retryable.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>SSL_get_error(3)</em>, <em>SSL_write_ex(3)</em>,
+<em>SSL_CTX_set_mode(3)</em>, <em>SSL_CTX_new(3)</em>,
+<em>SSL_connect(3)</em>, <em>SSL_accept(3)</em>
+<em>SSL_set_connect_state(3)</em>,
+<em>SSL_pending(3)</em>,
+<em>SSL_shutdown(3)</em>, <em>SSL_set_shutdown(3)</em>,
+<em>ssl(7)</em>, <em>bio(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The <code>SSL_read_ex()</code> and <code>SSL_peek_ex()</code> functions were added in OpenSSL 1.1.1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

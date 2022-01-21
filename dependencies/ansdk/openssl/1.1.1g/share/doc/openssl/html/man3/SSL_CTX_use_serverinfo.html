@@ -1,0 +1,112 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_use_serverinfo</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_use_serverinfo_ex,
+SSL_CTX_use_serverinfo,
+SSL_CTX_use_serverinfo_file
+- use serverinfo extension</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ int SSL_CTX_use_serverinfo_ex(SSL_CTX *ctx, unsigned int version,
+                               const unsigned char *serverinfo,
+                               size_t serverinfo_length);</pre>
+<pre>
+ int SSL_CTX_use_serverinfo(SSL_CTX *ctx, const unsigned char *serverinfo,
+                            size_t serverinfo_length);</pre>
+<pre>
+ int SSL_CTX_use_serverinfo_file(SSL_CTX *ctx, const char *file);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>These functions load &quot;serverinfo&quot; TLS extensions into the SSL_CTX. A
+&quot;serverinfo&quot; extension is returned in response to an empty ClientHello
+Extension.</p>
+<p><code>SSL_CTX_use_serverinfo_ex()</code> loads one or more serverinfo extensions from
+a byte array into <strong>ctx</strong>. The <strong>version</strong> parameter specifies the format of the
+byte array provided in <strong>*serverinfo</strong> which is of length <strong>serverinfo_length</strong>.</p>
+<p>If <strong>version</strong> is <strong>SSL_SERVERINFOV2</strong> then the extensions in the array must
+consist of a 4-byte context, a 2-byte Extension Type, a 2-byte length, and then
+length bytes of extension_data. The context and type values have the same
+meaning as for <em>SSL_CTX_add_custom_ext(3)</em>. If serverinfo is being loaded for
+extensions to be added to a Certificate message, then the extension will only
+be added for the first certificate in the message (which is always the
+end-entity certificate).</p>
+<p>If <strong>version</strong> is <strong>SSL_SERVERINFOV1</strong> then the extensions in the array must
+consist of a 2-byte Extension Type, a 2-byte length, and then length bytes of
+extension_data. The type value has the same meaning as for
+<em>SSL_CTX_add_custom_ext(3)</em>. The following default context value will be used
+in this case:</p>
+<pre>
+ SSL_EXT_TLS1_2_AND_BELOW_ONLY | SSL_EXT_CLIENT_HELLO
+ | SSL_EXT_TLS1_2_SERVER_HELLO | SSL_EXT_IGNORE_ON_RESUMPTION</pre>
+<p><code>SSL_CTX_use_serverinfo()</code> does the same thing as <code>SSL_CTX_use_serverinfo_ex()</code>
+except that there is no <strong>version</strong> parameter so a default version of
+SSL_SERVERINFOV1 is used instead.</p>
+<p><code>SSL_CTX_use_serverinfo_file()</code> loads one or more serverinfo extensions from
+<strong>file</strong> into <strong>ctx</strong>.  The extensions must be in PEM format.  Each extension
+must be in a format as described above for <code>SSL_CTX_use_serverinfo_ex()</code>.  Each
+PEM extension name must begin with the phrase &quot;BEGIN SERVERINFOV2 FOR &quot; for
+SSL_SERVERINFOV2 data or &quot;BEGIN SERVERINFO FOR &quot; for SSL_SERVERINFOV1 data.</p>
+<p>If more than one certificate (RSA/DSA) is installed using
+<code>SSL_CTX_use_certificate()</code>, the serverinfo extension will be loaded into the
+last certificate installed.  If e.g. the last item was a RSA certificate, the
+loaded serverinfo extension data will be loaded for that certificate.  To
+use the serverinfo extension for multiple certificates,
+<code>SSL_CTX_use_serverinfo()</code> needs to be called multiple times, once <strong>after</strong>
+each time a certificate is loaded via a call to <code>SSL_CTX_use_certificate()</code>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>On success, the functions return 1.
+On failure, the functions return 0.  Check out the error stack to find out
+the reason.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2013-2017 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

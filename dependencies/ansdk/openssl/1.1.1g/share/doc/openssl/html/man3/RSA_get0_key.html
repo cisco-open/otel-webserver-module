@@ -1,0 +1,201 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>RSA_get0_key</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>RSA_set0_key, RSA_set0_factors, RSA_set0_crt_params, RSA_get0_key,
+RSA_get0_factors, RSA_get0_crt_params,
+RSA_get0_n, RSA_get0_e, RSA_get0_d, RSA_get0_p, RSA_get0_q,
+RSA_get0_dmp1, RSA_get0_dmq1, RSA_get0_iqmp, RSA_get0_pss_params,
+RSA_clear_flags,
+RSA_test_flags, RSA_set_flags, RSA_get0_engine, RSA_get_multi_prime_extra_count,
+RSA_get0_multi_prime_factors, RSA_get0_multi_prime_crt_params,
+RSA_set0_multi_prime_params, RSA_get_version
+- Routines for getting and setting data in an RSA object</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/rsa.h&gt;</pre>
+<pre>
+ int RSA_set0_key(RSA *r, BIGNUM *n, BIGNUM *e, BIGNUM *d);
+ int RSA_set0_factors(RSA *r, BIGNUM *p, BIGNUM *q);
+ int RSA_set0_crt_params(RSA *r, BIGNUM *dmp1, BIGNUM *dmq1, BIGNUM *iqmp);
+ void RSA_get0_key(const RSA *r,
+                   const BIGNUM **n, const BIGNUM **e, const BIGNUM **d);
+ void RSA_get0_factors(const RSA *r, const BIGNUM **p, const BIGNUM **q);
+ void RSA_get0_crt_params(const RSA *r,
+                          const BIGNUM **dmp1, const BIGNUM **dmq1,
+                          const BIGNUM **iqmp);
+ const BIGNUM *RSA_get0_n(const RSA *d);
+ const BIGNUM *RSA_get0_e(const RSA *d);
+ const BIGNUM *RSA_get0_d(const RSA *d);
+ const BIGNUM *RSA_get0_p(const RSA *d);
+ const BIGNUM *RSA_get0_q(const RSA *d);
+ const BIGNUM *RSA_get0_dmp1(const RSA *r);
+ const BIGNUM *RSA_get0_dmq1(const RSA *r);
+ const BIGNUM *RSA_get0_iqmp(const RSA *r);
+ const RSA_PSS_PARAMS *RSA_get0_pss_params(const RSA *r);
+ void RSA_clear_flags(RSA *r, int flags);
+ int RSA_test_flags(const RSA *r, int flags);
+ void RSA_set_flags(RSA *r, int flags);
+ ENGINE *RSA_get0_engine(RSA *r);
+ int RSA_get_multi_prime_extra_count(const RSA *r);
+ int RSA_get0_multi_prime_factors(const RSA *r, const BIGNUM *primes[]);
+ int RSA_get0_multi_prime_crt_params(const RSA *r, const BIGNUM *exps[],
+                                     const BIGNUM *coeffs[]);
+ int RSA_set0_multi_prime_params(RSA *r, BIGNUM *primes[], BIGNUM *exps[],
+                                BIGNUM *coeffs[], int pnum);
+ int RSA_get_version(RSA *r);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>An RSA object contains the components for the public and private key,
+<strong>n</strong>, <strong>e</strong>, <strong>d</strong>, <strong>p</strong>, <strong>q</strong>, <strong>dmp1</strong>, <strong>dmq1</strong> and <strong>iqmp</strong>.  <strong>n</strong> is
+the modulus common to both public and private key, <strong>e</strong> is the public
+exponent and <strong>d</strong> is the private exponent.  <strong>p</strong>, <strong>q</strong>, <strong>dmp1</strong>,
+<strong>dmq1</strong> and <strong>iqmp</strong> are the factors for the second representation of a
+private key (see PKCS#1 section 3 Key Types), where <strong>p</strong> and <strong>q</strong> are
+the first and second factor of <strong>n</strong> and <strong>dmp1</strong>, <strong>dmq1</strong> and <strong>iqmp</strong>
+are the exponents and coefficient for CRT calculations.</p>
+<p>For multi-prime RSA (defined in <a href="http://www.ietf.org/rfc/rfc8017.txt" class="rfc">RFC 8017</a>), there are also one or more
+'triplet' in an RSA object. A triplet contains three members, <strong>r</strong>, <strong>d</strong>
+and <strong>t</strong>. <strong>r</strong> is the additional prime besides <strong>p</strong> and <strong>q</strong>. <strong>d</strong> and
+<strong>t</strong> are the exponent and coefficient for CRT calculations.</p>
+<p>The <strong>n</strong>, <strong>e</strong> and <strong>d</strong> parameters can be obtained by calling
+RSA_get0_key().  If they have not been set yet, then <strong>*n</strong>, <strong>*e</strong> and
+<strong>*d</strong> will be set to NULL.  Otherwise, they are set to pointers to
+their respective values. These point directly to the internal
+representations of the values and therefore should not be freed
+by the caller.</p>
+<p>The <strong>n</strong>, <strong>e</strong> and <strong>d</strong> parameter values can be set by calling
+RSA_set0_key() and passing the new values for <strong>n</strong>, <strong>e</strong> and <strong>d</strong> as
+parameters to the function.  The values <strong>n</strong> and <strong>e</strong> must be non-NULL
+the first time this function is called on a given RSA object. The
+value <strong>d</strong> may be NULL. On subsequent calls any of these values may be
+NULL which means the corresponding RSA field is left untouched.
+Calling this function transfers the memory management of the values to
+the RSA object, and therefore the values that have been passed in
+should not be freed by the caller after this function has been called.</p>
+<p>In a similar fashion, the <strong>p</strong> and <strong>q</strong> parameters can be obtained and
+set with RSA_get0_factors() and RSA_set0_factors(), and the <strong>dmp1</strong>,
+<strong>dmq1</strong> and <strong>iqmp</strong> parameters can be obtained and set with
+RSA_get0_crt_params() and RSA_set0_crt_params().</p>
+<p>For RSA_get0_key(), RSA_get0_factors(), and RSA_get0_crt_params(),
+NULL value BIGNUM ** output parameters are permitted. The functions
+ignore NULL parameters but return values for other, non-NULL, parameters.</p>
+<p>For multi-prime RSA, RSA_get0_multi_prime_factors() and RSA_get0_multi_prime_params()
+can be used to obtain other primes and related CRT parameters. The
+return values are stored in an array of <strong>BIGNUM *</strong>. RSA_set0_multi_prime_params()
+sets a collect of multi-prime 'triplet' members (prime, exponent and coefficient)
+into an RSA object.</p>
+<p>Any of the values <strong>n</strong>, <strong>e</strong>, <strong>d</strong>, <strong>p</strong>, <strong>q</strong>, <strong>dmp1</strong>, <strong>dmq1</strong>, and <strong>iqmp</strong> can also be
+retrieved separately by the corresponding function
+RSA_get0_n(), RSA_get0_e(), RSA_get0_d(), RSA_get0_p(), RSA_get0_q(),
+RSA_get0_dmp1(), RSA_get0_dmq1(), and RSA_get0_iqmp(), respectively.</p>
+<p>RSA_get0_pss_params() is used to retrieve the RSA-PSS parameters.</p>
+<p><code>RSA_set_flags()</code> sets the flags in the <strong>flags</strong> parameter on the RSA
+object. Multiple flags can be passed in one go (bitwise ORed together).
+Any flags that are already set are left set. <code>RSA_test_flags()</code> tests to
+see whether the flags passed in the <strong>flags</strong> parameter are currently
+set in the RSA object. Multiple flags can be tested in one go. All
+flags that are currently set are returned, or zero if none of the
+flags are set. <code>RSA_clear_flags()</code> clears the specified flags within the
+RSA object.</p>
+<p>RSA_get0_engine() returns a handle to the ENGINE that has been set for
+this RSA object, or NULL if no such ENGINE has been set.</p>
+<p><code>RSA_get_version()</code> returns the version of an RSA object <strong>r</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>Values retrieved with RSA_get0_key() are owned by the RSA object used
+in the call and may therefore <em>not</em> be passed to RSA_set0_key().  If
+needed, duplicate the received value using <code>BN_dup()</code> and pass the
+duplicate.  The same applies to RSA_get0_factors() and RSA_set0_factors()
+as well as RSA_get0_crt_params() and RSA_set0_crt_params().</p>
+<p>The caller should obtain the size by calling <code>RSA_get_multi_prime_extra_count()</code>
+in advance and allocate sufficient buffer to store the return values before
+calling RSA_get0_multi_prime_factors() and RSA_get0_multi_prime_params().</p>
+<p>RSA_set0_multi_prime_params() always clears the original multi-prime
+triplets in RSA object <strong>r</strong> and assign the new set of triplets into it.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>RSA_set0_key(), RSA_set0_factors(), RSA_set0_crt_params() and
+RSA_set0_multi_prime_params() return 1 on success or 0 on failure.</p>
+<p>RSA_get0_n(), RSA_get0_e(), RSA_get0_d(), RSA_get0_p(), RSA_get0_q(),
+RSA_get0_dmp1(), RSA_get0_dmq1(), and RSA_get0_iqmp()
+return the respective value.</p>
+<p>RSA_get0_multi_prime_factors() and RSA_get0_multi_prime_crt_params() return
+1 on success or 0 on failure.</p>
+<p><code>RSA_get_multi_prime_extra_count()</code> returns two less than the number of primes
+in use, which is 0 for traditional RSA and the number of extra primes for
+multi-prime RSA.</p>
+<p><code>RSA_get_version()</code> returns <strong>RSA_ASN1_VERSION_MULTI</strong> for multi-prime RSA and
+<strong>RSA_ASN1_VERSION_DEFAULT</strong> for normal two-prime RSA, as defined in <a href="http://www.ietf.org/rfc/rfc8017.txt" class="rfc">RFC 8017</a>.</p>
+<p><code>RSA_test_flags()</code> returns the current state of the flags in the RSA object.</p>
+<p>RSA_get0_engine() returns the ENGINE set for the RSA object or NULL if no
+ENGINE has been set.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>RSA_new(3)</em>, <em>RSA_size(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The RSA_get0_pss_params() function was added in OpenSSL 1.1.1e.</p>
+<p>The
+<code>RSA_get_multi_prime_extra_count()</code>, RSA_get0_multi_prime_factors(),
+RSA_get0_multi_prime_crt_params(), RSA_set0_multi_prime_params(),
+and <code>RSA_get_version()</code> functions were added in OpenSSL 1.1.1.</p>
+<p>Other functions described here were added in OpenSSL 1.1.0.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2016-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

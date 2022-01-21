@@ -1,0 +1,112 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>RAND_DRBG_get0_master</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>RAND_DRBG_get0_master,
+RAND_DRBG_get0_public,
+RAND_DRBG_get0_private
+- get access to the global RAND_DRBG instances</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/rand_drbg.h&gt;</pre>
+<pre>
+ RAND_DRBG *RAND_DRBG_get0_master(void);
+ RAND_DRBG *RAND_DRBG_get0_public(void);
+ RAND_DRBG *RAND_DRBG_get0_private(void);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>The default RAND API implementation (RAND_OpenSSL()) utilizes three
+shared DRBG instances which are accessed via the RAND API:</p>
+<p>The &lt;public&gt; and &lt;private&gt; DRBG are thread-local instances, which are used
+by <code>RAND_bytes()</code> and <code>RAND_priv_bytes()</code>, respectively.
+The &lt;master&gt; DRBG is a global instance, which is not intended to be used
+directly, but is used internally to reseed the other two instances.</p>
+<p>These functions here provide access to the shared DRBG instances.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>RAND_DRBG_get0_master() returns a pointer to the &lt;master&gt; DRBG instance.</p>
+<p>RAND_DRBG_get0_public() returns a pointer to the &lt;public&gt; DRBG instance.</p>
+<p>RAND_DRBG_get0_private() returns a pointer to the &lt;private&gt; DRBG instance.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>It is not thread-safe to access the &lt;master&gt; DRBG instance.
+The &lt;public&gt; and &lt;private&gt; DRBG instance can be accessed safely, because
+they are thread-local. Note however, that changes to these two instances
+apply only to the current thread.</p>
+<p>For that reason it is recommended not to change the settings of these
+three instances directly.
+Instead, an application should change the default settings for new DRBG instances
+at initialization time, before creating additional threads.</p>
+<p>During initialization, it is possible to change the reseed interval
+and reseed time interval.
+It is also possible to exchange the reseeding callbacks entirely.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>RAND_DRBG_set_callbacks(3)</em>,
+<em>RAND_DRBG_set_reseed_defaults(3)</em>,
+<em>RAND_DRBG_set_reseed_interval(3)</em>,
+<em>RAND_DRBG_set_reseed_time_interval(3)</em>,
+<em>RAND_DRBG_set_callbacks(3)</em>,
+<em>RAND_DRBG_generate(3)</em>,
+<em>RAND_DRBG(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p>The RAND_DRBG functions were added in OpenSSL 1.1.1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2017-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

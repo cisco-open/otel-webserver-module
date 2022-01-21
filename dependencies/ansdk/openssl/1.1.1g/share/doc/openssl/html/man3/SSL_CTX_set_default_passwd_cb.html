@@ -1,0 +1,149 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_set_default_passwd_cb</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_CTX_set_default_passwd_cb, SSL_CTX_set_default_passwd_cb_userdata,
+SSL_CTX_get_default_passwd_cb, SSL_CTX_get_default_passwd_cb_userdata,
+SSL_set_default_passwd_cb, SSL_set_default_passwd_cb_userdata,
+SSL_get_default_passwd_cb, SSL_get_default_passwd_cb_userdata - set or
+get passwd callback for encrypted PEM file handling</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ void SSL_CTX_set_default_passwd_cb(SSL_CTX *ctx, pem_password_cb *cb);
+ void SSL_CTX_set_default_passwd_cb_userdata(SSL_CTX *ctx, void *u);
+ pem_password_cb *SSL_CTX_get_default_passwd_cb(SSL_CTX *ctx);
+ void *SSL_CTX_get_default_passwd_cb_userdata(SSL_CTX *ctx);</pre>
+<pre>
+ void SSL_set_default_passwd_cb(SSL *s, pem_password_cb *cb);
+ void SSL_set_default_passwd_cb_userdata(SSL *s, void *u);
+ pem_password_cb *SSL_get_default_passwd_cb(SSL *s);
+ void *SSL_get_default_passwd_cb_userdata(SSL *s);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_CTX_set_default_passwd_cb()</code> sets the default password callback called
+when loading/storing a PEM certificate with encryption.</p>
+<p><code>SSL_CTX_set_default_passwd_cb_userdata()</code> sets a pointer to userdata, <strong>u</strong>,
+which will be provided to the password callback on invocation.</p>
+<p><code>SSL_CTX_get_default_passwd_cb()</code> returns a function pointer to the password
+callback currently set in <strong>ctx</strong>. If no callback was explicitly set, the
+NULL pointer is returned.</p>
+<p><code>SSL_CTX_get_default_passwd_cb_userdata()</code> returns a pointer to the userdata
+currently set in <strong>ctx</strong>. If no userdata was explicitly set, the NULL pointer
+is returned.</p>
+<p><code>SSL_set_default_passwd_cb()</code>, <code>SSL_set_default_passwd_cb_userdata()</code>,
+<code>SSL_get_default_passwd_cb()</code> and <code>SSL_get_default_passwd_cb_userdata()</code> perform
+the same function as their SSL_CTX counterparts, but using an SSL object.</p>
+<p>The password callback, which must be provided by the application, hands back the
+password to be used during decryption.
+On invocation a pointer to userdata
+is provided. The function must store the password into the provided buffer
+<strong>buf</strong> which is of size <strong>size</strong>. The actual length of the password must
+be returned to the calling function. <strong>rwflag</strong> indicates whether the
+callback is used for reading/decryption (rwflag=0) or writing/encryption
+(rwflag=1).
+For more details, see <em>pem_password_cb(3)</em>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>When loading or storing private keys, a password might be supplied to
+protect the private key. The way this password can be supplied may depend
+on the application. If only one private key is handled, it can be practical
+to have the callback handle the password dialog interactively. If several
+keys have to be handled, it can be practical to ask for the password once,
+then keep it in memory and use it several times. In the last case, the
+password could be stored into the userdata storage and the
+callback only returns the password already stored.</p>
+<p>When asking for the password interactively, the callback can use
+<strong>rwflag</strong> to check, whether an item shall be encrypted (rwflag=1).
+In this case the password dialog may ask for the same password twice
+for comparison in order to catch typos, that would make decryption
+impossible.</p>
+<p>Other items in PEM formatting (certificates) can also be encrypted, it is
+however not usual, as certificate information is considered public.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>These functions do not provide diagnostic information.</p>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p>The following example returns the password provided as userdata to the
+calling function. The password is considered to be a '\0' terminated
+string. If the password does not fit into the buffer, the password is
+truncated.</p>
+<pre>
+ int my_cb(char *buf, int size, int rwflag, void *u)
+ {
+     strncpy(buf, (char *)u, size);
+     buf[size - 1] = '\0';
+     return strlen(buf);
+ }</pre>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>ssl(7)</em>,
+<em>SSL_CTX_use_certificate(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p><code>SSL_CTX_get_default_passwd_cb()</code>, <code>SSL_CTX_get_default_passwd_cb_userdata()</code>,
+<code>SSL_set_default_passwd_cb()</code> and <code>SSL_set_default_passwd_cb_userdata()</code> were
+added in OpenSSL 1.1.0.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2019 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

@@ -1,0 +1,89 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_free</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_free - free an allocated SSL structure</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ void SSL_free(SSL *ssl);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><code>SSL_free()</code> decrements the reference count of <strong>ssl</strong>, and removes the SSL
+structure pointed to by <strong>ssl</strong> and frees up the allocated memory if the
+reference count has reached 0.
+If <strong>ssl</strong> is NULL nothing is done.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p><code>SSL_free()</code> also calls the free()ing procedures for indirectly affected items, if
+applicable: the buffering BIO, the read and write BIOs,
+cipher lists specially created for this <strong>ssl</strong>, the <strong>SSL_SESSION</strong>.
+Do not explicitly free these indirectly freed up items before or after
+calling <code>SSL_free()</code>, as trying to free things twice may lead to program
+failure.</p>
+<p>The ssl session has reference counts from two users: the SSL object, for
+which the reference count is removed by <code>SSL_free()</code> and the internal
+session cache. If the session is considered bad, because
+<em>SSL_shutdown(3)</em> was not called for the connection
+and <em>SSL_set_shutdown(3)</em> was not used to set the
+SSL_SENT_SHUTDOWN state, the session will also be removed
+from the session cache as required by <a href="http://www.ietf.org/rfc/rfc2246.txt" class="rfc">RFC2246</a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p><code>SSL_free()</code> does not provide diagnostic information.</p>
+<p><em>SSL_new(3)</em>, <em>SSL_clear(3)</em>,
+<em>SSL_shutdown(3)</em>, <em>SSL_set_shutdown(3)</em>,
+<em>ssl(7)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2000-2016 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

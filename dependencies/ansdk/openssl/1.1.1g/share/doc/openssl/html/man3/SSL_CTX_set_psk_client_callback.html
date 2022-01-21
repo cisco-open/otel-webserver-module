@@ -1,0 +1,197 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SSL_CTX_set_psk_client_callback</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#return_values">RETURN VALUES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#history">HISTORY</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>SSL_psk_client_cb_func,
+SSL_psk_use_session_cb_func,
+SSL_CTX_set_psk_client_callback,
+SSL_set_psk_client_callback,
+SSL_CTX_set_psk_use_session_callback,
+SSL_set_psk_use_session_callback
+- set PSK client callback</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ #include &lt;openssl/ssl.h&gt;</pre>
+<pre>
+ typedef int (*SSL_psk_use_session_cb_func)(SSL *ssl, const EVP_MD *md,
+                                            const unsigned char **id,
+                                            size_t *idlen,
+                                            SSL_SESSION **sess);</pre>
+<pre>
+ void SSL_CTX_set_psk_use_session_callback(SSL_CTX *ctx,
+                                           SSL_psk_use_session_cb_func cb);
+ void SSL_set_psk_use_session_callback(SSL *s, SSL_psk_use_session_cb_func cb);</pre>
+<pre>
+ typedef unsigned int (*SSL_psk_client_cb_func)(SSL *ssl,
+                                                const char *hint,
+                                                char *identity,
+                                                unsigned int max_identity_len,
+                                                unsigned char *psk,
+                                                unsigned int max_psk_len);</pre>
+<pre>
+ void SSL_CTX_set_psk_client_callback(SSL_CTX *ctx, SSL_psk_client_cb_func cb);
+ void SSL_set_psk_client_callback(SSL *ssl, SSL_psk_client_cb_func cb);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>A client application wishing to use TLSv1.3 PSKs should use either
+<code>SSL_CTX_set_psk_use_session_callback()</code> or <code>SSL_set_psk_use_session_callback()</code> as
+appropriate. These functions cannot be used for TLSv1.2 and below PSKs.</p>
+<p>The callback function is given a pointer to the SSL connection in <strong>ssl</strong>.</p>
+<p>The first time the callback is called for a connection the <strong>md</strong> parameter is
+NULL. In some circumstances the callback will be called a second time. In that
+case the server will have specified a ciphersuite to use already and the PSK
+must be compatible with the digest for that ciphersuite. The digest will be
+given in <strong>md</strong>. The PSK returned by the callback is allowed to be different
+between the first and second time it is called.</p>
+<p>On successful completion the callback must store a pointer to an identifier for
+the PSK in <strong>*id</strong>. The identifier length in bytes should be stored in <strong>*idlen</strong>.
+The memory pointed to by <strong>*id</strong> remains owned by the application and should
+be freed by it as required at any point after the handshake is complete.</p>
+<p>Additionally the callback should store a pointer to an SSL_SESSION object in
+<strong>*sess</strong>. This is used as the basis for the PSK, and should, at a minimum, have
+the following fields set:</p>
+<dl>
+<dt><strong><a name="the_master_key" class="item">The master key</a></strong></dt>
+
+<dd>
+<p>This can be set via a call to <em>SSL_SESSION_set1_master_key(3)</em>.</p>
+</dd>
+<dt><strong><a name="a_ciphersuite" class="item">A ciphersuite</a></strong></dt>
+
+<dd>
+<p>Only the handshake digest associated with the ciphersuite is relevant for the
+PSK (the server may go on to negotiate any ciphersuite which is compatible with
+the digest). The application can use any TLSv1.3 ciphersuite. If <strong>md</strong> is
+not NULL the handshake digest for the ciphersuite should be the same.
+The ciphersuite can be set via a call to &lt;SSL_SESSION_set_cipher(3)&gt;. The
+handshake digest of an SSL_CIPHER object can be checked using
+&lt;SSL_CIPHER_get_handshake_digest(3)&gt;.</p>
+</dd>
+<dt><strong><a name="the_protocol_version" class="item">The protocol version</a></strong></dt>
+
+<dd>
+<p>This can be set via a call to <em>SSL_SESSION_set_protocol_version(3)</em> and should
+be TLS1_3_VERSION.</p>
+</dd>
+</dl>
+<p>Additionally the maximum early data value should be set via a call to
+<em>SSL_SESSION_set_max_early_data(3)</em> if the PSK will be used for sending early
+data.</p>
+<p>Alternatively an SSL_SESSION created from a previous non-PSK handshake may also
+be used as the basis for a PSK.</p>
+<p>Ownership of the SSL_SESSION object is passed to the OpenSSL library and so it
+should not be freed by the application.</p>
+<p>It is also possible for the callback to succeed but not supply a PSK. In this
+case no PSK will be sent to the server but the handshake will continue. To do
+this the callback should return successfully and ensure that <strong>*sess</strong> is
+NULL. The contents of <strong>*id</strong> and <strong>*idlen</strong> will be ignored.</p>
+<p>A client application wishing to use PSK ciphersuites for TLSv1.2 and below must
+provide a different callback function. This function will be called when the
+client is sending the ClientKeyExchange message to the server.</p>
+<p>The purpose of the callback function is to select the PSK identity and
+the pre-shared key to use during the connection setup phase.</p>
+<p>The callback is set using functions <code>SSL_CTX_set_psk_client_callback()</code>
+or <code>SSL_set_psk_client_callback()</code>. The callback function is given the
+connection in parameter <strong>ssl</strong>, a <strong>NULL</strong>-terminated PSK identity hint
+sent by the server in parameter <strong>hint</strong>, a buffer <strong>identity</strong> of
+length <strong>max_identity_len</strong> bytes where the resulting
+<strong>NUL</strong>-terminated identity is to be stored, and a buffer <strong>psk</strong> of
+length <strong>max_psk_len</strong> bytes where the resulting pre-shared key is to
+be stored.</p>
+<p>The callback for use in TLSv1.2 will also work in TLSv1.3 although it is
+recommended to use <code>SSL_CTX_set_psk_use_session_callback()</code>
+or <code>SSL_set_psk_use_session_callback()</code> for this purpose instead. If TLSv1.3 has
+been negotiated then OpenSSL will first check to see if a callback has been set
+via <code>SSL_CTX_set_psk_use_session_callback()</code> or <code>SSL_set_psk_use_session_callback()</code>
+and it will use that in preference. If no such callback is present then it will
+check to see if a callback has been set via <code>SSL_CTX_set_psk_client_callback()</code> or
+<code>SSL_set_psk_client_callback()</code> and use that. In this case the <strong>hint</strong> value will
+always be NULL and the handshake digest will default to SHA-256 for any returned
+PSK.</p>
+<p>
+</p>
+<hr />
+<h1><a name="notes">NOTES</a></h1>
+<p>Note that parameter <strong>hint</strong> given to the callback may be <strong>NULL</strong>.</p>
+<p>A connection established via a TLSv1.3 PSK will appear as if session resumption
+has occurred so that <em>SSL_session_reused(3)</em> will return true.</p>
+<p>There are no known security issues with sharing the same PSK between TLSv1.2 (or
+below) and TLSv1.3. However the RFC has this note of caution:</p>
+<p>&quot;While there is no known way in which the same PSK might produce related output
+in both versions, only limited analysis has been done.  Implementations can
+ensure safety from cross-protocol related output by not reusing PSKs between
+TLS 1.3 and TLS 1.2.&quot;</p>
+<p>
+</p>
+<hr />
+<h1><a name="return_values">RETURN VALUES</a></h1>
+<p>Return values from the <strong>SSL_psk_client_cb_func</strong> callback are interpreted as
+follows:</p>
+<p>On success (callback found a PSK identity and a pre-shared key to use)
+the length (&gt; 0) of <strong>psk</strong> in bytes is returned.</p>
+<p>Otherwise or on errors the callback should return 0. In this case
+the connection setup fails.</p>
+<p>The SSL_psk_use_session_cb_func callback should return 1 on success or 0 on
+failure. In the event of failure the connection setup fails.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><em>SSL_CTX_set_psk_find_session_callback(3)</em>,
+<em>SSL_set_psk_find_session_callback(3)</em></p>
+<p>
+</p>
+<hr />
+<h1><a name="history">HISTORY</a></h1>
+<p><code>SSL_CTX_set_psk_use_session_callback()</code> and <code>SSL_set_psk_use_session_callback()</code>
+were added in OpenSSL 1.1.1.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright 2006-2018 The OpenSSL Project Authors. All Rights Reserved.</p>
+<p>Licensed under the OpenSSL license (the &quot;License&quot;).  You may not use
+this file except in compliance with the License.  You can obtain a copy
+in the file LICENSE in the source distribution or at
+<a href="https://www.openssl.org/source/license.html">https://www.openssl.org/source/license.html</a>.</p>
+
+</body>
+
+</html>

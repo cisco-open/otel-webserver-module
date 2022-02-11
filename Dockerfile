@@ -87,5 +87,5 @@ RUN git clone https://github.com/grpc/grpc \
   && make \
   && make install
 
-COPY entrypoint.sh /usr/local/bin/
-ENTRYPOINT ["entrypoint.sh"]
+COPY webserver-agent-centos6-x64-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["webserver-agent-centos6-x64-entrypoint.sh"]

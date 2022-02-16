@@ -1,7 +1,7 @@
 {
     'targets': [
       {
-        'target_name': 'mod_appdynamics',
+        'target_name': 'mod_apache',
         'type': 'shared_library',
         'dependencies': [],
 
@@ -28,7 +28,7 @@
           [
             'OS=="linux"', {
               'libraries': [
-                '$(APPD_SDK_LIB_DIR)/lib/libappdynamics_native_sdk.so',
+                '$(APPD_SDK_LIB_DIR)/lib/libopentelemetry_webserver_sdk.so',
               ],
 
               'library_dirs': [
@@ -53,12 +53,12 @@
         ],
       },
       {
-        'target_name': 'mod_appdynamics22',
+        'target_name': 'mod_apache22',
         'type': 'shared_library',
         'dependencies': [
         ],
         'libraries': [
-          '$(APPD_SDK_LIB_DIR)/lib/libappdynamics_native_sdk.so',
+          '$(APPD_SDK_LIB_DIR)/lib/libopentelemetry_webserver_sdk.so',
         ],
         'defines': [
         ],

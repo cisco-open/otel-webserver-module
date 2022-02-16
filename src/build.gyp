@@ -1,6 +1,6 @@
 {
   'targets': [{
-    'target_name': 'appdynamics_native_sdk',
+    'target_name': 'opentelemetry_webserver_sdk',
     'type': 'shared_library',
 
     'defines': ['TIMER_USE_CGT'],
@@ -20,7 +20,6 @@
       'core/api/WSAgent.cpp',
       'core/api/RequestProcessingEngine.cpp',
       'core/api/ApiUtils.cpp',
-      'core/api/Appdynamics_ngx_api.cpp',
       'core/api/SpanNamer.cpp',
       'core/AgentLogger.cpp',
       'core/AgentCore.cpp',

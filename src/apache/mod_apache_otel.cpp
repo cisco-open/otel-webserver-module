@@ -51,7 +51,7 @@ static const command_rec appd_cmds[] =
             (CMD_HAND_TYPE)ApacheConfigHandlers::appd_set_enabled,
             NULL,
             OR_ALL,
-            "Enable or disable appdynamics webserver apache agent"),
+            "Enable or disable webserver apache module"),
     AP_INIT_TAKE1(
             "appDynamicsOtelSpanExporter",
             (CMD_HAND_TYPE)ApacheConfigHandlers::appd_set_otelExporterType,
@@ -218,7 +218,7 @@ static const command_rec appd_cmds[] =
 // Module definition for configuration.  If a particular callback is not
 // needed, replace its routine name below with the word NULL.
 //--------------------------------------------------------------------------
-DLL_PUBLIC module AP_MODULE_DECLARE_DATA appdynamics_module =
+DLL_PUBLIC module AP_MODULE_DECLARE_DATA otel_apache_module =
 {
     STANDARD20_MODULE_STUFF,
     ApacheConfigHandlers::appd_create_dir_config,    // per-directory config creator
@@ -232,5 +232,5 @@ DLL_PUBLIC module AP_MODULE_DECLARE_DATA appdynamics_module =
 // Locate our directory configuration record for the current request.
 appd_cfg* ApacheConfigHandlers::our_dconfig(const request_rec *r)
 {
-    return (appd_cfg *) ap_get_module_config(r->per_dir_config, &appdynamics_module);
+    return (appd_cfg *) ap_get_module_config(r->per_dir_config, &otel_apache_module);
 }

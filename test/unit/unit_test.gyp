@@ -37,7 +37,7 @@
 
         'libraries': [
           # TODO: Following is the sdk library path of the agent. Replace with the actual library to be tested.
-          '$(APPD_SDK_LIB_DIR)/lib/libappdynamics_native_sdk.so',
+          '$(APPD_SDK_LIB_DIR)/lib/libopentelemetry_webserver_sdk.so',
           '$(ANSDK_DIR)/googletest/lib/libgmock.a',
           '$(ANSDK_DIR)/googletest/lib/libgmock_main.a',
           '$(ANSDK_DIR)/googletest/lib/libgtest.a',

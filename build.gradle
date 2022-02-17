@@ -49,14 +49,11 @@ project.ext {
 
     def props = new Properties()
     props.load(new FileInputStream(file("version.properties")))
-    agentVersion = System.getenv('AGENT_VERSION') ? System.getenv('AGENT_VERSION') : props.get("server-agent-version")
-    agentRelease = props.get("release")
-    jenkinsBuildNumber = System.getenv('BUILD_NUMBER')
-    agentName = "WebServer Agent"
-    buildId = jenkinsBuildNumber ? "#$agentVersion.$jenkinsBuildNumber" : ""
-    buildType = jenkinsBuildNumber ? "Release Build" : "DEV-BUILD"
-    minControllerVersion = props.get("controllerDependencyVersion")
-    fullVersion = "${agentName} ${buildId} v${agentVersion} ${agentRelease} r${headSHA1}: ${buildType}"
+    moduleVersion = props.get("server-module-version")
+    moduleRelease = props.get("release")
+    moduleName = "WebServer Module"
+    buildType = "Release Build"
+    fullVersion = "${moduleName} ${moduleVersion} ${moduleRelease} r${headSHA1}: ${buildType}"
 
     gypPath = "$projectDir/scripts/gyp/r1919/gyp"
     gypType = 'make'
@@ -108,20 +105,19 @@ task extractANSDK(type: Copy) {
     //into platBuildDir
 }
 
-task generateAgentVersionHeader(type: Copy) {
+task generateModuleVersionHeader(type: Copy) {
     group = 'SDK Library'
-    description = 'Generate the agent_version.h header'
+    description = 'Generate the module_version.h header'
 
-    def headerFile = file("src/sdk_lib/include/core/agent_version.h")
+    def headerFile = file("src/sdk_lib/include/core/module_version.h")
 
-    from "src/agent_version_template.h"
+    from "src/module_version_template.h"
     into "include/core"
-    rename { String f -> "agent_version.h" }
+    rename { String f -> "module_version.h" }
     expand(
-        jenkinsBuildNumber: (jenkinsBuildNumber ? ".$jenkinsBuildNumber" : ""),
         headSHA1: headSHA1,
-        agentVersion: agentVersion,
-        agentRelease: agentRelease,
+        moduleVersion: moduleVersion,
+        moduleRelease: moduleRelease,
         fullVersion: fullVersion)
 }
 
@@ -132,10 +128,9 @@ task generateVersionFile(type: Copy) {
     from "dist/VERSION.txt"
     into libraryStageDir
     expand(
-        jenkinsBuildNumber: (jenkinsBuildNumber ? ".$jenkinsBuildNumber" : ""),
         headSHA1: headSHA1,
-        agentVersion: agentVersion,
-        agentRelease: agentRelease,
+        moduleVersion: moduleVersion,
+        moduleRelease: moduleRelease,
         fullVersion: fullVersion)
 }
 
@@ -143,8 +138,8 @@ task generateSources {
     group = 'SDK Library'
     description = 'Generate all sources'
 
-    // TODO : Enable the agent version header generation once code will be there
-    dependsOn generateVersionFile, generateAgentVersionHeader
+    // TODO : Enable the module version header generation once code will be there
+    dependsOn generateVersionFile, generateModuleVersionHeader
 }
 
 // clean {
@@ -154,7 +149,7 @@ task generateSources {
     // Created by generateProtos
     //delete 'src/sdk_lib/protos'
 
-    // Created by generateAgentVersionHeader
+    // Created by generateModuleVersionHeader
     //delete 'src/sdk_lib/src/agent_version.h'
 
     // Created by generateVersionFile
@@ -313,9 +308,9 @@ task configureApache24(type: Exec) {
     commandLine './configure', '--with-included-apr'
 }
 
-task gypApacheAgent(type: Exec) {
-    group = 'Apache Web Server Agent'
-    description = 'Run gyp to generate the build files for Apache Web Server Agent'
+task gypApacheModule(type: Exec) {
+    group = 'Apache Web Server Module'
+    description = 'Run gyp to generate the build files for Apache Web Server Module'
 
     dependsOn stageLibrary
     dependsOn configureApache22
@@ -339,59 +334,59 @@ task gypApacheAgent(type: Exec) {
     commandLine gypPath, "--generator-output=${platBuildDir}/apache", '--toplevel-dir=.', '--depth=./', '-f', gypType, 'apache.gyp'
 }
 
-task buildApacheAgent(type: Exec) {
-    group = 'Apache Web Server Agent'
-    description = 'Build the Apache Web Server Agent'
+task buildApacheModule(type: Exec) {
+    group = 'Apache Web Server Module'
+    description = 'Build the Apache Web Server Module'
 
-    dependsOn gypApacheAgent
+    dependsOn gypApacheModule
     inputs.dir 'src/util'
     inputs.dir 'src/apache'
     inputs.dir 'src/nginx'
     inputs.dir 'src/core'
 
-    outputs.file "${platBuildDir}/apache/out/Default/lib.target/libmod_apache.so"
-    outputs.file "${platBuildDir}/apache/out/Default/lib.target/libmod_apache22.so"
+    outputs.file "${platBuildDir}/apache/out/Default/lib.target/libmod_apache_otel.so"
+    outputs.file "${platBuildDir}/apache/out/Default/lib.target/libmod_apache_otel22.so"
 
     args = ['make', 'V=1', '-j', Runtime.runtime.availableProcessors()]
 
-    environment gypApacheAgent.apacheBuildEnvironment
+    environment gypApacheModule.apacheBuildEnvironment
     workingDir "${platBuildDir}/apache"
     commandLine args
 }
 
-task stageApacheAgent(type: Copy) {
-    group = 'Apache Web Server Agent'
-    description = 'Stage the Apache Web Server Agent distribution directory'
+task stageApacheModule(type: Copy) {
+    group = 'Apache Web Server Module'
+    description = 'Stage the Apache Web Server Module distribution directory'
 
     dependsOn stageLibrary
 
-    from buildApacheAgent
+    from buildApacheModule
     into apacheStageDir
 }
 
-stageApacheAgent.mustRunAfter assembleLibrary
+stageApacheModule.mustRunAfter assembleLibrary
 
-task stripApacheAgent(type: Exec) {
-    group = 'Apache Web Server Agent'
-    description = 'Strip the production Apache Web Server Agent'
+task stripApacheModule(type: Exec) {
+    group = 'Apache Web Server Module'
+    description = 'Strip the production Apache Web Server Module'
 
-    dependsOn stageApacheAgent
+    dependsOn stageApacheModule
 
     onlyIf { !debug }
 
-    inputs.dir stageApacheAgent
+    inputs.dir stageApacheModule
     outputs.dir "${apacheStageDir}/libopentelemetry_webserver_sdk.${sharedLibraryExt}"
 
     workingDir apacheStageDir
-    commandLine 'strip', '-x', "libmod_apache.${sharedLibraryExt}"
-    commandLine 'strip', '-x', "libmod_apache22.${sharedLibraryExt}"
+    commandLine 'strip', '-x', "libmod_apache_otel.${sharedLibraryExt}"
+    commandLine 'strip', '-x', "libmod_apache_otel22.${sharedLibraryExt}"
 }
 
-task assembleApacheAgent(type: Tar) {
-    group = 'Apache Web Server Agent'
-    description = 'Assemble the Apache Web Server agent artifact (tgz)'
+task assembleApacheModule(type: Tar) {
+    group = 'Apache Web Server Module'
+    description = 'Assemble the Apache Web Server module artifact (tgz)'
 
-    dependsOn stripApacheAgent
+    dependsOn stripApacheModule
     //dependsOn stageWebServerProxy
 
     from libraryStageDir
@@ -450,7 +445,7 @@ task runUnitTest(type: Exec) {
 }
 
 task runApacheServer(type: Exec) {
-    dependsOn assembleApacheAgent
+    dependsOn assembleApacheModule
 
     workingDir 'test'
     commandLine './ApacheTesting.sh'

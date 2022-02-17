@@ -1,7 +1,7 @@
 {
     'targets': [
       {
-        'target_name': 'mod_apache',
+        'target_name': 'mod_apache_otel',
         'type': 'shared_library',
         'dependencies': [],
 
@@ -21,7 +21,7 @@
           'ExcludedModules.cpp',
           'ApacheHooks.cpp',
           'HookContainer.cpp',
-          'mod_appdynamics.cpp',
+          'mod_apache_otel.cpp',
         ],
 
         'conditions': [
@@ -53,7 +53,7 @@
         ],
       },
       {
-        'target_name': 'mod_apache22',
+        'target_name': 'mod_apache_otel22',
         'type': 'shared_library',
         'dependencies': [
         ],
@@ -96,7 +96,7 @@
           'ExcludedModules.cpp',
           'ApacheHooks.cpp',
           'HookContainer.cpp',
-          'mod_appdynamics.cpp',
+          'mod_apache_otel.cpp',
         ],
         'conditions': [
           ['OS=="linux"', {

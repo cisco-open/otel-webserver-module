@@ -1,1 +1,1 @@
-${agentVersion}${agentRelease}-${headSHA1}${jenkinsBuildNumber}
+${moduleVersion}${moduleRelease}-${headSHA1}

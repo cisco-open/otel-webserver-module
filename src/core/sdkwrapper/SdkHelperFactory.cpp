@@ -27,7 +27,7 @@
 #include "opentelemetry/sdk/resource/resource.h"
 #include "opentelemetry/exporters/otlp/otlp_exporter.h"
 #include "opentelemetry/baggage/propagation/baggage_propagator.h"
-#include <agent_version.h>
+#include <module_version.h>
 #include <fstream>
 #include <iostream>
 
@@ -65,7 +65,7 @@ SdkHelperFactory::SdkHelperFactory(
     attributes[kServiceInstanceId] = config->getServiceInstanceId();
 
     // NOTE : resource attribute values are nostd::variant and so we need to explicitely set it to std::string
-    std::string libraryVersion = AGENT_VERSION;
+    std::string libraryVersion = MODULE_VERSION;
 
     // NOTE : InstrumentationLibrary code is incomplete for the otlp exporter in sdk.
     // So, we need to pass libraryName and libraryVersion as resource attributes.

@@ -97,7 +97,7 @@ task extractOpenTelemetrySdk(type: Copy) {
 }
 
 task extractANSDK(type: Copy) {
-    from "dependencies/ansdk"
+    from "dependencies"
     into modDepDir
 
     //inputs.files configurations.ansdk

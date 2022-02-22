@@ -30,7 +30,7 @@ RUN yum update -y \
 RUN wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
 	&& yum install ./epel-release-latest-*.noarch.rpm -y \
 	&& yum install lcov -y \
-	&& yum clean all
+	&& yum clean all 
 
 # install devtoolset toolchain
 RUN curl https://www.getpagespeed.com/files/centos6-eol.repo --output /etc/yum.repos.d/CentOS-Base.repo \
@@ -50,7 +50,7 @@ RUN wget http://www.python.org/ftp/python/2.7.8/Python-2.7.8.tar.xz \
 	&& tar -xf Python-2.7.8.tar \
 	&& cd Python-2.7.8 && ./configure --prefix=/usr/local && make && make install \
 	&& cd .. \
-	&& rm -rf Python-2.7.8.tar.xz
+	&& rm -rf Python-2.7.8.tar.xz && rm -rf Python-2.7.8.tar
 
 # install gosu for easy step-down from root (from https://github.com/tianon/gosu/blob/master/INSTALL.md#from-centos)
 ENV GOSU_VERSION=1.10
@@ -73,7 +73,7 @@ RUN wget https://cmake.org/files/v3.20/cmake-3.20.0-linux-x86_64.tar.gz \
   && tar -xvf cmake-3.20.0-linux-x86_64.tar.gz \
   && cd cmake-3.20.0-linux-x86_64 \
   && cp -rf * /usr/local/ \
-  && cd ..
+  && cd .. && rm -rf cmake-3.20.0-linux-x86_64.tar.gz 
 
 # install grpc. If planning to upgrade, make sure sed command works
 RUN git clone https://github.com/grpc/grpc \
@@ -85,7 +85,110 @@ RUN git clone https://github.com/grpc/grpc \
   && cd cmake/build \
   && cmake ../.. -DgRPC_INSTALL=ON -DCMAKE_BUILD_TYPE=Release -DgRPC_ABSL_PROVIDER=module -DgRPC_CARES_PROVIDER=module -DgRPC_PROTOBUF_PROVIDER=module -DgRPC_RE2_PROVIDER=module -DgRPC_SSL_PROVIDER=module -DgRPC_ZLIB_PROVIDER=module \
   && make \
-  && make install
+  && make install \
+  && cd ../../..
 
-COPY webserver-agent-centos6-x64-entrypoint.sh /usr/local/bin/
-ENTRYPOINT ["webserver-agent-centos6-x64-entrypoint.sh"]
+# Create dependency folder to store all dependencies.
+RUN mkdir -p dependency
+
+# install boost version 1.75.0
+RUN mkdir -p dependency/boost/1.75.0/ \
+    && git clone https://github.com/boostorg/boost \
+    && cd boost/ && git checkout tags/boost-1.75.0 -b boost-1.75.0 \
+    && git submodule update --init --recursive \
+    && ./bootstrap.sh --with-libraries=filesystem,system --prefix=/dependency/boost/1.75.0 \
+    && ./b2 install define=BOOST_ERROR_CODE_HEADER_ONLY link=static threading=multi cxxflags="-fvisibility=hidden -fPIC -D_GLIBCXX_USE_CXX11_ABI=0" cflags="-fvisibility=hidden -fPIC" \
+    && cd .. && rm -rf boost 
+
+#install Apr
+RUN mkdir -p dependency/apr/1.7.0 \
+    && wget https://dlcdn.apache.org//apr/apr-1.7.0.tar.gz --no-check-certificate \ 
+    && tar -xf apr-1.7.0.tar.gz \
+    && cd apr-1.7.0 \
+    && ./configure --prefix=/dependency/apr/1.7.0 --enable-static=yes --enable-shared=no --with-pic && echo $? \
+    && make -j 6 \
+    && make install \
+    && cd ../ && rm -rf apr-1.7.0 && rm -rf apr-1.7.0.tar.gz
+
+# install libexpat
+RUN mkdir -p dependency/expat/2.3.0 \
+    && wget https://github.com/libexpat/libexpat/releases/download/R_2_3_0/expat-2.3.0.tar.gz --no-check-certificate \
+    && tar -xf expat-2.3.0.tar.gz \ 
+    && cd expat-2.3.0 \ 
+    && ./configure --prefix=/dependency/expat/2.3.0 --enable-static=yes --enable-shared=no --with-pic && echo $? \
+    && make -j 6 \ 
+    && make install \
+    && cd ../ && rm -rf expat-2.3.0 && rm -rf expat-2.3.0.tar.gz
+
+# install Apr-util
+RUN mkdir -p dependency/apr-util/1.6.1 \
+    && wget https://dlcdn.apache.org//apr/apr-util-1.6.1.tar.gz --no-check-certificate \ 
+    && tar -xf apr-util-1.6.1.tar.gz \ 
+    && cd apr-util-1.6.1 \ 
+    && ./configure --prefix=/dependency/apr-util/1.6.1 --enable-static=yes --enable-shared=no --with-pic --with-apr=/dependency/apr/1.7.0 --with-expat=/dependency/expat/2.3.0 && echo $? \ 
+    && make -j 6 \ 
+    && make install \ 
+    && cd ../ && rm -rf apr-util-1.6.1 && rm -rf apr-util-1.6.1.tar.gz
+
+# install m4
+RUN yum install m4 -y
+
+# install autoconf
+RUN wget --no-check-certificate https://ftp.gnu.org/gnu/autoconf/autoconf-2.68.tar.gz \ 
+    && tar xzf autoconf-2.68.tar.gz  \
+    && cd autoconf-2.68 \
+    && ./configure --prefix=/usr/ && make -j && make install && autoconf -V \
+    && cd .. && rm -rf autoconf-2.68.tar.gz
+
+# install automake
+RUN wget --no-check-certificate https://ftp.gnu.org/gnu/automake/automake-1.16.3.tar.gz \ 
+    && tar xzf automake-1.16.3.tar.gz \
+    && cd automake-1.16.3 \
+    && ./configure --prefix=/usr --libdir=/usr/lib64 \
+    && make -j && make install \ 
+    && automake --version \
+    && cd .. && rm -rf automake-1.16.3.tar.gz
+
+# install libtool
+RUN wget --no-check-certificate https://ftpmirror.gnu.org/libtool/libtool-2.4.6.tar.gz \
+    && tar xzf libtool-2.4.6.tar.gz \
+    && cd libtool-2.4.6 \
+    && ./configure --prefix=/usr \
+    && make -j 6 \
+    && make install \
+    && libtool --version \
+    && cd .. && rm -rf libtool-2.4.6.tar.gz
+
+#install log4cxx
+RUN mkdir -p dependency/apache-log4cxx/0.11.0 \
+    && wget https://archive.apache.org/dist/logging/log4cxx/0.11.0/apache-log4cxx-0.11.0.tar.gz --no-check-certificate \
+    && tar -xf apache-log4cxx-0.11.0.tar.gz \
+    && cd apache-log4cxx-0.11.0 \ 
+    && ./configure --prefix=/dependency/apache-log4cxx/0.11.0/ --enable-static=yes --enable-shared=no --with-pic --with-apr=/dependency/apr/1.7.0/ --with-apr-util=/dependency/apr-util/1.6.1/ && echo $? \
+    && make -j 6 ; echo 0 \ 
+    && automake --add-missing \
+    && make install \
+    && cd .. && rm -rf apache-log4cxx-0.11.0.tar.gz && rm -rf apache-log4cxx-0.11.0
+
+# install opentelemetry
+RUN mkdir -p dependency/opentelemetry/1.0.0-rc1/lib \
+    && mkdir -p dependency/opentelemetry/1.0.0-rc1/include \
+    && git clone https://github.com/open-telemetry/opentelemetry-cpp \
+    && cd opentelemetry-cpp/ \
+    && git checkout tags/v1.0.0-rc1 -b v1.0.0-rc1 \
+    && git submodule update --init --recursive \
+    && mkdir build \
+    && cd build \
+    && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=ON -DWITH_OTLP=ON -DCMAKE_INSTALL_PREFIX=/dependency/opentelemetry/1.0.0-rc1 \
+    && cmake --build . --target all \
+    && cd .. \
+    && find . -name "*.so" -type f -exec cp {} /dependency/opentelemetry/1.0.0-rc1/lib/ \; \
+    && cp build/libopentelemetry_proto.a /dependency/opentelemetry/1.0.0-rc1/lib \
+    && cp -r api/include/ /dependency/opentelemetry/1.0.0-rc1/ \
+    && for dir in exporters/*; do if [ -d "$dir" ]; then cp -rf "$dir/include" /dependency/opentelemetry/1.0.0-rc1/; fi; done \
+    && cp -r sdk/include/ /dependency/opentelemetry/1.0.0-rc1/ \
+    && cp -r build/generated/third_party/opentelemetry-proto/opentelemetry/proto/ /dependency/opentelemetry/1.0.0-rc1/include/opentelemetry/ \
+    && cd .. && rm -rf opentelemetry-cpp
+
+COPY entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["entrypoint.sh"]

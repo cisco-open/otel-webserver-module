@@ -51,11 +51,11 @@
           '$(ANSDK_DIR)/apache-log4cxx/0.11.0/lib/liblog4cxx.a',
           '$(ANSDK_DIR)/boost/1.75.0/lib/libboost_filesystem.a',
           '$(ANSDK_DIR)/boost/1.75.0/lib/libboost_system.a',
-          '$(ANSDK_DIR)/opentelemetry/lib/libopentelemetry_common.so',
-          '$(ANSDK_DIR)/opentelemetry/lib/libopentelemetry_resources.so',
-          '$(ANSDK_DIR)/opentelemetry/lib/libopentelemetry_trace.so',
-          '$(ANSDK_DIR)/opentelemetry/lib/libopentelemetry_exporter_ostream_span.so',
-          '$(ANSDK_DIR)/opentelemetry/lib/libopentelemetry_exporter_otprotocol.so'
+          '$(ANSDK_DIR)/opentelemetry/1.0.0-rc1/lib/libopentelemetry_common.so',
+          '$(ANSDK_DIR)/opentelemetry/1.0.0-rc1/lib/libopentelemetry_resources.so',
+          '$(ANSDK_DIR)/opentelemetry/1.0.0-rc1/lib/libopentelemetry_trace.so',
+          '$(ANSDK_DIR)/opentelemetry/1.0.0-rc1/lib/libopentelemetry_exporter_ostream_span.so',
+          '$(ANSDK_DIR)/opentelemetry/1.0.0-rc1/lib/libopentelemetry_exporter_otprotocol.so'
         ],
 
         'include_dirs': [
@@ -64,7 +64,7 @@
           '$(ANSDK_DIR)/boost/1.75.0/include',
           '../include/util',
           '../include/core',
-          '$(ANSDK_DIR)/opentelemetry/include/',
+          '$(ANSDK_DIR)/opentelemetry/1.0.0-rc1/include/',
         ],
 
         'ldflags': [

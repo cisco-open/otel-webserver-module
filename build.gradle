@@ -3,25 +3,12 @@ apply from: 'common.gradle'
 
 def coverageEnabled = System.getProperty('enableCoverage')
 
-// TODO: REMOVE once alternative is done.
-configurations {
-    apache
-    googletest
-}
-
 project.ext {
     // To do a 32-bit build, pass "-Dos.arch=x86"
     platBuildDir = "${buildDir}/${osName}-${osArch}"
     modDepDir = "${platBuildDir}/module-dependencies"
 
-    // TODO: REMOVE FROM HERE *********
-    nexus3BaseUrl="https://nexus3.corp.appdynamics.com/repository/"
-    nexus3BuildRepos="maven-releases maven-snapshots build-plugins"
-    nexus3PluginRepos="maven-releases build-plugins third-party-lib gradle-plugins"
-    // REMOVE TILL HERE ***************
-
     debug = false
-
     if (!Project.hasProperty('buildType')) {
         buildType = 'release'
     }
@@ -33,9 +20,7 @@ project.ext {
 
     ansdkOsName = osName
     ansdkArch = (osArch == 'x86' ? 'i686' : osArch)
-
     gccArchFlag = (osArch == 'x86' ? '-m32' : '-m64')
-
     headSHA1 = "<dev>"
 
     try {
@@ -59,17 +44,12 @@ project.ext {
     gypType = 'make'
 
     scriptExt = 'sh'
-
     sharedLibraryExt = 'so'
-
+    
     apache22Version = "2.2.31"
     apache24Version = "2.4.23"
-    aprVersion = '1.5.2'
-    aprUtilVersion = '1.5.4'
-    nginxVersion = '1.18.0'
 
     boostDir = "${modDepDir}/boost/1.55.0"
-
     libraryStageDir = "${platBuildDir}/opentelemetry-webserver-sdk"
     apacheStageDir = "${libraryStageDir}/WebServerModule/Apache"
 
@@ -81,16 +61,6 @@ project.ext {
     LCOV_INFO = "${COVERAGE_DIR}/lcov.info"
 }
 
-// TODO: REMOVE The following dependencies once alternative is done.
-dependencies {
-    apache "org.apache:httpd-2.2-src:${apache22Version}@bz2"
-    apache "org.apache:httpd-2.4-src:${apache24Version}@bz2"
-    apache "org.apache:apr:${aprVersion}@tbz2"
-    apache "org.apache:apr-util:${aprUtilVersion}@tbz2"
-
-    googletest group: 'com.google.gmock', name: 'googletest', version: '1.10.0', ext: 'tar.gz'
-}
-
 task extractOpenTelemetrySdk(type: Copy) {
     from "dependencies/opentelemetry"
     into "${modDepDir}/opentelemetry"
@@ -99,10 +69,6 @@ task extractOpenTelemetrySdk(type: Copy) {
 task extractANSDK(type: Copy) {
     from "dependencies"
     into modDepDir
-
-    //inputs.files configurations.ansdk
-    //from { configurations.ansdk.collect { tarTree(it) } }
-    //into platBuildDir
 }
 
 task generateModuleVersionHeader(type: Copy) {
@@ -183,7 +149,7 @@ task buildLibrary(type: Exec) {
     description = 'Compile the SDK library'
 
     dependsOn gypLibrary
-    dependsOn extractOpenTelemetrySdk
+    //dependsOn extractOpenTelemetrySdk
     inputs.property "buildType", buildType
     inputs.dir 'src/util'
 
@@ -211,11 +177,11 @@ task stageLibrary(type: Copy) {
 
     from("src/sdk_lib/src/api/include/appdynamics.h") { it.into "sdk_lib" }
     from(buildLibrary) { it.into "sdk_lib/lib" }
-    from("${modDepDir}/opentelemetry/lib/libopentelemetry_common.so") { it.into "sdk_lib/lib" }
-    from("${modDepDir}/opentelemetry/lib/libopentelemetry_resources.so") { it.into "sdk_lib/lib" }
-    from("${modDepDir}/opentelemetry/lib/libopentelemetry_trace.so") { it.into "sdk_lib/lib" }
-    from("${modDepDir}/opentelemetry/lib/libopentelemetry_exporter_ostream_span.so") { it.into "sdk_lib/lib" }
-    from("${modDepDir}/opentelemetry/lib/libopentelemetry_exporter_otprotocol.so") { it.into "sdk_lib/lib" }
+    from("${modDepDir}/opentelemetry/1.0.0-rc1/lib/libopentelemetry_common.so") { it.into "sdk_lib/lib" }
+    from("${modDepDir}/opentelemetry/1.0.0-rc1/lib/libopentelemetry_resources.so") { it.into "sdk_lib/lib" }
+    from("${modDepDir}/opentelemetry/1.0.0-rc1/lib/libopentelemetry_trace.so") { it.into "sdk_lib/lib" }
+    from("${modDepDir}/opentelemetry/1.0.0-rc1/lib/libopentelemetry_exporter_ostream_span.so") { it.into "sdk_lib/lib" }
+    from("${modDepDir}/opentelemetry/1.0.0-rc1/lib/libopentelemetry_exporter_otprotocol.so") { it.into "sdk_lib/lib" }
     from("dist/appdynamics_sdk_log4cxx.xml.template") { it.into "conf" }
     from("dist/install.${scriptExt}") { it.fileMode 0700 }
 
@@ -251,8 +217,7 @@ task assembleLibrary(type: Tar) {
 // Apache
 
 task extractApache(type: Copy) {
-    dependsOn configurations.apache
-    from { configurations.apache.collect {println it; tarTree(it) } }
+    from "build-dependencies" 
     into buildDir
 }
 
@@ -341,7 +306,6 @@ task buildApacheModule(type: Exec) {
     dependsOn gypApacheModule
     inputs.dir 'src/util'
     inputs.dir 'src/apache'
-    inputs.dir 'src/nginx'
     inputs.dir 'src/core'
 
     outputs.file "${platBuildDir}/apache/out/Default/lib.target/libmod_apache_otel.so"
@@ -387,7 +351,6 @@ task assembleApacheModule(type: Tar) {
     description = 'Assemble the Apache Web Server module artifact (tgz)'
 
     dependsOn stripApacheModule
-    //dependsOn stageWebServerProxy
 
     from libraryStageDir
     baseName "opentelemetry-webserver-sdk-${osArch}-${osName}"
@@ -397,12 +360,6 @@ task assembleApacheModule(type: Tar) {
 }
 
 // Tests
-
-task extractGoogleTest(type: Copy) {
-    dependsOn configurations.googletest
-    from { configurations.googletest.collect { tarTree(it) } }
-    into modDepDir
-}
 
 task gypUnitTest(type: Exec) {
     dependsOn stageLibrary
@@ -422,7 +379,6 @@ task gypUnitTest(type: Exec) {
 
 task makeUnitTest(type: Exec) {
     dependsOn gypUnitTest
-    dependsOn extractGoogleTest
 
     inputs.dir 'test/unit'
 

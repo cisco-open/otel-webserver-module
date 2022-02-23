@@ -88,44 +88,44 @@ RUN git clone https://github.com/grpc/grpc \
   && make install \
   && cd ../../..
 
-# Create dependency folder to store all dependencies.
-RUN mkdir -p dependency
+# Create dependencies folder to store all dependencies.
+RUN mkdir -p dependencies
 
 # install boost version 1.75.0
-RUN mkdir -p dependency/boost/1.75.0/ \
+RUN mkdir -p dependencies/boost/1.75.0/ \
     && git clone https://github.com/boostorg/boost \
     && cd boost/ && git checkout tags/boost-1.75.0 -b boost-1.75.0 \
     && git submodule update --init --recursive \
-    && ./bootstrap.sh --with-libraries=filesystem,system --prefix=/dependency/boost/1.75.0 \
+    && ./bootstrap.sh --with-libraries=filesystem,system --prefix=/dependencies/boost/1.75.0 \
     && ./b2 install define=BOOST_ERROR_CODE_HEADER_ONLY link=static threading=multi cxxflags="-fvisibility=hidden -fPIC -D_GLIBCXX_USE_CXX11_ABI=0" cflags="-fvisibility=hidden -fPIC" \
     && cd .. && rm -rf boost 
 
 #install Apr
-RUN mkdir -p dependency/apr/1.7.0 \
+RUN mkdir -p dependencies/apr/1.7.0 \
     && wget https://dlcdn.apache.org//apr/apr-1.7.0.tar.gz --no-check-certificate \ 
     && tar -xf apr-1.7.0.tar.gz \
     && cd apr-1.7.0 \
-    && ./configure --prefix=/dependency/apr/1.7.0 --enable-static=yes --enable-shared=no --with-pic && echo $? \
+    && ./configure --prefix=/dependencies/apr/1.7.0 --enable-static=yes --enable-shared=no --with-pic && echo $? \
     && make -j 6 \
     && make install \
     && cd ../ && rm -rf apr-1.7.0 && rm -rf apr-1.7.0.tar.gz
 
 # install libexpat
-RUN mkdir -p dependency/expat/2.3.0 \
+RUN mkdir -p dependencies/expat/2.3.0 \
     && wget https://github.com/libexpat/libexpat/releases/download/R_2_3_0/expat-2.3.0.tar.gz --no-check-certificate \
     && tar -xf expat-2.3.0.tar.gz \ 
     && cd expat-2.3.0 \ 
-    && ./configure --prefix=/dependency/expat/2.3.0 --enable-static=yes --enable-shared=no --with-pic && echo $? \
+    && ./configure --prefix=/dependencies/expat/2.3.0 --enable-static=yes --enable-shared=no --with-pic && echo $? \
     && make -j 6 \ 
     && make install \
     && cd ../ && rm -rf expat-2.3.0 && rm -rf expat-2.3.0.tar.gz
 
 # install Apr-util
-RUN mkdir -p dependency/apr-util/1.6.1 \
+RUN mkdir -p dependencies/apr-util/1.6.1 \
     && wget https://dlcdn.apache.org//apr/apr-util-1.6.1.tar.gz --no-check-certificate \ 
     && tar -xf apr-util-1.6.1.tar.gz \ 
     && cd apr-util-1.6.1 \ 
-    && ./configure --prefix=/dependency/apr-util/1.6.1 --enable-static=yes --enable-shared=no --with-pic --with-apr=/dependency/apr/1.7.0 --with-expat=/dependency/expat/2.3.0 && echo $? \ 
+    && ./configure --prefix=/dependencies/apr-util/1.6.1 --enable-static=yes --enable-shared=no --with-pic --with-apr=/dependencies/apr/1.7.0 --with-expat=/dependencies/expat/2.3.0 && echo $? \ 
     && make -j 6 \ 
     && make install \ 
     && cd ../ && rm -rf apr-util-1.6.1 && rm -rf apr-util-1.6.1.tar.gz
@@ -160,35 +160,51 @@ RUN wget --no-check-certificate https://ftpmirror.gnu.org/libtool/libtool-2.4.6.
     && cd .. && rm -rf libtool-2.4.6.tar.gz
 
 #install log4cxx
-RUN mkdir -p dependency/apache-log4cxx/0.11.0 \
+RUN mkdir -p dependencies/apache-log4cxx/0.11.0 \
     && wget https://archive.apache.org/dist/logging/log4cxx/0.11.0/apache-log4cxx-0.11.0.tar.gz --no-check-certificate \
     && tar -xf apache-log4cxx-0.11.0.tar.gz \
     && cd apache-log4cxx-0.11.0 \ 
-    && ./configure --prefix=/dependency/apache-log4cxx/0.11.0/ --enable-static=yes --enable-shared=no --with-pic --with-apr=/dependency/apr/1.7.0/ --with-apr-util=/dependency/apr-util/1.6.1/ && echo $? \
+    && ./configure --prefix=/dependencies/apache-log4cxx/0.11.0/ --enable-static=yes --enable-shared=no --with-pic --with-apr=/dependencies/apr/1.7.0/ --with-apr-util=/dependencies/apr-util/1.6.1/ && echo $? \
     && make -j 6 ; echo 0 \ 
     && automake --add-missing \
     && make install \
     && cd .. && rm -rf apache-log4cxx-0.11.0.tar.gz && rm -rf apache-log4cxx-0.11.0
 
 # install opentelemetry
-RUN mkdir -p dependency/opentelemetry/1.0.0-rc1/lib \
-    && mkdir -p dependency/opentelemetry/1.0.0-rc1/include \
+RUN mkdir -p dependencies/opentelemetry/1.0.0-rc1/lib \
+    && mkdir -p dependencies/opentelemetry/1.0.0-rc1/include \
     && git clone https://github.com/open-telemetry/opentelemetry-cpp \
     && cd opentelemetry-cpp/ \
     && git checkout tags/v1.0.0-rc1 -b v1.0.0-rc1 \
     && git submodule update --init --recursive \
     && mkdir build \
     && cd build \
-    && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=ON -DWITH_OTLP=ON -DCMAKE_INSTALL_PREFIX=/dependency/opentelemetry/1.0.0-rc1 \
+    && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_TESTING=OFF -DBUILD_SHARED_LIBS=ON -DWITH_OTLP=ON -DCMAKE_INSTALL_PREFIX=/dependencies/opentelemetry/1.0.0-rc1 \
     && cmake --build . --target all \
     && cd .. \
-    && find . -name "*.so" -type f -exec cp {} /dependency/opentelemetry/1.0.0-rc1/lib/ \; \
-    && cp build/libopentelemetry_proto.a /dependency/opentelemetry/1.0.0-rc1/lib \
-    && cp -r api/include/ /dependency/opentelemetry/1.0.0-rc1/ \
-    && for dir in exporters/*; do if [ -d "$dir" ]; then cp -rf "$dir/include" /dependency/opentelemetry/1.0.0-rc1/; fi; done \
-    && cp -r sdk/include/ /dependency/opentelemetry/1.0.0-rc1/ \
-    && cp -r build/generated/third_party/opentelemetry-proto/opentelemetry/proto/ /dependency/opentelemetry/1.0.0-rc1/include/opentelemetry/ \
+    && find . -name "*.so" -type f -exec cp {} /dependencies/opentelemetry/1.0.0-rc1/lib/ \; \
+    && cp build/libopentelemetry_proto.a /dependencies/opentelemetry/1.0.0-rc1/lib \
+    && cp -r api/include/ /dependencies/opentelemetry/1.0.0-rc1/ \
+    && for dir in exporters/*; do if [ -d "$dir" ]; then cp -rf "$dir/include" /dependencies/opentelemetry/1.0.0-rc1/; fi; done \
+    && cp -r sdk/include/ /dependencies/opentelemetry/1.0.0-rc1/ \
+    && cp -r build/generated/third_party/opentelemetry-proto/opentelemetry/proto/ /dependencies/opentelemetry/1.0.0-rc1/include/opentelemetry/ \
     && cd .. && rm -rf opentelemetry-cpp
 
+# install googletest
+RUN mkdir -p dependencies/googletest/1.10.0/ \
+    && wget https://github.com/google/googletest/archive/refs/tags/release-1.10.0.tar.gz --no-check-certificate \
+    && tar -xf release-1.10.0.tar.gz \
+    && cd googletest-release-1.10.0/  \
+    && mkdir build && cd build \
+    && cmake .. -DCMAKE_INSTALL_PREFIX=/dependencies/googletest/1.10.0/ \
+    && make \
+    && make install \
+    && cd ../.. && rm -rf release-1.10.0.tar.gz && rm -rf googletest-release-1.10.0/
+
+# Remove unwanted files
+RUN rm -rf grpc && rm -rf autoconf-2.68 && rm -rf automake-1.16.3 && rm -rf cmake-3.20.0-linux-x86_64 \
+    && rm -rf libtool-2.4.6 && rm -rf Python-2.7.8
+
 COPY entrypoint.sh /usr/local/bin/
+COPY build.sh /
 ENTRYPOINT ["entrypoint.sh"]

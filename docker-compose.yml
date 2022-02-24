@@ -1,85 +1,12 @@
-version: "3"
+version: "3.9"
 services:
-  buildRunner: &buildRunner
-    image: ${DOCKER_REGISTRY}/busybox
-    environment:
-      - BITBUCKET_CLONE_URL
-      - BITBUCKET_SERVER
-      - BITBUCKET_SONAR_PASSWORD
-      - BITBUCKET_SONAR_USERNAME
-      - BITBUCKET_USERNAME
-      - BITBUCKET_PASSWORD
-      - BUILD_ID
-      - BUILD_NUMBER
-      - BUILD_OS
-      - BUILD_PROJECT
-      - BUILD_REF_NAME
-      - BUILD_SHA
-      - BUILD_TYPE_ID
-      - BUILD_URL
-      - JIRA_PASSWORD
-      - JIRA_URL
-      - JIRA_USERNAME
-      - NEXUS_PASSWORD
-      - NEXUS_URL
-      - NEXUS_USERNAME
-      - TEAMCITY_SERVER_URL
-      - TEAMCITY_VERSION
-      - RELEASE_VERSION
-      - NPM_TOKEN
-      - NPM_EMAIL
-      - SONAR_HOST_URL
-      - SONAR_LOGIN
-  buildRunnerLinux: &buildRunnerLinux
-    << : *buildRunner
-  apache_agent_centos6-x64:
-    << : *buildRunnerLinux
-    image: ${DOCKER_REGISTRY}/apm/build-image-webserver-agent-centos6-x64:latest
-    environment:
-      - TEAMCITY_BUILD
-      - PUBLISH_TO_S3_BUILDNUMBER
-      - PUBLISH_TO_S3_EXTID
-      - PUBLISH_TO_S3_VCS_ROOT_URL
-      - STAGING_DOWNLOAD_PORTAL_URL
-      - STAGING_DOWNLOAD_PORTAL_TOKEN
-      - PROD_DOWNLOAD_PORTAL_URL
-      - PROD_DOWNLOAD_PORTAL_TOKEN
-      - DIST_LOCATION
-      - AGENT_VERSION
-      - HEAD_SHA
-      - SONAR_HOST_URL
-      - SONAR_LOGIN
-      - BUILD_REF_NAME
-      - BUILD_NUMBER
-    volumes:
-      - .:/webserver_agent
-      - gradle_linux:/home/swuser/.gradle
-      - ../$DIST_LOCATION:/teamcityArtifacts:ro
-    working_dir: /webserver_agent
-  apache_agent_centos6-i686:
-    << : *buildRunnerLinux
-    image: ${DOCKER_REGISTRY}/apm/build-image-apache-agent-centos6-i686:latest
-    environment:
-      - TEAMCITY_BUILD
-      - PUBLISH_TO_S3_BUILDNUMBER
-      - PUBLISH_TO_S3_EXTID
-      - PUBLISH_TO_S3_VCS_ROOT_URL
-      - STAGING_DOWNLOAD_PORTAL_URL
-      - STAGING_DOWNLOAD_PORTAL_TOKEN
-      - PROD_DOWNLOAD_PORTAL_URL
-      - PROD_DOWNLOAD_PORTAL_TOKEN
-      - DIST_LOCATION
-      - AGENT_VERSION
-      - HEAD_SHA
-      - SONAR_HOST_URL
-      - SONAR_LOGIN
-      - BUILD_REF_NAME
-      - BUILD_NUMBER
-    volumes:
-      - .:/webserver_agent
-      - gradle_linux:/home/swuser/.gradle
-      - ../$DIST_LOCATION:/teamcityArtifacts:ro
-    working_dir: /webserver_agent
-volumes:
-  gradle_linux:
-    external: true
+    webserver:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: apache
+        volumes:
+            - .:/otel-webserver-module
+        hostname: webserver
+        container_name: webserver
+        entrypoint: ["bash", "./build.sh"]

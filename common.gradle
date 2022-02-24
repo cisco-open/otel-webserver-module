@@ -1,12 +1,3 @@
-repositories {
-  nexus3PluginRepos.split().each { repo ->
-    maven { url(nexus3BaseUrl + repo) }
-  } 
-  nexusMavenRepos.split().each { repo ->
-    maven { url(nexusBaseUrl + repo) }
-  }
-}
-
 import org.gradle.internal.os.OperatingSystem
 
 apply plugin: 'cpp'

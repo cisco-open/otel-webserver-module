@@ -30,10 +30,9 @@ cd otel-webserver-module
 ./gradlew assembleApacheModule -PbuildType=debug
 
 #Changing the httpd.conf and Adding Opentelemetry.conf
-mv 
+cd build 
 tar -xf opentelemetry-webserver-sdk-x64-linux.tgz
 mv opentelemetry-webserver-sdk /opt/ 
-cd /opt/opentelemetry-webserver-sdk-x64
 mv /opentelemetry-module.conf /etc/httpd/conf.d 
 
 # Installing

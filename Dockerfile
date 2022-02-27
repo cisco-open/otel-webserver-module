@@ -205,6 +205,21 @@ RUN mkdir -p dependencies/googletest/1.10.0/ \
 RUN rm -rf grpc && rm -rf autoconf-2.68 && rm -rf automake-1.16.3 && rm -rf cmake-3.20.0-linux-x86_64 \
     && rm -rf libtool-2.4.6 && rm -rf Python-2.7.8
 
+#Installing Apache and apr source code
+RUN mkdir build-dependencies \
+    && wget --no-check-certificate https://archive.apache.org/dist/apr/apr-1.5.2.tar.gz \
+    && tar -xf apr-1.5.2.tar.gz \
+    && cp -r apr-1.5.2 build-dependencies \
+    && wget --no-check-certificate https://archive.apache.org/dist/apr/apr-util-1.5.4.tar.gz \
+    && tar -xf apr-util-1.5.4.tar.gz \
+    && cp -r apr-util-1.5.4 build-dependencies \
+    && wget --no-check-certificate http://archive.apache.org/dist/httpd/httpd-2.2.31.tar.gz \
+    && tar -xf httpd-2.2.31.tar.gz \
+    && cp -r httpd-2.2.31 build-dependencies \
+    && wget --no-check-certificate http://archive.apache.org/dist/httpd/httpd-2.4.23.tar.gz \
+    && tar -xf httpd-2.4.23.tar.gz \
+    && cp -r httpd-2.4.23 build-dependencies 
+
 COPY entrypoint.sh /usr/local/bin/
 COPY build.sh /
 ENTRYPOINT ["entrypoint.sh"]

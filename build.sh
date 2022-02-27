@@ -33,7 +33,8 @@ cd otel-webserver-module
 cd build 
 tar -xf opentelemetry-webserver-sdk-x64-linux.tgz
 mv opentelemetry-webserver-sdk /opt/ 
-mv opentelemetry_module.conf /etc/httpd/conf.d 
+cd ../
+cp opentelemetry_module.conf /etc/httpd/conf.d/
 
 # Installing
 

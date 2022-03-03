@@ -30,7 +30,7 @@ RUN yum update -y \
 RUN wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
 	&& yum install ./epel-release-latest-*.noarch.rpm -y \
 	&& yum install lcov -y \
-	&& yum clean all 
+	&& yum clean all
 
 # install devtoolset toolchain
 RUN curl https://www.getpagespeed.com/files/centos6-eol.repo --output /etc/yum.repos.d/CentOS-Base.repo \
@@ -73,7 +73,7 @@ RUN wget https://cmake.org/files/v3.20/cmake-3.20.0-linux-x86_64.tar.gz \
   && tar -xvf cmake-3.20.0-linux-x86_64.tar.gz \
   && cd cmake-3.20.0-linux-x86_64 \
   && cp -rf * /usr/local/ \
-  && cd .. && rm -rf cmake-3.20.0-linux-x86_64.tar.gz 
+  && cd .. && rm -rf cmake-3.20.0-linux-x86_64.tar.gz
 
 # install grpc. If planning to upgrade, make sure sed command works
 RUN git clone https://github.com/grpc/grpc \
@@ -98,11 +98,11 @@ RUN mkdir -p dependencies/boost/1.75.0/ \
     && git submodule update --init --recursive \
     && ./bootstrap.sh --with-libraries=filesystem,system --prefix=/dependencies/boost/1.75.0 \
     && ./b2 install define=BOOST_ERROR_CODE_HEADER_ONLY link=static threading=multi cxxflags="-fvisibility=hidden -fPIC -D_GLIBCXX_USE_CXX11_ABI=0" cflags="-fvisibility=hidden -fPIC" \
-    && cd .. && rm -rf boost 
+    && cd .. && rm -rf boost
 
 #install Apr
 RUN mkdir -p dependencies/apr/1.7.0 \
-    && wget https://dlcdn.apache.org//apr/apr-1.7.0.tar.gz --no-check-certificate \ 
+    && wget https://dlcdn.apache.org//apr/apr-1.7.0.tar.gz --no-check-certificate \
     && tar -xf apr-1.7.0.tar.gz \
     && cd apr-1.7.0 \
     && ./configure --prefix=/dependencies/apr/1.7.0 --enable-static=yes --enable-shared=no --with-pic && echo $? \
@@ -113,39 +113,39 @@ RUN mkdir -p dependencies/apr/1.7.0 \
 # install libexpat
 RUN mkdir -p dependencies/expat/2.3.0 \
     && wget https://github.com/libexpat/libexpat/releases/download/R_2_3_0/expat-2.3.0.tar.gz --no-check-certificate \
-    && tar -xf expat-2.3.0.tar.gz \ 
-    && cd expat-2.3.0 \ 
+    && tar -xf expat-2.3.0.tar.gz \
+    && cd expat-2.3.0 \
     && ./configure --prefix=/dependencies/expat/2.3.0 --enable-static=yes --enable-shared=no --with-pic && echo $? \
-    && make -j 6 \ 
+    && make -j 6 \
     && make install \
     && cd ../ && rm -rf expat-2.3.0 && rm -rf expat-2.3.0.tar.gz
 
 # install Apr-util
 RUN mkdir -p dependencies/apr-util/1.6.1 \
-    && wget https://dlcdn.apache.org//apr/apr-util-1.6.1.tar.gz --no-check-certificate \ 
-    && tar -xf apr-util-1.6.1.tar.gz \ 
-    && cd apr-util-1.6.1 \ 
-    && ./configure --prefix=/dependencies/apr-util/1.6.1 --enable-static=yes --enable-shared=no --with-pic --with-apr=/dependencies/apr/1.7.0 --with-expat=/dependencies/expat/2.3.0 && echo $? \ 
-    && make -j 6 \ 
-    && make install \ 
+    && wget https://dlcdn.apache.org//apr/apr-util-1.6.1.tar.gz --no-check-certificate \
+    && tar -xf apr-util-1.6.1.tar.gz \
+    && cd apr-util-1.6.1 \
+    && ./configure --prefix=/dependencies/apr-util/1.6.1 --enable-static=yes --enable-shared=no --with-pic --with-apr=/dependencies/apr/1.7.0 --with-expat=/dependencies/expat/2.3.0 && echo $? \
+    && make -j 6 \
+    && make install \
     && cd ../ && rm -rf apr-util-1.6.1 && rm -rf apr-util-1.6.1.tar.gz
 
 # install m4
 RUN yum install m4 -y
 
 # install autoconf
-RUN wget --no-check-certificate https://ftp.gnu.org/gnu/autoconf/autoconf-2.68.tar.gz \ 
+RUN wget --no-check-certificate https://ftp.gnu.org/gnu/autoconf/autoconf-2.68.tar.gz \
     && tar xzf autoconf-2.68.tar.gz  \
     && cd autoconf-2.68 \
     && ./configure --prefix=/usr/ && make -j && make install && autoconf -V \
     && cd .. && rm -rf autoconf-2.68.tar.gz
 
 # install automake
-RUN wget --no-check-certificate https://ftp.gnu.org/gnu/automake/automake-1.16.3.tar.gz \ 
+RUN wget --no-check-certificate https://ftp.gnu.org/gnu/automake/automake-1.16.3.tar.gz \
     && tar xzf automake-1.16.3.tar.gz \
     && cd automake-1.16.3 \
     && ./configure --prefix=/usr --libdir=/usr/lib64 \
-    && make -j && make install \ 
+    && make -j && make install \
     && automake --version \
     && cd .. && rm -rf automake-1.16.3.tar.gz
 
@@ -163,9 +163,9 @@ RUN wget --no-check-certificate https://ftpmirror.gnu.org/libtool/libtool-2.4.6.
 RUN mkdir -p dependencies/apache-log4cxx/0.11.0 \
     && wget https://archive.apache.org/dist/logging/log4cxx/0.11.0/apache-log4cxx-0.11.0.tar.gz --no-check-certificate \
     && tar -xf apache-log4cxx-0.11.0.tar.gz \
-    && cd apache-log4cxx-0.11.0 \ 
+    && cd apache-log4cxx-0.11.0 \
     && ./configure --prefix=/dependencies/apache-log4cxx/0.11.0/ --enable-static=yes --enable-shared=no --with-pic --with-apr=/dependencies/apr/1.7.0/ --with-apr-util=/dependencies/apr-util/1.6.1/ && echo $? \
-    && make -j 6 ; echo 0 \ 
+    && make -j 6 ; echo 0 \
     && automake --add-missing \
     && make install \
     && cd .. && rm -rf apache-log4cxx-0.11.0.tar.gz && rm -rf apache-log4cxx-0.11.0
@@ -201,25 +201,44 @@ RUN mkdir -p dependencies/googletest/1.10.0/ \
     && make install \
     && cd ../.. && rm -rf release-1.10.0.tar.gz && rm -rf googletest-release-1.10.0/
 
-# Remove unwanted files
-RUN rm -rf grpc && rm -rf autoconf-2.68 && rm -rf automake-1.16.3 && rm -rf cmake-3.20.0-linux-x86_64 \
-    && rm -rf libtool-2.4.6 && rm -rf Python-2.7.8
 
 #Installing Apache and apr source code
 RUN mkdir build-dependencies \
     && wget --no-check-certificate https://archive.apache.org/dist/apr/apr-1.5.2.tar.gz \
     && tar -xf apr-1.5.2.tar.gz \
-    && cp -r apr-1.5.2 build-dependencies \
+    && mv -f apr-1.5.2 build-dependencies \
     && wget --no-check-certificate https://archive.apache.org/dist/apr/apr-util-1.5.4.tar.gz \
     && tar -xf apr-util-1.5.4.tar.gz \
-    && cp -r apr-util-1.5.4 build-dependencies \
+    && mv -f apr-util-1.5.4 build-dependencies \
     && wget --no-check-certificate http://archive.apache.org/dist/httpd/httpd-2.2.31.tar.gz \
     && tar -xf httpd-2.2.31.tar.gz \
-    && cp -r httpd-2.2.31 build-dependencies \
+    && mv -f httpd-2.2.31 build-dependencies \
     && wget --no-check-certificate http://archive.apache.org/dist/httpd/httpd-2.4.23.tar.gz \
     && tar -xf httpd-2.4.23.tar.gz \
-    && cp -r httpd-2.4.23 build-dependencies 
+    && mv -f httpd-2.4.23 build-dependencies
+
+# Build Webserver Module
+RUN git clone https://github.com/cisco-open/otel-webserver-module.git \
+    && cp -r /dependencies /otel-webserver-module/ \
+    && cp -r /build-dependencies /otel-webserver-module/ \
+    && cd otel-webserver-module \
+    && ./gradlew assembleApacheModule
+
+# install webserver module
+RUN cd /otel-webserver-module/build \
+    && tar -xf opentelemetry-webserver-sdk-x64-linux.tgz \
+    && mv -f opentelemetry-webserver-sdk /opt/ \
+    && cd ../ \
+    && cp opentelemetry_module.conf /etc/httpd/conf.d/ \
+    && cd /opt/opentelemetry-webserver-sdk \
+    && ./install.sh \
+    && cd /
+
+# Remove unwanted files
+RUN rm -rf grpc && rm -rf autoconf-2.68 && rm -rf automake-1.16.3 && rm -rf cmake-3.20.0-linux-x86_64 \
+    && rm -rf libtool-2.4.6 && rm -rf Python-2.7.8 \
+    && rm -f apr-1.5.2.tar.gz && rm -f apr-util-1.5.4.tar.gz \
+    && rm -f httpd-2.2.31.tar.gz && rm -f httpd-2.4.23.tar.gz
 
 COPY entrypoint.sh /usr/local/bin/
-COPY build.sh /
 ENTRYPOINT ["entrypoint.sh"]

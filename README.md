@@ -20,8 +20,14 @@ Monitoring individual modules is crucial to the instrumentation of Apache web se
 | Monitor the reverse proxy load balancer        | mod_proxy_balancer |
 
 ### Build and Installation
+#### Prerequisites
+- Docker Desktop should be installed on the system
 
-This is currently Work In Progress and will be updated soon.
+#### Platform Supported
+- Currently, it is built and tested on CentOS 6
+- Other platform support: TBD
+
+#### Build Steps
 
 ### Maintainers
 * [Kumar Pratyush](https://github.com/kpratyus), Cisco

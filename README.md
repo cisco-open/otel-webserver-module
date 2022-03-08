@@ -19,6 +19,28 @@ Monitoring individual modules is crucial to the instrumentation of Apache web se
 | Monitor reverse proxy requests                 | mod_proxy   |
 | Monitor the reverse proxy load balancer        | mod_proxy_balancer |
 
+### Configuration
+| Configuration Directives                       |  Default Values |  Remarks                                   |
+| ---------------------------------------------- | --------------- | ------------------------------------------ |
+|*ApacheModuleEnabled*                           | ON              | OPTIONAL: Needed for instrumenting Apache Webserver |
+|*ApacheModuleOtelSpanExporter*                 | otlp             | OPTIONAL: Specify the span exporter to be used. Supported values are "otlp" and "ostream". All other supported values would be added in future. |
+|*ApacheModuleOtelExporterEndpoint:*             |                 | REQUIRED: The endpoint otel exporter exports to. Example "docker.for.mac.localhost:4317" |
+|*ApacheModuleOtelSpanProcessor*                 | batch           | OPTIONAL: Specify the processor to select to. Supported values are "simple" and "batch".|
+|*ApacheModuleOtelSampler*                       | AlwaysOn        | OPTIONAL: Supported values are "AlwaysOn" and "AlwaysOff" |
+|*ApacheModuleOtelMaxQueueSize*                  | 2048            | OPTIONAL: The maximum queue size. After the size is reached spans are dropped|
+|*ApacheModuleOtelScheduledDelayMillis*          | 5000            | OPTIONAL: The delay interval in milliseconds between two consecutive exports|
+|*ApacheModuleOtelExportTimeoutMillis*           | 30000           | OPTIONAL: How long the export can run in milliseconds before it is cancelled|
+|*ApacheModuleOtelMaxExportBatchSize*            | 512             | OPTIONAL: The maximum batch size of every export. It must be smaller or equal to maxQueueSize |
+|*ApacheModuleServiceName*                       |                 | REQUIRED: A namespace for the ServiceName|
+|*ApacheModuleServiceNamespace*                  |                 | REQUIRED: Logical name of the service |
+|*ApacheModuleServiceInstanceId*                 |                 | REQUIRED: The string ID of the service instance |
+|*ApacheModuleTraceAsError*                      |                 | OPTIONAL: Trace level for logging to Apache log|
+|*ApacheModuleWebserverContext*                  |                 | OPTIONAL: Virtual Host Configuration|
+|*ApacheModuleSegmentType*                       |                 | OPTIONAL: Specify the string (FIRST/LAST/CUSTOM) to be filtered for Span Name Creation|
+|*ApacheModuleSegmentParameter*                  |                 | OPTIONAL: Specify the segment count or segment numbers that you want to display for Span Creation|
+
+A sample configuration is mentioned in [opentelemetry_module.conf](https://github.com/cisco-open/otel-webserver-module/blob/main/opentelemetry_module.conf)
+
 ### Build and Installation
 #### Prerequisites
 - Docker Desktop should be installed on the system

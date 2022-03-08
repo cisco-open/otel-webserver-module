@@ -21,9 +21,26 @@ Monitoring individual modules is crucial to the instrumentation of Apache web se
 
 ### Build and Installation
 
-## Build and Install directly
+#### Automatic build and Installation
 
-## Manual build and Installation
+We will use Docker to run the Module. First, it is to be made sure that the Docker is up and running. 
+Then execute the following commands -:
+```
+docker-compose build 
+docker-compose up
+```
+This would start the container alongwith the the Opentelemetry Collector and Zipkin. You can check the traces on Zipkin dashboard by checking the port number of Zipkin using ```docker ps``` command. Multiple requests can be sent using the browser.
+
+#### Manual build and Installation
+
+We will use Docker to run the Module. First, it is to be made sure that the Docker is up and running. 
+Then execute the following commands -:
+```
+docker-compose build 
+docker-compose up
+```
+Next, login into the Docker container. 
+After going inside the container run the following commands ```cd \otel-webserver-module```. After making code changes the build and installation can be done by running ```./install.sh```.
 
 ### Maintainers
 * [Kumar Pratyush](https://github.com/kpratyus), Cisco

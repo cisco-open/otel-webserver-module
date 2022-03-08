@@ -11,6 +11,7 @@ The Apache Module enables tracing of incoming requests to the server by injectin
 Monitoring individual modules is crucial to the instrumentation of Apache web server. As the HTTP request flows through individual modules, delay in execution or errors might occur at any of the modules involved in the request. To identify the root cause of any delay or errors in request processing, module wise information (such as response time of individual modules) would enhance the debuggability of the Apache web server.
 
 #### Some of the Modules monitored by Apache Module
+
 | Some of the use cases handled by Apache Module | Module used |
 | ---------------------------------------------- | ----------- |
 | Monitor each module in the login phase         | mod_sso     |
@@ -20,6 +21,7 @@ Monitoring individual modules is crucial to the instrumentation of Apache web se
 | Monitor the reverse proxy load balancer        | mod_proxy_balancer |
 
 ### Configuration
+
 | Configuration Directives                       |  Default Values |  Remarks                                   |
 | ---------------------------------------------- | --------------- | ------------------------------------------ |
 |*ApacheModuleEnabled*                           | ON              | OPTIONAL: Needed for instrumenting Apache Webserver |
@@ -42,36 +44,43 @@ Monitoring individual modules is crucial to the instrumentation of Apache web se
 A sample configuration is mentioned in [opentelemetry_module.conf](https://github.com/cisco-open/otel-webserver-module/blob/main/opentelemetry_module.conf)
 
 ### Build and Installation
+
 #### Prerequisites
+
 - Docker Desktop should be installed on the system
 
 #### Platform Supported
+
 - Currently, it is built and tested on CentOS 6
 - Other platform support: TBD
 
 #### Automatic build and Installation
 
-We will use Docker to run the Module. First, it is to be made sure that the Docker is up and running. 
+We will use Docker to run the Module. First, it is to be made sure that the Docker is up and running.
 Then execute the following commands -:
-```
+
+```shell
 docker-compose build 
 docker-compose up
 ```
+
 This would start the container alongwith the the Opentelemetry Collector and Zipkin. You can check the traces on Zipkin dashboard by checking the port number of Zipkin using ```docker ps``` command. Multiple requests can be sent using the browser.
 
 #### Manual build and Installation
 
-We will use Docker to run the Module. First, it is to be made sure that the Docker is up and running. 
+We will use Docker to run the Module. First, it is to be made sure that the Docker is up and running.
 Then execute the following commands -:
-```
+
+```shell
 docker-compose build 
 docker-compose up
 ```
-Next, login into the Docker container. 
+
+Next, login into the Docker container.
 After going inside the container run the following commands ```cd \otel-webserver-module```. After making code changes the build and installation can be done by running ```./install.sh```.
 
 ### Maintainers
-* [Kumar Pratyush](https://github.com/kpratyus), Cisco
-* [Lakshay Gaba](https://github.com/lakshay141), Cisco
-* [Debajit Das] (https://github.com/DebajitDas), Cisco
 
+- [Kumar Pratyush](https://github.com/kpratyus), Cisco
+- [Lakshay Gaba](https://github.com/lakshay141), Cisco
+- [Debajit Das](https://github.com/DebajitDas), Cisco

@@ -21,7 +21,9 @@ Monitoring individual modules is crucial to the instrumentation of Apache web se
 
 ### Build and Installation
 
-This is currently Work In Progress and will be updated soon.
+## Build and Install directly
+
+## Manual build and Installation
 
 ### Maintainers
 * [Kumar Pratyush](https://github.com/kpratyus), Cisco

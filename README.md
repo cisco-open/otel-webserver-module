@@ -19,6 +19,19 @@ Monitoring individual modules is crucial to the instrumentation of Apache web se
 | Monitor reverse proxy requests                 | mod_proxy   |
 | Monitor the reverse proxy load balancer        | mod_proxy_balancer |
 
+### Third Party Dependencies
+
+| Library                                        | Present Version |
+| ---------------------------------------------- | -----------     |
+| Apache-log4cxx                                 | 0.11.0          |
+| Apr                                            | 1.7.0           |
+| Apr-util                                       | 1.6.1           |
+| Expat                                          | 2.3.0           |
+| Boost                                          | 1.75.0          |
+| Opentelemetry - C++ SDK                        | 1.0.0-rc1       |
+| Googletest                                     | 1.10.0.         |
+
+
 ### Configuration
 | Configuration Directives                       |  Default Values |  Remarks                                   |
 | ---------------------------------------------- | --------------- | ------------------------------------------ |

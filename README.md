@@ -19,6 +19,26 @@ Monitoring individual modules is crucial to the instrumentation of Apache web se
 | Monitor reverse proxy requests                 | mod_proxy   |
 | Monitor the reverse proxy load balancer        | mod_proxy_balancer |
 
+### Third Party Dependencies
+
+| Library                                        | Present Version |
+| ---------------------------------------------- | -----------     |
+| Apache-log4cxx                                 | 0.11.0          |
+| Apr                                            | 1.7.0           |
+| Apr-util                                       | 1.6.1           |
+| Expat                                          | 2.3.0           |
+| Boost                                          | 1.75.0          |
+| Opentelemetry - C++ SDK                        | 1.0.0-rc1       |
+| Googletest                                     | 1.10.0          |
+
+*There are some libraries which are just used to generate Apache Header files
+
+| Library                                        | Present Version |
+| ---------------------------------------------- | -----------     |
+| Httpd                                          | 2.4.23, 2.2.31          |
+| Apr                                            | 1.5.2           |
+| Apr-util                                       | 1.5.4           |
+
 ### Configuration
 | Configuration Directives                       |  Default Values |  Remarks                                   |
 | ---------------------------------------------- | --------------- | ------------------------------------------ |
@@ -69,6 +89,8 @@ docker-compose up
 ```
 Next, login into the Docker container. 
 After going inside the container run the following commands ```cd \otel-webserver-module```. After making code changes the build and installation can be done by running ```./install.sh```.
+
+The build file can be copied at a suitable location in User's system by running the command ```docker cp "container_name":/otel-webserver-module/build/"tar_file"  desired_location```. Then it can be installed and used as above.
 
 ### Maintainers
 * [Kumar Pratyush](https://github.com/kpratyus), Cisco

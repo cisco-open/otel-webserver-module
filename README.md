@@ -90,6 +90,8 @@ docker-compose up
 Next, login into the Docker container. 
 After going inside the container run the following commands ```cd \otel-webserver-module```. After making code changes the build and installation can be done by running ```./install.sh```.
 
+The build file can be copied at a suitable location in User's system by running the command ```docker cp "container_name":/otel-webserver-module/build/"tar_file"  desired_location```. Then it can be installed and used as above.
+
 ### Maintainers
 * [Kumar Pratyush](https://github.com/kpratyus), Cisco
 * [Lakshay Gaba](https://github.com/lakshay141), Cisco

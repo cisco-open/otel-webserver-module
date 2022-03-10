@@ -90,7 +90,7 @@ docker-compose up
 Next, login into the Docker container. 
 After going inside the container run the following commands ```cd \otel-webserver-module```. After making code changes the build and installation can be done by running ```./install.sh```.
 
-The build file can be copied at a suitable location in User's system by running the command ```docker cp <container_name>:/otel-webserver-module/build/opentelemetry-webserver-sdk-x64-linux.tgz  <desired_location>```. Then it can be installed and used as above.
+The build file can be copied at a suitable location in User's system by running the command ```docker cp <container_name>:/otel-webserver-module/build/opentelemetry-webserver-sdk-x64-linux.tgz  <desired_location>```. The installation steps can be inferred from ```install.sh``` script.
 
 ### Maintainers
 * [Kumar Pratyush](https://github.com/kpratyus), Cisco
